@@ -1,0 +1,32 @@
+
+SRC_FILES := $(wildcard omp_*)
+UNPARSE_FILES := $(addprefix unparse_,$(SRC_FILES))
+LOWER_FILES := $(addprefix rose_,$(SRC_FILES))
+REFERENCES := $(addprefix rex_,$(SRC_FILES))
+CFLAGS := -I..
+
+default: unparse
+
+all: unparse lower build run
+
+.PHONY: clean
+clean: 
+	rm -rf rose_*.c unparse_* *.o *.log *.out
+
+unparse: ${UNPARSE_FILES}
+	@echo "Unparsing tests complete."
+
+.PHONY: $(UNPARSE_FILES)
+$(UNPARSE_FILES): ${SRC_FILES}
+	@rose-compiler ${CFLAGS} -rose:openmp:ast_only -rose:skipfinalCompileStep $(@:unparse_%=%)
+	@grep "pragma omp" rose_$(@:unparse_%=%) > $@
+	@if diff $@ rose_$(@:unparse_%=%).output ; then echo "Test passed." ; else echo "Test failed." ; fi
+ 
+lower: ${LOWER_FILES}
+	@echo "Lowering tests complete."
+
+.PHONY: $(LOWER_FILES)
+$(LOWER_FILES): ${SRC_FILES}
+	@rose-compiler ${CFLAGS} -rose:openmp:lowering -rose:skipfinalCompileStep $(@:rose_%=%)
+	@if diff $@ rex_$(@:rose_%=%) ; then echo "Test passed." ; else echo "Test failed." ; fi
+ 
