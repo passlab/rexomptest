@@ -7,6 +7,11 @@ Each subfolder is named by `rex-<directive name>`. Inside the subfolder, there a
 3. `rex-<case name>.c`: the transfored code for reference.
 4. `rose-<case name>.c.output`: the OpenMP pragmas for reference.
 
+The `Makefile` includes a template at the root folder for environment settings, unparsing, and lowering.
+The building and running could be unique. Therefore, we need to manually write them case by case.
+For example, `target` directive may need `nvcc` besides `gcc` to compile. The code without `main` function is not eligible for running test.
+
+
 To test unparsing, we generate the unparsed OpenMP pragmas and compare them with the given reference.
 To test lowering, we generate the transformed code and compare them with the given reference.
 To test building, a object file is compiled.
