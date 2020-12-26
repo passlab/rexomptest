@@ -21,6 +21,8 @@ all_in_one: all_in_one_cubin_wrapper rose_target.c rex_lib_target.cu register_cu
 all_in_one_cubin_wrapper: rex_lib_target.cu
 	nvcc -cubin -arch ${CUDA_ARCH} rex_lib_target.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include
 
+omp: target.c
+	clang -fopenmp -fopenmp-targets=nvptx64 target.c -o target_omp.out
 
 clean: 
 	rm -rf *.o *.cubin *.out
