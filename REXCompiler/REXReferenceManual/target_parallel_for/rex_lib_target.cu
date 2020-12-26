@@ -11,6 +11,7 @@ extern "C" {
 __device__ int32_t omptarget_device_environment;
 __device__ char OUT__1__9009__main__7__kernel___exec_mode = 0;
 
+extern struct __tgt_bin_desc* register_cubin(char*, void*, void*);
 __global__ void OUT__1__9009__main__7__kernel__()
 {
   int _p_i;
