@@ -32,6 +32,7 @@ terminate called after throwing an instance of 'std::system_error'
 Aborted (core dumped)
 ```
 Therefore, we have to force to link the library. Clang doesn't have this issue. For the all-in-one outlined file, nvcc also requires this parameter.
+Please also notice that in the `Makefile`, the `$CUDA_ARCH` variable has to be set properly. For example, on Fornax, it's `sm_37`. On Carina, it's `sm_70`.
 
 To compile the separate outlined files:
 ```bash
