@@ -22,7 +22,7 @@
 
 # 2. Build
 
-So far, the single all-in-one outlined file can't be compiled and executed correctly. Only the manually modified output files work.
+So far, the single all-in-one outlined file has to be compiled completely by nvcc. The manually modified output files work on both Clang and GCC except generating the `.cubin` file.
 In `Makefile`, by default Clang is used for compilation. GCC requires the additional parameter `-Wl,--no-as-needed -lomp`.
 Without this specific parameter, GCC won't link `libomp.so` to the program because it doesn't directly use any functions from that library.
 However, without `libomp.so`, the program will throw an error:
@@ -31,10 +31,16 @@ terminate called after throwing an instance of 'std::system_error'
   what():  Unknown error -1
 Aborted (core dumped)
 ```
-Therefore, we have to force to link the library. Clang doesn't have this issue.
+Therefore, we have to force to link the library. Clang doesn't have this issue. For the all-in-one outlined file, nvcc also requires this parameter.
 
+To compile the separate outlined files:
 ```bash
 make
+```
+
+To compile the all-in-one outlined file:
+```bash
+make all-in-one
 ```
 
 
@@ -42,6 +48,7 @@ make
 
 ```bash
 ./target
+# or ./target_all_in_one.out
 ```
 
 The program will print ten times of string `Test.`. Running `nvprof` shows that the kernel runs on GPU.
