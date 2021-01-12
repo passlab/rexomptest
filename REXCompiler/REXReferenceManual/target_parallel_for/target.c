@@ -5,8 +5,14 @@ int main (int argc, char** argv) {
     int i;
 #pragma omp target
 #pragma omp parallel for
-    for (i = 0; i < 10; i++) {
-        printf("Test.\n");
+    for (i = 0; i < 2; i++) {
+        printf("Test 1.\n");
+    }
+
+#pragma omp target
+#pragma omp parallel for
+    for (i = 0; i < 6; i++) {
+        printf("Test 2.\n");
     }
 
     return 0;
