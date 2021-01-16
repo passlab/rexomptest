@@ -9,14 +9,14 @@ ifeq (${CUDA_ARCH},)
 endif
 
 default: cubin_wrapper rose_target.c register_cubin.cpp
-	clang rose_target.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
-	#gcc rose_target.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
+	clang -g rose_target.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	#gcc -g rose_target.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
 cubin_wrapper: rex_lib_target.cu
 	nvcc -cubin -arch ${CUDA_ARCH} rex_lib_target.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include
 
 omp: target.c
-	clang -fopenmp -fopenmp-targets=nvptx64 target.c -o target_omp.out
+	clang -g -fopenmp -fopenmp-targets=nvptx64 target.c -o target_omp.out
 
 clean: 
 	rm -rf *.o *.cubin *.out
