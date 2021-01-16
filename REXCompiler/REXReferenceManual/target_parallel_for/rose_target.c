@@ -5,16 +5,18 @@ void  __attribute__((destructor)) unregister_kernel_entries()
 {
   __tgt_unregister_lib(__cubin_desc);
 }
+char OUT__2__9009__main__7__id__[] = "OUT__2__9009__main__7__";
+char OUT__1__9009__main__13__id__[] = "OUT__1__9009__main__13__";
 struct __tgt_offload_entry __offload_entries[2];
 struct __tgt_offload_entry *__start_omp_offloading_entries = &__offload_entries[0];
 struct __tgt_offload_entry *__stop_omp_offloading_entries = 0;
 
 void  __attribute__((constructor)) register_kernel_entries()
 {
-  void *OUT__1__9009__main__13__entry_ptr__ = (void *)9009;
+  void *OUT__1__9009__main__13__entry_ptr__ = (void *)OUT__1__9009__main__13__id__;
   struct __tgt_offload_entry OUT__1__9009__main__13__omp_offload_entry__ = {OUT__1__9009__main__13__entry_ptr__, "OUT__1__9009__main__13__kernel__", 0, 0, 0};
   __offload_entries[0] = OUT__1__9009__main__13__omp_offload_entry__;
-  void *OUT__2__9009__main__7__entry_ptr__ = (void *)9010;
+  void *OUT__2__9009__main__7__entry_ptr__ = (void *)OUT__2__9009__main__7__id__;
   struct __tgt_offload_entry OUT__2__9009__main__7__omp_offload_entry__ = {OUT__2__9009__main__7__entry_ptr__, "OUT__2__9009__main__7__kernel__", 0, 0, 0};
   __offload_entries[1] = OUT__2__9009__main__7__omp_offload_entry__;
   __stop_omp_offloading_entries = &__offload_entries[2];
@@ -33,7 +35,7 @@ int main(int argc,char **argv)
     int _threads_per_block_ = 1024;
     int _num_blocks_ = 256;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)9010;
+    void *__host_ptr = (void *)OUT__2__9009__main__7__id__;
     void *__args_base[] = {};
     void *__args[] = {};
     int64_t __arg_sizes[] = {};
@@ -46,7 +48,7 @@ int main(int argc,char **argv)
     int _threads_per_block_ = 1024;
     int _num_blocks_ = 256;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)9009;
+    void *__host_ptr = (void *)OUT__1__9009__main__13__id__;
     void *__args_base[] = {};
     void *__args[] = {};
     int64_t __arg_sizes[] = {};
