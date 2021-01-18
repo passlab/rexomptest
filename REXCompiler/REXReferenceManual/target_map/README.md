@@ -52,5 +52,3 @@ The code has been tested on Fornax with NVIDIA Tesla K80, CUDA toolkit 10.1, and
 
 # 5. Issues
 
-The address, type, and size of mapping variables are generated, but the executable doesn't actually transferred the data between the host and device.
-
