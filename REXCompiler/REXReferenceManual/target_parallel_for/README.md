@@ -53,10 +53,4 @@ The code has been tested on Fornax with NVIDIA Tesla K80, CUDA toolkit 10.1, and
 
 # 5. Issues
 
-In the original output `rex_lib_target.cu`, the first group of macro could be out of order.
-```c
-#endif
-extern "C" {
-#ifdef __cplusplus
-```
-If there's a global variable declaration, the order would be correct.
+
