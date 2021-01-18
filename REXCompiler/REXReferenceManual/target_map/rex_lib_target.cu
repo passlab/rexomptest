@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "xomp_cuda_lib.cu" 
 #include "xomp_cuda_lib_inlined.cu" 
-#include "rex_kmp.h" 
 int main(int ,char **);
 #ifdef __cplusplus
 extern "C" {
