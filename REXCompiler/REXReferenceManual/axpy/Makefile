@@ -10,7 +10,7 @@ endif
 
 default: axpy.out
 
-all: axpy.out axpy_omp.out axpy_cuda.out
+all: axpy.out axpy_omp.out axpy_cuda.out axpy_cublas.out
 
 axpy.out: cubin_wrapper rose_axpy.c register_cubin.cpp
 	clang rose_axpy.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o axpy.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
@@ -24,6 +24,9 @@ axpy_omp.out: axpy.c
 
 axpy_cuda.out: axpy_cuda.c axpy_cudakernel.cu
 	nvcc axpy_cuda.c axpy_cudakernel.cu -o axpy_cuda.out
+
+axpy_cublas.out: axpy_cuda.c axpy_cublas.cu
+	nvcc axpy_cuda.c axpy_cublas.cu -o axpy_cublas.out -lcublas
 
 .PHONY: clean
 clean: 
