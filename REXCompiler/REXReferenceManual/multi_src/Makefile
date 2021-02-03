@@ -8,13 +8,13 @@ ifeq (${CUDA_ARCH},)
 	CUDA_ARCH := sm_70
 endif
 
-default: rex_lib_nvidia.cubin rose_target.c register_cubin.cpp
+default: rex_lib_nvidia.cubin rose_target.c rose_foo.c register_cubin.cpp
 	clang -g rose_target.c rose_foo.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
 	#gcc -g rose_target.c rose_foo.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
-clang_wrapper: rex_lib_nvidia.o rose_target.c register_cubin.cpp
-	clang -g rose_target.c rose_foo.c rex_lib_nvidia.o -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
-	#gcc -g rose_target.c rose_foo.c rex_lib_nvidia.o -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
+clang_wrapper: rex_lib_nvidia.o rose_target.c rose_foo.c
+	clang -g rose_target.c rose_foo.c rex_lib_nvidia.o -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	#gcc -g rose_target.c rose_foo.c rex_lib_nvidia.o -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
 rex_lib_nvidia.cubin: rex_lib_target.cu rex_lib_foo.cu rex_nvidia.cu
 	nvcc -cubin -arch ${CUDA_ARCH} -dlink rex_lib_target.cu rex_lib_foo.cu rex_nvidia.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_lib_nvidia.cubin
