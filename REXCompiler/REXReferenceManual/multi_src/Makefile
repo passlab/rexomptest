@@ -14,7 +14,7 @@ default: cubin_wrapper rose_target.c register_cubin.cpp
 
 clang_wrapper: rex_lib_nvidia.o rose_target.c register_cubin.cpp
 	clang -g rose_target.c rose_foo.c rex_lib_nvidia.o -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
-	#gcc -g rose_target.c rose_foo.c rex_lib_nvidia.o -fPIC -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
+	#gcc -g rose_target.c rose_foo.c rex_lib_nvidia.o -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
 cubin_wrapper: rex_lib_target.cu rex_lib_foo.cu rex_nvidia.cu
 	nvcc -cubin -arch ${CUDA_ARCH} -dlink rex_lib_target.cu rex_lib_foo.cu rex_nvidia.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_lib_nvidia.cubin
