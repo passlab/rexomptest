@@ -9,11 +9,16 @@
 - `xomp_cuda_lib.cu`: ROSE helper in CUDA for GPU offloading
 - `xomp_cuda_lib_inlined.cu`: ROSE helper in CUDA for GPU offloading
 - `rex_kmp.h`: REX header for using LLVM OpenMP runtime
-- `register_cubin.cpp`: REX helper to register `.cubin` file
+- `register_cubin.cpp`: REX offloading driver to register `.cubin` file
+- `rex_nvidia.h`: REX offloading helper to declare the functions used in outlined function files
+- `rex_nvidia.cu`: REX offloading helper to include ROSE offloading helpers so that they are only defined once
+
 
 ### 1.3 Output
-- `rose_target.c`: main file with GPU offloading driver
-- `rex_lib_target.cu`: outlined file having GPU kernels
+- `rose_target.c`: first file with one GPU offloading function
+- `rex_lib_target.cu`: outlined file having one GPU kernel
+- `rose_foo.c`: second file with the other GPU offloading function
+- `rex_lib_foo.cu`: outlined file having the other GPU kernel
 
 
 # 2. Build
@@ -30,11 +35,14 @@ Aborted (core dumped)
 Therefore, we have to force to link the library. Clang doesn't have this issue. If using nvcc to compile the main file, it also requires this parameter.
 Please also notice that in the `Makefile`, the `$CUDA_ARCH` variable has to be set properly. For example, on Fornax, it's `sm_37`. On Carina, it's `sm_70`.
 
-To compile:
+To compile using REX offloading driver:
 ```bash
 make
 ```
-
+To compile using clang-offload-wrapper:
+```bash
+make clang-wrapper
+```
 
 # 3. Run
 
@@ -42,15 +50,15 @@ make
 ./target.out
 ```
 
-The program will print ten times of string `Test.`. Running `nvprof` shows that the kernel runs on GPU.
-The code has been tested on Fornax with NVIDIA Tesla K80, CUDA toolkit 10.1, and Clang/LLVM 10.x.
+The program will print two times of string `Test 1.` and six times of string `Test 2.`. Running `nvprof` shows that the kernels run on GPU.
+The code has been tested on Carina with NVIDIA Tesla V100, CUDA toolkit 11.2, and Clang/LLVM 11.x.
 
 # 4. On-going work
 
 - For now, the number of threads per block and number of blocks are set to 1024 and 256.
-- The size and type of passing variables are not handled. They are always set to an empty array. It will be addressed when we implement the `map` clause.
-
+- The output files are manually modified upon the original REX outputs. The transformation will be implemented later.
 
 # 5. Issues
 
+- The output for input files has to be transformed individually by REX instead of using one command for all.
 
