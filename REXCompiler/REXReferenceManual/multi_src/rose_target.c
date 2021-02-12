@@ -1,25 +1,22 @@
 #include "rex_kmp.h" 
-
-static char OUT__1__9009__main__13__id__ = 0;
-struct __tgt_offload_entry OUT__1__9009__main__13__omp_offload_entry__ __attribute__((section ("omp_offloading_entries"))) = {&OUT__1__9009__main__13__id__, "OUT__1__9009__main__13__kernel__", 0, 0, 0};
-
+char OUT__1__7978__main__26__id__ = 0;
+struct __tgt_offload_entry OUT__1__7978__main__26__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__7978__main__26__id__)), "OUT__1__7978__main__26__kernel__", 0, 0, 0};
 #include <stdio.h>
 #include <stdlib.h>
-
 extern void foo();
 
 int main(int argc,char **argv)
 {
   int status = 0;
   int i;
-
-  foo(); // call the followed code block in rose_foo.c
+  foo();
+// call the followed code block in rose_foo.c
 /*
 {
     int _threads_per_block_ = 1024;
     int _num_blocks_ = 256;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)OUT__2__9009__main__7__id__;
+    void *__host_ptr = (void *)(&OUT__1__7655__foo__7__id__);
     void *__args_base[] = {};
     void *__args[] = {};
     int64_t __arg_sizes[] = {};
@@ -33,7 +30,7 @@ int main(int argc,char **argv)
     int _threads_per_block_ = 1024;
     int _num_blocks_ = 256;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)&OUT__1__9009__main__13__id__;
+    void *__host_ptr = (void *)(&OUT__1__7978__main__26__id__);
     void *__args_base[] = {};
     void *__args[] = {};
     int64_t __arg_sizes[] = {};

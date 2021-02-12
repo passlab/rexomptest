@@ -2,6 +2,7 @@
 
 ### 1.1 Input
 - `target.c`: `omp target parallel for` that not requires data mapping
+- `foo.c`: `omp target parallel for` that not requires data mapping
 - `Makefile`: Use Clang and nvcc to compile the output files
 
 ### 1.2 Dependencies from REX compiler
@@ -56,7 +57,6 @@ The code has been tested on Carina with NVIDIA Tesla V100, CUDA toolkit 11.2, an
 # 4. On-going work
 
 - For now, the number of threads per block and number of blocks are set to 1024 and 256.
-- The output files are manually modified upon the original REX outputs. The transformation will be implemented later.
 
 # 5. Issues
 

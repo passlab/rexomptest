@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "rex_nvidia.h" 
+extern void foo();
 int main(int ,char **);
-#include "rex_nvidia.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-__device__ char OUT__1__9009__main__13__kernel___exec_mode = 0;
+__device__ char OUT__1__7978__main__26__kernel___exec_mode = 0;
 
-__global__ void OUT__1__9009__main__13__kernel__()
+__global__ void OUT__1__7978__main__26__kernel__()
 {
   int _p_i;
   int _dev_lower;

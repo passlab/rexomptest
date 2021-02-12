@@ -23,8 +23,8 @@ rex_lib_nvidia.o: rex_lib_nvidia.cubin
 	clang-offload-wrapper rex_lib_nvidia.cubin -o rex_lib_nvidia.bc --target=x86_64-unknown-linux-gnu
 	llc -filetype=obj --relocation-model=pic rex_lib_nvidia.bc
 
-omp: target.c
-	clang -g -fopenmp -fopenmp-targets=nvptx64 target.c -o target_omp.out
+omp: target.c foo.c
+	clang -g -fopenmp -fopenmp-targets=nvptx64 target.c foo.c -o target_omp.out
 
 .PHONY: clean
 clean: 
