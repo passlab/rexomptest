@@ -1,0 +1,1 @@
+#pragma omp simd  aligned(j,k:1)

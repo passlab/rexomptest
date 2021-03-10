@@ -1,7 +1,6 @@
 //Variable examples of using simd directives
 void foo (int n, double *a, double* b)
 {
-#pragma omp simd
   for (int i=0; i<n; i++)
     a[i]=b[i];
 }
@@ -63,6 +62,7 @@ double work( double *a, double *b, int n )
    int i; 
    double tmp, sum;
    sum = 0.0;
+   #pragma omp simd private(tmp) reduction(+:sum)
    for (i = 0; i < n; i++) {
       tmp = a[i] + b[i];
       sum += tmp;

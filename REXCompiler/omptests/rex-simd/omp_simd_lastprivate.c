@@ -1,7 +1,6 @@
 //Variable examples of using simd directives
 void foo (int n, double *a, double* b)
 {
-#pragma omp simd
   for (int i=0; i<n; i++)
     a[i]=b[i];
 }
@@ -77,6 +76,7 @@ int a[N], b[N], c[N];
 void foo4(int i, double* P)
 {
   int j; 
+#pragma omp simd lastprivate(j)
   for (i = 0; i < 999; ++i) {
     j = P[i];
   }

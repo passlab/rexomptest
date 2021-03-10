@@ -1,7 +1,6 @@
 //Variable examples of using simd directives
 void foo (int n, double *a, double* b)
 {
-#pragma omp simd
   for (int i=0; i<n; i++)
     a[i]=b[i];
 }
@@ -24,6 +23,7 @@ void foo3 (int n, double *a, double* b)
 void foo32 (int n, double *a, double* b)
 {
   int j=0, k=0;
+#pragma omp simd linear(j,k)
   for (int i=0; i<n; i++,j++,k++)
   {
     a[i]=b[i]+j+k;
