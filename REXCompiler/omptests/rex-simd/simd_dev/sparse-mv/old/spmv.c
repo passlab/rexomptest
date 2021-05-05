@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
     
     for (row=0; row<nrows; row++) {
 		REAL sum = 0.0;
-		#pragma omp simd reduction(+:sum,flops)
+		#pragma omp simd reduction(+:sum,flops) simdlen(8)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];
 			flops += 2;
@@ -90,15 +90,12 @@ int main(int argc, char *argv[]) {
     printf("seq elasped time(s): %.4f\n", elapsed);
     printf("GFlops: %.4f\n", gflops);
   
-    int errors = 0;
     for (row=0; row<nrows; row++) {
 		if (y[row] < 0) {
-			//fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
-			++errors;
+			fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
 		}
     }
-    printf("Errors: %d\n", errors);
-    
     free(ia); free(ja); free(a); free(x); free(y);
     return 0;
 }
+

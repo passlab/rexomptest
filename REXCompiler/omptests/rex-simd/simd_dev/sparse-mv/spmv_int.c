@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     
     for (row=0; row<nrows; row++) {
 		int sum = 0.0;
-		#pragma omp simd reduction(+:sum,flops) simdlen(8)
+		#pragma omp simd reduction(+:sum,flops)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];
 			flops += 2;

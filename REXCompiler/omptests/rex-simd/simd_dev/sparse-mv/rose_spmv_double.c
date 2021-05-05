@@ -105,33 +105,41 @@ int main(int argc,char *argv[])
   int flops = 0;
   for (row = 0; row < nrows; row++) {
     double sum = 0.0;
-    __m256d __vec0 = _mm256_set1_pd(sum);
-    __m256d __part5 = _mm256_setzero_pd();
-    __m256i __vec6 = _mm256_set1_epi32(flops);
-    __m256i __vec7 = _mm256_set1_epi32(2);
-    __m256i __part9 = _mm256_setzero_si256();
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 4) {
-      __m256d __vec1 = _mm256_loadu_pd(&a[idx]);
-      __m256i __mask0 = _mm256_loadu_si256((__m256i *)(&ja[idx]));
-      __m128i __mask02 = _mm256_extractf128_si256(__mask0,0);
-      __m256d __vec2 = _mm256_i32gather_pd(x,__mask02,8);
-      __m256d __vec3 = _mm256_mul_pd(__vec2,__vec1);
-      __m256d __vec4 = _mm256_add_pd(__vec3,__vec0);
-      __part5 = _mm256_add_pd(__part5,__vec4);
-      __m256i __vec8 = _mm256_add_epi32(__vec7,__vec6);
-      __part9 = _mm256_add_epi32(__part9,__vec8);
+    __m512d __vec0 = _mm512_set1_pd(sum);
+    __m512d __part5 = _mm512_setzero_pd();
+    __m512i __vec6 = _mm512_set1_epi32(flops);
+    __m512i __vec7 = _mm512_set1_epi32(2);
+    __m512i __part9 = _mm512_setzero_epi32();
+    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
+      __m512d __vec1 = _mm512_loadu_pd(&a[idx]);
+      __m512i __mask0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
+      __mmask16 __mask1;
+      __mmask16 __mask2;
+      __mmask16 __mask3 = _kxnor_mask16(__mask1,__mask2);
+      __m512d __buf0 = _mm512_setzero_pd();
+      __m256i __mask02 = _mm512_extracti32x8_epi32(__mask0,0);
+      __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask3,__mask02,x,8);
+      __m512d __vec3 = _mm512_mul_pd(__vec2,__vec1);
+      __m512d __vec4 = _mm512_add_pd(__vec3,__vec0);
+      __part5 = _mm512_add_pd(__part5,__vec4);
+      __m512i __vec8 = _mm512_add_epi32(__vec7,__vec6);
+      __part9 = _mm512_add_epi32(__part9,__vec8);
     }
-    __m256i __buf4 = __part9;
-    __buf4 = _mm256_hadd_epi32(__buf4,__buf4);
-    __buf4 = _mm256_hadd_epi32(__buf4,__buf4);
-    int __buf5[8];
-    _mm256_storeu_si256((__m256i *)(&__buf5),__buf4);
-    flops = __buf5[0] + __buf5[6];
-    __m256d __buf1 = __part5;
-    __buf1 = _mm256_hadd_pd(__buf1,__buf1);
-    double __buf2[4];
-    _mm256_storeu_pd(&__buf2,__buf1);
-    sum = __buf2[0] + __buf2[2];
+    __m256i __buf4 = _mm512_extracti32x8_epi32(__part9,0);
+    __m256i __buf5 = _mm512_extracti32x8_epi32(__part9,1);
+    __buf5 = _mm256_add_epi32(__buf4,__buf5);
+    __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
+    __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
+    int __buf6[8];
+    _mm256_storeu_si256((__m256i *)(&__buf6),__buf5);
+    flops = __buf6[0] + __buf6[6];
+    __m256d __buf1 = _mm512_extractf64x4_pd(__part5,0);
+    __m256d __buf2 = _mm512_extractf64x4_pd(__part5,1);
+    __buf2 = _mm256_add_pd(__buf1,__buf2);
+    __buf2 = _mm256_hadd_pd(__buf2,__buf2);
+    double __buf3[4];
+    _mm256_storeu_pd(&__buf3,__buf2);
+    sum = __buf3[0] + __buf3[2];
     y[row] = sum;
   }
   elapsed = read_timer() - elapsed;

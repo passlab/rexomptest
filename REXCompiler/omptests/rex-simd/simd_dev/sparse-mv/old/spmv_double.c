@@ -5,8 +5,6 @@
 // Add timing support
 #include <sys/timeb.h>
 
-#define REAL float
-
 double read_timer() {
     struct timeb tm;
     ftime(&tm);
@@ -16,7 +14,7 @@ double read_timer() {
 
 //#define DEFAULT_DIMSIZE 256
 
-void print_array(char *title, char *name, REAL *A, int n, int m) {
+void print_array(char *title, char *name, double *A, int n, int m) {
     printf("%s:\n", title);
     int i, j;
     for (i = 0; i < n; i++) {
@@ -37,9 +35,9 @@ void print_array(char *title, char *name, REAL *A, int n, int m) {
 
 int main(int argc, char *argv[]) {
     int    *ia, *ja;
-    REAL *a, *x, *y;
+    double *a, *x, *y;
     int    row, i, j, idx, n, nnzMax, nnz, nrows;
-    REAL ts, t, rate;
+    double ts, t, rate;
     n = 10240;
     //n = 24;
     if (argc > 1) n = atoi(argv[1]);
@@ -48,10 +46,10 @@ int main(int argc, char *argv[]) {
     nnzMax = nrows * 5;
     ia = (int*)malloc(nrows*sizeof(int));
     ja = (int*)malloc(nnzMax*sizeof(int));
-    a  = (REAL*)malloc(nnzMax*sizeof(REAL));
+    a  = (double*)malloc(nnzMax*sizeof(double));
     /* Allocate the source and result vectors */
-    x = (REAL*)malloc(nrows*sizeof(REAL));
-    y = (REAL*)malloc(nrows*sizeof(REAL));
+    x = (double*)malloc(nrows*sizeof(double));
+    y = (double*)malloc(nrows*sizeof(double));
 
     row = 0;
     nnz = 0;
@@ -75,8 +73,8 @@ int main(int argc, char *argv[]) {
     int flops = 0;
     
     for (row=0; row<nrows; row++) {
-		REAL sum = 0.0;
-		#pragma omp simd reduction(+:sum,flops)
+		double sum = 0.0;
+		#pragma omp simd reduction(+:sum,flops) simdlen(8)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];
 			flops += 2;
@@ -90,15 +88,12 @@ int main(int argc, char *argv[]) {
     printf("seq elasped time(s): %.4f\n", elapsed);
     printf("GFlops: %.4f\n", gflops);
   
-    int errors = 0;
     for (row=0; row<nrows; row++) {
 		if (y[row] < 0) {
-			//fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
-			++errors;
+			fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
 		}
     }
-    printf("Errors: %d\n", errors);
-    
     free(ia); free(ja); free(a); free(x); free(y);
     return 0;
 }
+

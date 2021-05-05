@@ -106,55 +106,49 @@ int main(int argc,char *argv[])
   int flops = 0;
   for (row = 0; row < nrows; row++) {
     float sum = 0.0;
-    __m512 __vec0 = _mm512_set1_ps(sum);
-    __m512 __part5 = _mm512_setzero_ps();
-    __m512i __vec6 = _mm512_set1_epi32(flops);
-    __m512i __vec7 = _mm512_set1_epi32(2);
-    __m512i __part9 = _mm512_setzero_epi32();
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 16) {
-      __m512 __vec1 = _mm512_loadu_ps(&a[idx]);
-      __m512i __mask0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
-      __mmask16 __mask1;
-      __mmask16 __mask2;
-      __mmask16 __mask3 = _kxnor_mask16(__mask1,__mask2);
-      __m512 __buf0 = _mm512_setzero_ps();
-      __m512 __vec2 = _mm512_mask_i32gather_ps(__buf0,__mask3,__mask0,x,4);
-      __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
-      __m512 __vec4 = _mm512_add_ps(__vec3,__vec0);
-      __part5 = _mm512_add_ps(__part5,__vec4);
-      __m512i __vec8 = _mm512_add_epi32(__vec7,__vec6);
-      __part9 = _mm512_add_epi32(__part9,__vec8);
+    __m256 __vec0 = _mm256_set1_ps(sum);
+    __m256 __part5 = _mm256_setzero_ps();
+    __m256i __vec6 = _mm256_set1_epi32(flops);
+    __m256i __vec7 = _mm256_set1_epi32(2);
+    __m256i __part9 = _mm256_setzero_si256();
+    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
+      __m256 __vec1 = _mm256_loadu_ps(&a[idx]);
+      __m256i __mask0 = _mm256_loadu_si256((__m256i *)(&ja[idx]));
+      //
+      __mmask8 a, b;
+      __mmask8 mask8 = _kxnor_mask8(a, b);
+      __m256 empty = _mm256_setzero_ps();
+      __m256 __vec2 = _mm256_mmask_i32gather_ps(empty, mask8, __mask0, x, 4);
+      //__m256 __vec2 = _mm256_i32gather_ps(x,__mask0,4);
+      __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
+      __m256 __vec4 = _mm256_add_ps(__vec3,__vec0);
+      __part5 = _mm256_add_ps(__part5,__vec4);
+      __m256i __vec8 = _mm256_add_epi32(__vec7,__vec6);
+      __part9 = _mm256_add_epi32(__part9,__vec8);
     }
-    __m256i __buf4 = _mm512_extracti32x8_epi32(__part9,0);
-    __m256i __buf5 = _mm512_extracti32x8_epi32(__part9,1);
-    __buf5 = _mm256_add_epi32(__buf4,__buf5);
-    __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
-    __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
-    int __buf6[8];
-    _mm256_storeu_si256((__m256i *)(&__buf6),__buf5);
-    flops = __buf6[0] + __buf6[6];
-    __m256 __buf1 = _mm512_extractf32x8_ps(__part5,0);
-    __m256 __buf2 = _mm512_extractf32x8_ps(__part5,1);
-    __buf2 = _mm256_add_ps(__buf1,__buf2);
-    __buf2 = _mm256_hadd_ps(__buf2,__buf2);
-    __buf2 = _mm256_hadd_ps(__buf2,__buf2);
-    float __buf3[8];
-    _mm256_storeu_ps(&__buf3,__buf2);
-    sum = __buf3[0] + __buf3[6];
+    __m256i __buf4 = __part9;
+    __buf4 = _mm256_hadd_epi32(__buf4,__buf4);
+    __buf4 = _mm256_hadd_epi32(__buf4,__buf4);
+    int __buf5[8];
+    _mm256_storeu_si256((__m256i *)(&__buf5),__buf4);
+    flops = __buf5[0] + __buf5[6];
+    __m256 __buf1 = __part5;
+    __buf1 = _mm256_hadd_ps(__buf1,__buf1);
+    __buf1 = _mm256_hadd_ps(__buf1,__buf1);
+    float __buf2[8];
+    _mm256_storeu_ps(&__buf2,__buf1);
+    sum = __buf2[0] + __buf2[6];
     y[row] = sum;
   }
   elapsed = read_timer() - elapsed;
   double gflops = flops / (1.0e9 * elapsed);
   printf("seq elasped time(s): %.4f\n",elapsed);
   printf("GFlops: %.4f\n",gflops);
-  int errors = 0;
   for (row = 0; row < nrows; row++) {
     if (y[row] < 0) {
-//fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
-      ++errors;
+      fprintf(stderr,"y[%d]=%f, fails consistency test\n",row,y[row]);
     }
   }
-  printf("Errors: %d\n",errors);
   free(ia);
   free(ja);
   free(a);
