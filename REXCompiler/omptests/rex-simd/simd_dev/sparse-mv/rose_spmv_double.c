@@ -106,19 +106,19 @@ int main(int argc,char *argv[])
   for (row = 0; row < nrows; row++) {
     double sum = 0.0;
     __m512d __vec0 = _mm512_set1_pd(sum);
+    __mmask16 __mask0;
+    __mmask16 __mask1;
+    __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
+    __m512d __buf0 = _mm512_setzero_pd();
     __m512d __part5 = _mm512_setzero_pd();
     __m512i __vec6 = _mm512_set1_epi32(flops);
     __m512i __vec7 = _mm512_set1_epi32(2);
     __m512i __part9 = _mm512_setzero_epi32();
     for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
       __m512d __vec1 = _mm512_loadu_pd(&a[idx]);
-      __m512i __mask0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
-      __mmask16 __mask1;
-      __mmask16 __mask2;
-      __mmask16 __mask3 = _kxnor_mask16(__mask1,__mask2);
-      __m512d __buf0 = _mm512_setzero_pd();
-      __m256i __mask02 = _mm512_extracti32x8_epi32(__mask0,0);
-      __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask3,__mask02,x,8);
+      __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
+      __m256i __vindex02 = _mm512_extracti32x8_epi32(__vindex0,0);
+      __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask2,__vindex02,x,8);
       __m512d __vec3 = _mm512_mul_pd(__vec2,__vec1);
       __m512d __vec4 = _mm512_add_pd(__vec3,__vec0);
       __part5 = _mm512_add_pd(__part5,__vec4);
