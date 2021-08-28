@@ -1,11 +1,9 @@
-#include "rex_kmp.h" 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <math.h>
 
 #define N_RUNS 20
 #define N 10240
@@ -30,8 +28,8 @@ void init(float *matrix, float *vector) {
 
 void matvec_simd(float *matrix, float *vector, float *dest) {
     for (int i = 0; i<N; i++) {
-        int tmp = 0;
-        #pragma omp simd  
+        float tmp = 0;
+        #pragma omp simd reduction(+: tmp)
         for (int j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }
@@ -42,7 +40,7 @@ void matvec_simd(float *matrix, float *vector, float *dest) {
 // Debug functions
 void matvec_serial(float *matrix, float *vector, float *dest) {
     for (int i = 0; i<N; i++) {
-        int tmp = 0;
+        float tmp = 0;
         for (int j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }
@@ -72,7 +70,7 @@ void print_vector(float *vector) {
 float check(float *A, float *B){
     float difference = 0;
     for(int i = 0;i<N; i++){
-        difference += A[i]- B[i];
+        difference += fabsf(A[i]- B[i]);
     }
     return difference;
 }
@@ -86,6 +84,10 @@ int main(int argc, char **argv) {
     
     srand(time(NULL));
     init(matrix, vector);
+    
+    //warming up
+    matvec_simd(matrix, vector, dest_vector);
+    
     
     double t = 0;
     double start = read_timer();
