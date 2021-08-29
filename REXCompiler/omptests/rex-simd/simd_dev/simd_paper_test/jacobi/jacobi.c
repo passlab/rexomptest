@@ -3,6 +3,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <math.h>
 
 #define REAL float
 
@@ -99,7 +100,6 @@ void error_check(int n, int m, REAL alpha, REAL dx, REAL dy, REAL *u_p, REAL *f_
     error = 0.0;
     REAL (*u)[m] = (REAL (*)[m]) u_p;
     REAL (*f)[m] = (REAL (*)[m]) f_p;
-//#pragma omp parallel for private(xx,yy,temp,j,i) reduction(+:error)
     for (i = 0; i < n; i++)
         for (j = 0; j < m; j++) {
             xx = (-1.0 + (dx * (i - 1)));
@@ -324,7 +324,7 @@ void jacobi_omp(int n, int m, REAL dx, REAL dy, REAL alpha, REAL omega, REAL *u_
                 uold[i][j] = u[i][j];
 
         for (i = 1; i < (n - 1); i++)
-            #pragma omp simd reduction(+:resid,error)
+            #pragma omp simd reduction(+:error)
             for (j = 1; j < (m - 1); j++) {
                 resid = (ax * (uold[i - 1][j] + uold[i + 1][j]) + ay * (uold[i][j - 1] + uold[i][j + 1]) +
                          b * uold[i][j] - f[i][j]) / b;
