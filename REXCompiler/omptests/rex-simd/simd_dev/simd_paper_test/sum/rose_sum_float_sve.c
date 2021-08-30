@@ -35,8 +35,9 @@ float sum(float *X)
   svfloat32_t __part3 = svdup_f32(0.00000L);
   for (i = 0; i <= 102399999; i += svcntw()) {
     svfloat32_t __vec1 = svld1(__pg0,&X[i]);
-    svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__vec0);
-    __part3 = svadd_f32_m(__pg0,__part3,__vec2);
+    //svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__vec0);
+    //__part3 = svadd_f32_m(__pg0,__part3,__vec2);
+    __part3 = svadd_f32_m(__pg0,__part3,__vec1);
     __pg0 = svwhilelt_b32(i,102399999);
   }
   float __buf0[(svcntw())];
