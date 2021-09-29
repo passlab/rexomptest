@@ -180,31 +180,19 @@ int main(int argc,char *argv[])
 /* grid spacing in y direction */
   initialize(n,m,alpha,&dx,&dy,u,f);
   memcpy(uomp,u,sizeof(float ) * n * m);
-//warming up
+  double elapsed = read_timer_ms();
   jacobi_seq(n,m,dx,dy,alpha,relax,u,f,tol,mits);
-  jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
-  initialize(n,m,alpha,&dx,&dy,u,f);
-  memcpy(uomp,u,sizeof(float ) * n * m);
-  int num_runs = 20;
-  double elapsed = 0;
-  for (int i = 0; i < 20; i++) {
-    double elapsed1 = read_timer_ms();
-    jacobi_seq(n,m,dx,dy,alpha,relax,u,f,tol,mits);
-    elapsed += read_timer_ms() - elapsed1;
-  }
-  printf("seq elasped time(ms): %4f\n",elapsed / num_runs);
-//double mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-//printf("MFLOPS: %12.6g\n", mflops);
+  elapsed = read_timer_ms() - elapsed;
+  printf("seq elasped time(ms): %4f\n",elapsed);
+  double mflops = 0.001 * mits * (n - 2) * (m - 2) * 13 / elapsed;
+  printf("MFLOPS: %12.6g\n",mflops);
   puts("================");
-  double elapsed2 = 0;
-  for (int i = 0; i < 20; i++) {
-    double elapsed3 = read_timer_ms();
-    jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
-    elapsed2 += read_timer_ms() - elapsed3;
-  }
-  printf("OpenMP elasped time(ms): %4f\n",elapsed2 / num_runs);
-//mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-//printf("MFLOPS: %12.6g\n", mflops);
+  elapsed = read_timer_ms();
+  jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
+  elapsed = read_timer_ms() - elapsed;
+  printf("OpenMP elasped time(ms): %4f\n",elapsed);
+  mflops = 0.001 * mits * (n - 2) * (m - 2) * 13 / elapsed;
+  printf("MFLOPS: %12.6g\n",mflops);
 //print_array("Sequential Run", "u",(REAL*)u, n, m);
   error_check(n,m,alpha,dx,dy,u,f);
   free(u);

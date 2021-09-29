@@ -3,6 +3,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <math.h>
 
 #define REAL float
 
@@ -99,7 +100,6 @@ void error_check(int n, int m, REAL alpha, REAL dx, REAL dy, REAL *u_p, REAL *f_
     error = 0.0;
     REAL (*u)[m] = (REAL (*)[m]) u_p;
     REAL (*f)[m] = (REAL (*)[m]) f_p;
-//#pragma omp parallel for private(xx,yy,temp,j,i) reduction(+:error)
     for (i = 0; i < n; i++)
         for (j = 0; j < m; j++) {
             xx = (-1.0 + (dx * (i - 1)));
@@ -181,21 +181,38 @@ int main(int argc, char *argv[]) {
     initialize(n, m, alpha, &dx, &dy, u, f);
     memcpy(uomp, u, sizeof(REAL) * n * m);
 
-    double elapsed = read_timer_ms();
+    //warming up
     jacobi_seq(n, m, dx, dy, alpha, relax, u, f, tol, mits);
-    elapsed = read_timer_ms() - elapsed;
-    printf("seq elasped time(ms): %4f\n", elapsed);
-    double mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-    printf("MFLOPS: %12.6g\n", mflops);
+    jacobi_omp(n, m, dx, dy, alpha, relax, uomp, f, tol, mits);
+    initialize(n, m, alpha, &dx, &dy, u, f);
+    memcpy(uomp, u, sizeof(REAL) * n * m);
+    
+    int num_runs = 20;
+    double elapsed = 0;
+    
+    for(int i = 0; i < 20; i++) {
+        double elapsed1 = read_timer_ms();
+        jacobi_seq(n, m, dx, dy, alpha, relax, u, f, tol, mits);
+        elapsed += read_timer_ms() - elapsed1;
+    }
+    
+    printf("seq elasped time(ms): %4f\n", elapsed/num_runs);
+    //double mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
+    //printf("MFLOPS: %12.6g\n", mflops);
     
     puts("================");
 
-    elapsed = read_timer_ms();
-    jacobi_omp(n, m, dx, dy, alpha, relax, uomp, f, tol, mits);
-    elapsed = read_timer_ms() - elapsed;
-    printf("OpenMP elasped time(ms): %4f\n", elapsed);
-    mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-    printf("MFLOPS: %12.6g\n", mflops);
+    double elapsed2 = 0;
+    
+    for(int i = 0; i < 20; i++) {
+        double elapsed3 = read_timer_ms();
+        jacobi_omp(n, m, dx, dy, alpha, relax, uomp, f, tol, mits);
+        elapsed2 += read_timer_ms() - elapsed3;
+    }
+
+    printf("OpenMP elasped time(ms): %4f\n", elapsed2/num_runs);
+    //mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
+    //printf("MFLOPS: %12.6g\n", mflops);
 
     //print_array("Sequential Run", "u",(REAL*)u, n, m);
 
@@ -307,7 +324,7 @@ void jacobi_omp(int n, int m, REAL dx, REAL dy, REAL alpha, REAL omega, REAL *u_
                 uold[i][j] = u[i][j];
 
         for (i = 1; i < (n - 1); i++)
-            #pragma omp simd reduction(+:resid,error)
+            #pragma omp simd reduction(+:error)
             for (j = 1; j < (m - 1); j++) {
                 resid = (ax * (uold[i - 1][j] + uold[i + 1][j]) + ay * (uold[i][j - 1] + uold[i][j + 1]) +
                          b * uold[i][j] - f[i][j]) / b;
