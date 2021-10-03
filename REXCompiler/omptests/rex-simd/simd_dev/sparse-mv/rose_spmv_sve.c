@@ -103,41 +103,25 @@ int main(int argc,char *argv[])
   for (i = 0; i < nrows; i++) 
     x[i] = 1.0;
   double elapsed = read_timer();
-  int flops = 0;
   for (row = 0; row < nrows; row++) {
     float sum = 0.0;
     svbool_t __pg0 = svwhilelt_b32(0,ia[row + 1] - 1);
-    svfloat32_t __vec0 = svdup_f32(sum);
-    svfloat32_t __part5 = svdup_f32(0.00000L);
-    svint32_t __vec6 = svdup_s32(flops);
-    svint32_t __vec7 = svdup_s32(2);
-    svint32_t __part9 = svdup_s32(0);
+    svfloat32_t __part0 = svdup_f32(0.00000L);
     for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&a[idx]);
-      svfloat32_t __vec2 = x[ja[idx]];
+      svint32_t __vindex0 = svld1(__pg0,&ja[idx]);
+      svfloat32_t __vec2 = svld1_gather_index(__pg0,x,__vindex0);
       svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
-      svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
-      __part5 = svadd_f32_m(__pg0,__part5,__vec4);
-      svint32_t __vec8 = svadd_s32_m(__pg0,__vec7,__vec6);
-      __part9 = svadd_s32_m(__pg0,__part9,__vec8);
+      svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__part0);
+      __part0 = (__vec4);
       __pg0 = svwhilelt_b32(idx,ia[row + 1] - 1);
     }
-    int __buf1[(svcntw())];
-    __pg0 = svwhilelt_b32((uint64_t )0,(svcntw()));
-    svst1(__pg0,&__buf1,__part9);
-    for (int __i = 0; __i < svcntw(); ++__i) 
-      flops += __buf1[__i];
-    float __buf0[(svcntw())];
-    __pg0 = svwhilelt_b32((uint64_t )0,(svcntw()));
-    svst1(__pg0,&__buf0,__part5);
-    for (int __i = 0; __i < svcntw(); ++__i) 
-      sum += __buf0[__i];
+    __pg0 = svptrue_b32();
+    sum = svaddv(__pg0,__part0);
     y[row] = sum;
   }
   elapsed = read_timer() - elapsed;
-  double gflops = flops / (1.0e9 * elapsed);
   printf("seq elasped time(s): %.4f\n",elapsed);
-  printf("GFlops: %.4f\n",gflops);
   int errors = 0;
   for (row = 0; row < nrows; row++) {
     if (y[row] < 0) {

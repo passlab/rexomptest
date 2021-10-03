@@ -34,21 +34,17 @@ void matvec_simd(float *matrix,float *vector,float *dest)
   for (int i = 0; i < 10240; i++) {
     float tmp = 0;
     svbool_t __pg0 = svwhilelt_b32(0,10239);
-    svfloat32_t __vec0 = svdup_f32(tmp);
-    svfloat32_t __part5 = svdup_f32(0.00000L);
+    svfloat32_t __part0 = svdup_f32(0.00000L);
     for (j = 0; j <= 10239; j += svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&matrix[i * 10240 + j]);
       svfloat32_t __vec2 = svld1(__pg0,&vector[j]);
       svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
-      svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
-      __part5 = svadd_f32_m(__pg0,__part5,__vec4);
+      svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__part0);
+      __part0 = (__vec4);
       __pg0 = svwhilelt_b32(j,10239);
     }
-    float __buf0[(svcntw())];
-    __pg0 = svwhilelt_b32((uint64_t )0,(svcntw()));
-    svst1(__pg0,&__buf0,__part5);
-    for (int __i = 0; __i < svcntw(); ++__i) 
-      tmp += __buf0[__i];
+    __pg0 = svptrue_b32();
+    tmp = svaddv(__pg0,__part0);
     dest[i] = tmp;
   }
 }
