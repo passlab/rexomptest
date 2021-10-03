@@ -7,7 +7,7 @@
 #include <malloc.h>
 #include <arm_sve.h> 
 #define N_RUNS 20
-#define N 102400000
+#define N 10240000
 // read timer in second
 
 double read_timer()
@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (int i = 0; i < 10240000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
@@ -30,13 +30,13 @@ float sum(float *X)
 {
   int i;
   float result = 0;
-  svbool_t __pg0 = svwhilelt_b32(0,102399999);
+  svbool_t __pg0 = svwhilelt_b32(0,10239999);
   svfloat32_t __part0 = svdup_f32(0.00000L);
-  for (i = 0; i <= 102399999; i += svcntw()) {
+  for (i = 0; i <= 10239999; i += svcntw()) {
     svfloat32_t __vec1 = svld1(__pg0,&X[i]);
     svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__part0);
     __part0 = (__vec2);
-    __pg0 = svwhilelt_b32(i,102399999);
+    __pg0 = svwhilelt_b32(i,10239999);
   }
   __pg0 = svptrue_b32();
   result = svaddv(__pg0,__part0);
@@ -47,7 +47,7 @@ float sum(float *X)
 float sum_serial(float *X)
 {
   float result = 0;
-  for (int i = 0; i < 102400000; i++) {
+  for (int i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
@@ -66,7 +66,7 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *X = (malloc(sizeof(float ) * 102400000));
+  float *X = (malloc(sizeof(float ) * 10240000));
   float result;
   float result_serial;
   srand((time(((void *)0))));
@@ -89,8 +89,8 @@ int main(int argc,char **argv)
   printf("SIMD: %f\n",result);
   puts("---------------------------------");
   printf("Serial: %f\n",result_serial);
-  double gflops = 2.0 * 102400000 * 102400000 * 20 / (1.0e9 * t);
-  double gflops_serial = 2.0 * 102400000 * 102400000 * 20 / (1.0e9 * t_serial);
+  double gflops = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t);
+  double gflops_serial = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t_serial);
   printf("==================================================================\n");
   printf("Performance:\t\t\tRuntime (s)\t GFLOPS\n");
   printf("------------------------------------------------------------------\n");
