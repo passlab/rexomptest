@@ -5,30 +5,28 @@ ifeq (${LLVM_OPENMP_SOURCE},)
 	LLVM_OPENMP_SOURCE := ${LLVM_SRC}/openmp
 endif
 ifeq (${CUDA_ARCH},)
-	CUDA_ARCH := sm_37
+	CUDA_ARCH := sm_70
 endif
 
-default: axpy.out
+default: rex_lib_nvidia.cubin rose_axpy.c register_cubin.cpp
+	clang -g rose_axpy.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o axpy.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	#gcc -g rose_axpy.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
-all: axpy.out axpy_omp.out axpy_cuda.out axpy_cublas.out
+clang_wrapper: rex_lib_nvidia.o rose_axpy.c
+	clang -g rose_axpy.c rex_lib_nvidia.o -o axpy.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	#gcc -g rose_axpy.c rex_lib_nvidia.o -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
 
-axpy.out: cubin_wrapper rose_axpy.c register_cubin.cpp
-	clang rose_axpy.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o axpy.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
-	#gcc rose_axpy.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o target.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -Wl,--no-as-needed -lomp
+rex_lib_nvidia.cubin: rex_lib_axpy.cu rex_nvidia.cu
+	nvcc -rdc=true -cubin -arch ${CUDA_ARCH} -dlink rex_lib_axpy.cu rex_nvidia.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_lib_nvidia.cubin
 
-cubin_wrapper: rex_lib_axpy.cu
-	nvcc -rdc=true -cubin -arch ${CUDA_ARCH} rex_lib_axpy.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include
+rex_lib_nvidia.o: rex_lib_nvidia.cubin
+	clang-offload-wrapper rex_lib_nvidia.cubin -o rex_lib_nvidia.bc --target=x86_64-unknown-linux-gnu
+	llc -filetype=obj --relocation-model=pic rex_lib_nvidia.bc
 
-axpy_omp.out: axpy.c
-	clang -fopenmp -fopenmp-targets=nvptx64 axpy_omp.c -o axpy_omp.out
-
-axpy_cuda.out: axpy_cuda.c axpy_cudakernel.cu
-	nvcc axpy_cuda.c axpy_cudakernel.cu -o axpy_cuda.out
-
-axpy_cublas.out: axpy_cuda.c axpy_cublas.cu
-	nvcc axpy_cuda.c axpy_cublas.cu -o axpy_cublas.out -lcublas
+omp: axpy.c
+	clang -g -fopenmp -fopenmp-targets=nvptx64 axpy.c -o axpy_omp.out
 
 .PHONY: clean
 clean: 
-	rm -rf *.o *.cubin *.out
+	rm -rf *.o *.cubin *.out *.bc
 

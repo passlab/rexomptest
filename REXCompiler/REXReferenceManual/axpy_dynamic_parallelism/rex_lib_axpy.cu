@@ -25,9 +25,8 @@ int main(int ,char *[]);
 #ifdef __cplusplus
 extern "C" {
 #endif
-__device__ char OUT__1__9500__axpy_ompacc__68__kernel___exec_mode = 0;
 
-__global__ void OUT__1__9500__axpy_ompacc__68__kernel__(int *np__,double *ap__,double *_dev_x,double *_dev_y)
+__global__ void OUT__2__7560__axpy_ompacc__68__kernel__(int *np__,double *ap__,double *_dev_x,double *_dev_y)
 {
   int _p_i;
   int _dev_lower;
@@ -43,17 +42,27 @@ __global__ void OUT__1__9500__axpy_ompacc__68__kernel__(int *np__,double *ap__,d
       _dev_y[_p_i - 0] +=  *ap__ * _dev_x[_p_i - 0];
     }
 }
-__device__ char OUT__2__9500__axpy_ompacc__67__kernel___exec_mode = 0;
 
-__global__ void OUT__2__9500__axpy_ompacc__67__kernel__(int *np__,double *ap__,double *_dev_x,double *_dev_y)
+__device__ char OUT__1__7560__axpy_ompacc__68__kernel___exec_mode = 0;
+
+__global__ void OUT__1__7560__axpy_ompacc__68__kernel__(int *np__,double *ap__,double *_dev_x,double *_dev_y)
 {
-  //int _p_i = i;
-  //typedef int int64_t;
-/* Launch CUDA kernel ... */
-  //int _threads_per_block_ = 1024;
-  //int _num_blocks_ = 256;
-  //int64_t __device_id = 0;
-  OUT__1__9500__axpy_ompacc__68__kernel__<<<256,1024>>>((&( *np__)),(&( *ap__)),_dev_x,_dev_y);
+    /*
+  int _p_i;
+  int _dev_lower;
+  int _dev_upper;
+  int _dev_loop_chunk_size;
+  int _dev_loop_sched_index;
+  int _dev_loop_stride;
+  int _dev_thread_num = getCUDABlockThreadCount(1);
+  int _dev_thread_id = getLoopIndexFromCUDAVariables(1);
+  XOMP_static_sched_init(0, *np__ - 1,1,1,_dev_thread_num,_dev_thread_id,&_dev_loop_chunk_size,&_dev_loop_sched_index,&_dev_loop_stride);
+  while(XOMP_static_sched_next(&_dev_loop_sched_index, *np__ - 1,1,_dev_loop_stride,_dev_loop_chunk_size,_dev_thread_num,_dev_thread_id,&_dev_lower,&_dev_upper))
+    for (_p_i = _dev_lower; _p_i <= _dev_upper; _p_i += 1) {
+      _dev_y[_p_i - 0] +=  *ap__ * _dev_x[_p_i - 0];
+    }
+    */
+  OUT__2__7560__axpy_ompacc__68__kernel__<<<256,1024>>>(np__, ap__, _dev_x, _dev_y);
 }
 #ifdef __cplusplus
 }
