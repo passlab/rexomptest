@@ -41,19 +41,18 @@ void matmul_simd(double **A,double **B,double **C)
   for (i = 0; i < 512; i++) {
     for (j = 0; j < 512; j++) {
       temp = 0;
-      __m512d __vec0 = _mm512_set1_pd(temp);
-      __m512d __part7 = _mm512_setzero_pd();
+      __m512d __part0 = _mm512_setzero_pd();
       for (k = 0; k <= 511; k += 8) {
         double *__ptr1 = A[i];
         __m512d __vec2 = _mm512_loadu_pd(&__ptr1[k]);
         double *__ptr3 = B[j];
         __m512d __vec4 = _mm512_loadu_pd(&__ptr3[k]);
         __m512d __vec5 = _mm512_mul_pd(__vec4,__vec2);
-        __m512d __vec6 = _mm512_add_pd(__vec5,__vec0);
-        __part7 = _mm512_add_pd(__part7,__vec6);
+        __m512d __vec6 = _mm512_add_pd(__vec5,__part0);
+        __part0 = (__vec6);
       }
-      __m256d __buf0 = _mm512_extractf64x4_pd(__part7,0);
-      __m256d __buf1 = _mm512_extractf64x4_pd(__part7,1);
+      __m256d __buf0 = _mm512_extractf64x4_pd(__part0,0);
+      __m256d __buf1 = _mm512_extractf64x4_pd(__part0,1);
       __buf1 = _mm256_add_pd(__buf0,__buf1);
       __buf1 = _mm256_hadd_pd(__buf1,__buf1);
       double __buf2[4];

@@ -106,35 +106,33 @@ int main(int argc,char *argv[])
   int flops = 0;
   for (row = 0; row < nrows; row++) {
     float sum = 0.0;
-    __m512 __vec0 = _mm512_set1_ps(sum);
     __mmask16 __mask0;
     __mmask16 __mask1;
     __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
     __m512 __buf0 = _mm512_setzero_ps();
-    __m512 __part5 = _mm512_setzero_ps();
-    __m512i __vec6 = _mm512_set1_epi32(flops);
-    __m512i __vec7 = _mm512_set1_epi32(2);
-    __m512i __part9 = _mm512_setzero_epi32();
+    __m512 __part0 = _mm512_setzero_ps();
+    __m512i __vec6 = _mm512_set1_epi32(2);
+    __m512i __part5 = _mm512_setzero_epi32();
     for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 16) {
       __m512 __vec1 = _mm512_loadu_ps(&a[idx]);
       __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
       __m512 __vec2 = _mm512_mask_i32gather_ps(__buf0,__mask2,__vindex0,x,4);
       __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
-      __m512 __vec4 = _mm512_add_ps(__vec3,__vec0);
-      __part5 = _mm512_add_ps(__part5,__vec4);
-      __m512i __vec8 = _mm512_add_epi32(__vec7,__vec6);
-      __part9 = _mm512_add_epi32(__part9,__vec8);
+      __m512 __vec4 = _mm512_add_ps(__vec3,__part0);
+      __part0 = (__vec4);
+      __m512i __vec7 = _mm512_add_epi32(__vec6,__part5);
+      __part5 = (__vec7);
     }
-    __m256i __buf4 = _mm512_extracti32x8_epi32(__part9,0);
-    __m256i __buf5 = _mm512_extracti32x8_epi32(__part9,1);
+    __m256i __buf4 = _mm512_extracti32x8_epi32(__part5,0);
+    __m256i __buf5 = _mm512_extracti32x8_epi32(__part5,1);
     __buf5 = _mm256_add_epi32(__buf4,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     int __buf6[8];
     _mm256_storeu_si256((__m256i *)(&__buf6),__buf5);
     flops = __buf6[0] + __buf6[6];
-    __m256 __buf1 = _mm512_extractf32x8_ps(__part5,0);
-    __m256 __buf2 = _mm512_extractf32x8_ps(__part5,1);
+    __m256 __buf1 = _mm512_extractf32x8_ps(__part0,0);
+    __m256 __buf2 = _mm512_extractf32x8_ps(__part0,1);
     __buf2 = _mm256_add_ps(__buf1,__buf2);
     __buf2 = _mm256_hadd_ps(__buf2,__buf2);
     __buf2 = _mm256_hadd_ps(__buf2,__buf2);

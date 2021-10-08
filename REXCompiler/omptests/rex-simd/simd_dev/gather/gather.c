@@ -25,7 +25,7 @@ int main() {
     }
     
     float result2 = 0;
-#pragma omp simd reduction(+:result2) simdlen(80)
+#pragma omp simd reduction(+:result2)
     for (int i = 0; i<N; i++) {
         result2 += numbers[mask[i]];
     }

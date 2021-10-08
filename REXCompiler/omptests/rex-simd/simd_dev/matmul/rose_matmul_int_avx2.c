@@ -41,18 +41,17 @@ void matmul_simd(int **A,int **B,int **C)
   for (i = 0; i < 512; i++) {
     for (j = 0; j < 512; j++) {
       temp = 0;
-      __m256i __vec0 = _mm256_set1_epi32(temp);
-      __m256i __part7 = _mm256_setzero_si256();
+      __m256i __part0 = _mm256_setzero_si256();
       for (k = 0; k <= 511; k += 8) {
         int *__ptr1 = A[i];
         __m256i __vec2 = _mm256_loadu_si256((__m256i *)(&__ptr1[k]));
         int *__ptr3 = B[j];
         __m256i __vec4 = _mm256_loadu_si256((__m256i *)(&__ptr3[k]));
         __m256i __vec5 = _mm256_mullo_epi32(__vec4,__vec2);
-        __m256i __vec6 = _mm256_add_epi32(__vec5,__vec0);
-        __part7 = _mm256_add_epi32(__part7,__vec6);
+        __m256i __vec6 = _mm256_add_epi32(__vec5,__part0);
+        __part0 = (__vec6);
       }
-      __m256i __buf1 = __part7;
+      __m256i __buf1 = __part0;
       __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
       __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
       int __buf2[8];

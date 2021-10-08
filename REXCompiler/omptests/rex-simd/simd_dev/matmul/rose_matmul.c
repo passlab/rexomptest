@@ -41,19 +41,18 @@ void matmul_simd(float **A,float **B,float **C)
   for (i = 0; i < 512; i++) {
     for (j = 0; j < 512; j++) {
       temp = 0;
-      __m512 __vec0 = _mm512_set1_ps(temp);
-      __m512 __part7 = _mm512_setzero_ps();
+      __m512 __part0 = _mm512_setzero_ps();
       for (k = 0; k <= 511; k += 16) {
         float *__ptr1 = A[i];
         __m512 __vec2 = _mm512_loadu_ps(&__ptr1[k]);
         float *__ptr3 = B[j];
         __m512 __vec4 = _mm512_loadu_ps(&__ptr3[k]);
         __m512 __vec5 = _mm512_mul_ps(__vec4,__vec2);
-        __m512 __vec6 = _mm512_add_ps(__vec5,__vec0);
-        __part7 = _mm512_add_ps(__part7,__vec6);
+        __m512 __vec6 = _mm512_add_ps(__vec5,__part0);
+        __part0 = (__vec6);
       }
-      __m256 __buf0 = _mm512_extractf32x8_ps(__part7,0);
-      __m256 __buf1 = _mm512_extractf32x8_ps(__part7,1);
+      __m256 __buf0 = _mm512_extractf32x8_ps(__part0,0);
+      __m256 __buf1 = _mm512_extractf32x8_ps(__part0,1);
       __buf1 = _mm256_add_ps(__buf0,__buf1);
       __buf1 = _mm256_hadd_ps(__buf1,__buf1);
       __buf1 = _mm256_hadd_ps(__buf1,__buf1);

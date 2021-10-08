@@ -30,14 +30,13 @@ double sum(double *X)
 {
   int i;
   double result = 0;
-  __m256d __vec0 = _mm256_set1_pd(result);
-  __m256d __part3 = _mm256_setzero_pd();
+  __m256d __part0 = _mm256_setzero_pd();
   for (i = 0; i <= 119999; i += 4) {
     __m256d __vec1 = _mm256_loadu_pd(&X[i]);
-    __m256d __vec2 = _mm256_add_pd(__vec1,__vec0);
-    __part3 = _mm256_add_pd(__part3,__vec2);
+    __m256d __vec2 = _mm256_add_pd(__vec1,__part0);
+    __part0 = (__vec2);
   }
-  __m256d __buf1 = __part3;
+  __m256d __buf1 = __part0;
   __buf1 = _mm256_hadd_pd(__buf1,__buf1);
   double __buf2[4];
   _mm256_storeu_pd(&__buf2,__buf1);

@@ -30,15 +30,14 @@ int sum(int *X)
 {
   int i;
   int result = 0;
-  __m512i __vec0 = _mm512_set1_epi32(result);
-  __m512i __part3 = _mm512_setzero_epi32();
+  __m512i __part0 = _mm512_setzero_epi32();
   for (i = 0; i <= 119999; i += 16) {
     __m512i __vec1 = _mm512_loadu_si512((__m512i *)(&X[i]));
-    __m512i __vec2 = _mm512_add_epi32(__vec1,__vec0);
-    __part3 = _mm512_add_epi32(__part3,__vec2);
+    __m512i __vec2 = _mm512_add_epi32(__vec1,__part0);
+    __part0 = (__vec2);
   }
-  __m256i __buf0 = _mm512_extracti32x8_epi32(__part3,0);
-  __m256i __buf1 = _mm512_extracti32x8_epi32(__part3,1);
+  __m256i __buf0 = _mm512_extracti32x8_epi32(__part0,0);
+  __m256i __buf1 = _mm512_extracti32x8_epi32(__part0,1);
   __buf1 = _mm256_add_epi32(__buf0,__buf1);
   __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
   __buf1 = _mm256_hadd_epi32(__buf1,__buf1);

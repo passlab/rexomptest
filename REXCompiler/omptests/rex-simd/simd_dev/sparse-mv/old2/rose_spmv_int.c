@@ -15,14 +15,14 @@ double read_timer()
 }
 //#define DEFAULT_DIMSIZE 256
 
-void print_array(char *title,char *name,double *A,int n,int m)
+void print_array(char *title,char *name,int *A,int n,int m)
 {
   printf("%s:\n",title);
   int i;
   int j;
   for (i = 0; i < n; i++) {
     for (j = 0; j < m; j++) {
-      printf("%s[%d][%d]:%f  ",name,i,j,A[i * m + j]);
+      printf("%s[%d][%d]:%d  ",name,i,j,A[i * m + j]);
     }
     printf("\n");
   }
@@ -40,9 +40,9 @@ int main(int argc,char *argv[])
   int status = 0;
   int *ia;
   int *ja;
-  double *a;
-  double *x;
-  double *y;
+  int *a;
+  int *x;
+  int *y;
   int row;
   int i;
   int j;
@@ -51,9 +51,9 @@ int main(int argc,char *argv[])
   int nnzMax;
   int nnz;
   int nrows;
-  double ts;
-  double t;
-  double rate;
+  int ts;
+  int t;
+  int rate;
   n = 10240;
 //n = 24;
   if (argc > 1) 
@@ -62,10 +62,10 @@ int main(int argc,char *argv[])
   nnzMax = nrows * 5;
   ia = ((int *)(malloc(nrows * sizeof(int ))));
   ja = ((int *)(malloc(nnzMax * sizeof(int ))));
-  a = ((double *)(malloc(nnzMax * sizeof(double ))));
+  a = ((int *)(malloc(nnzMax * sizeof(int ))));
 /* Allocate the source and result vectors */
-  x = ((double *)(malloc(nrows * sizeof(double ))));
-  y = ((double *)(malloc(nrows * sizeof(double ))));
+  x = ((int *)(malloc(nrows * sizeof(int ))));
+  y = ((int *)(malloc(nrows * sizeof(int ))));
   row = 0;
   nnz = 0;
   for (i = 0; i < n; i++) {
@@ -73,12 +73,12 @@ int main(int argc,char *argv[])
       ia[row] = nnz;
       if (i > 0) {
         ja[nnz] = row - n;
-        a[nnz] = - 1.0;
+        a[nnz] = (- 1.0);
         nnz++;
       }
       if (j > 0) {
         ja[nnz] = row - 1;
-        a[nnz] = - 1.0;
+        a[nnz] = (- 1.0);
         nnz++;
       }
       ja[nnz] = row;
@@ -86,12 +86,12 @@ int main(int argc,char *argv[])
       nnz++;
       if (j < n - 1) {
         ja[nnz] = row + 1;
-        a[nnz] = - 1.0;
+        a[nnz] = (- 1.0);
         nnz++;
       }
       if (i < n - 1) {
         ja[nnz] = row + n;
-        a[nnz] = - 1.0;
+        a[nnz] = (- 1.0);
         nnz++;
       }
       row++;
@@ -104,40 +104,42 @@ int main(int argc,char *argv[])
   double elapsed = read_timer();
   int flops = 0;
   for (row = 0; row < nrows; row++) {
-    double sum = 0.0;
+    int sum = 0.0;
+    __m512i __vec0 = _mm512_set1_epi32(sum);
     __mmask16 __mask0;
     __mmask16 __mask1;
     __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
-    __m512d __buf0 = _mm512_setzero_pd();
-    __m512d __part0 = _mm512_setzero_pd();
-    __m512i __vec6 = _mm512_set1_epi32(2);
+    __m512i __buf0 = _mm512_setzero_epi32();
     __m512i __part5 = _mm512_setzero_epi32();
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
-      __m512d __vec1 = _mm512_loadu_pd(&a[idx]);
+    __m512i __vec6 = _mm512_set1_epi32(flops);
+    __m512i __vec7 = _mm512_set1_epi32(2);
+    __m512i __part9 = _mm512_setzero_epi32();
+    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 16) {
+      __m512i __vec1 = _mm512_loadu_si512((__m512i *)(&a[idx]));
       __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
-      __m256i __vindex02 = _mm512_extracti32x8_epi32(__vindex0,0);
-      __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask2,__vindex02,x,8);
-      __m512d __vec3 = _mm512_mul_pd(__vec2,__vec1);
-      __m512d __vec4 = _mm512_add_pd(__vec3,__part0);
-      __part0 = (__vec4);
-      __m512i __vec7 = _mm512_add_epi32(__vec6,__part5);
-      __part5 = (__vec7);
+      __m512i __vec2 = _mm512_mask_i32gather_epi32(__buf0,__mask2,__vindex0,x,4);
+      __m512i __vec3 = _mm512_mullo_epi32(__vec2,__vec1);
+      __m512i __vec4 = _mm512_add_epi32(__vec3,__vec0);
+      __part5 = _mm512_add_epi32(__part5,__vec4);
+      __m512i __vec8 = _mm512_add_epi32(__vec7,__vec6);
+      __part9 = _mm512_add_epi32(__part9,__vec8);
     }
-    __m256i __buf4 = _mm512_extracti32x8_epi32(__part5,0);
-    __m256i __buf5 = _mm512_extracti32x8_epi32(__part5,1);
+    __m256i __buf4 = _mm512_extracti32x8_epi32(__part9,0);
+    __m256i __buf5 = _mm512_extracti32x8_epi32(__part9,1);
     __buf5 = _mm256_add_epi32(__buf4,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     int __buf6[8];
     _mm256_storeu_si256((__m256i *)(&__buf6),__buf5);
     flops = __buf6[0] + __buf6[6];
-    __m256d __buf1 = _mm512_extractf64x4_pd(__part0,0);
-    __m256d __buf2 = _mm512_extractf64x4_pd(__part0,1);
-    __buf2 = _mm256_add_pd(__buf1,__buf2);
-    __buf2 = _mm256_hadd_pd(__buf2,__buf2);
-    double __buf3[4];
-    _mm256_storeu_pd(&__buf3,__buf2);
-    sum = __buf3[0] + __buf3[2];
+    __m256i __buf1 = _mm512_extracti32x8_epi32(__part5,0);
+    __m256i __buf2 = _mm512_extracti32x8_epi32(__part5,1);
+    __buf2 = _mm256_add_epi32(__buf1,__buf2);
+    __buf2 = _mm256_hadd_epi32(__buf2,__buf2);
+    __buf2 = _mm256_hadd_epi32(__buf2,__buf2);
+    int __buf3[8];
+    _mm256_storeu_si256((__m256i *)(&__buf3),__buf2);
+    sum = __buf3[0] + __buf3[6];
     y[row] = sum;
   }
   elapsed = read_timer() - elapsed;
@@ -146,7 +148,7 @@ int main(int argc,char *argv[])
   printf("GFlops: %.4f\n",gflops);
   for (row = 0; row < nrows; row++) {
     if (y[row] < 0) {
-      fprintf(stderr,"y[%d]=%f, fails consistency test\n",row,y[row]);
+      fprintf(stderr,"y[%d]=%d, fails consistency test\n",row,y[row]);
     }
   }
   free(ia);

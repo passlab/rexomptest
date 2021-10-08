@@ -30,14 +30,13 @@ float sum(float *X)
 {
   int i;
   float result = 0;
-  __m256 __vec0 = _mm256_set1_ps(result);
-  __m256 __part3 = _mm256_setzero_ps();
+  __m256 __part0 = _mm256_setzero_ps();
   for (i = 0; i <= 119999; i += 8) {
     __m256 __vec1 = _mm256_loadu_ps(&X[i]);
-    __m256 __vec2 = _mm256_add_ps(__vec1,__vec0);
-    __part3 = _mm256_add_ps(__part3,__vec2);
+    __m256 __vec2 = _mm256_add_ps(__vec1,__part0);
+    __part0 = (__vec2);
   }
-  __m256 __buf1 = __part3;
+  __m256 __buf1 = __part0;
   __buf1 = _mm256_hadd_ps(__buf1,__buf1);
   __buf1 = _mm256_hadd_ps(__buf1,__buf1);
   float __buf2[8];

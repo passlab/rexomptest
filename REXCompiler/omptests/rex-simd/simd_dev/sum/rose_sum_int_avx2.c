@@ -30,14 +30,13 @@ int sum(int *X)
 {
   int i;
   int result = 0;
-  __m256i __vec0 = _mm256_set1_epi32(result);
-  __m256i __part3 = _mm256_setzero_si256();
+  __m256i __part0 = _mm256_setzero_si256();
   for (i = 0; i <= 119999; i += 8) {
     __m256i __vec1 = _mm256_loadu_si256((__m256i *)(&X[i]));
-    __m256i __vec2 = _mm256_add_epi32(__vec1,__vec0);
-    __part3 = _mm256_add_epi32(__part3,__vec2);
+    __m256i __vec2 = _mm256_add_epi32(__vec1,__part0);
+    __part0 = (__vec2);
   }
-  __m256i __buf1 = __part3;
+  __m256i __buf1 = __part0;
   __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
   __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
   int __buf2[8];

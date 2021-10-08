@@ -88,11 +88,15 @@ int main(int argc, char *argv[]) {
     printf("seq elasped time(s): %.4f\n", elapsed);
     printf("GFlops: %.4f\n", gflops);
   
+    int errors = 0;
     for (row=0; row<nrows; row++) {
 		if (y[row] < 0) {
-			fprintf(stderr,"y[%d]=%d, fails consistency test\n", row, y[row]);
+			//fprintf(stderr,"y[%d]=%f, fails consistency test\n", row, y[row]);
+			++errors;
 		}
     }
+    printf("Errors: %d\n", errors);
+    
     free(ia); free(ja); free(a); free(x); free(y);
     return 0;
 }

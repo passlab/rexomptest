@@ -30,15 +30,14 @@ float sum(float *X)
 {
   int i;
   float result = 0;
-  __m512 __vec0 = _mm512_set1_ps(result);
-  __m512 __part3 = _mm512_setzero_ps();
+  __m512 __part0 = _mm512_setzero_ps();
   for (i = 0; i <= 119999; i += 16) {
     __m512 __vec1 = _mm512_loadu_ps(&X[i]);
-    __m512 __vec2 = _mm512_add_ps(__vec1,__vec0);
-    __part3 = _mm512_add_ps(__part3,__vec2);
+    __m512 __vec2 = _mm512_add_ps(__vec1,__part0);
+    __part0 = (__vec2);
   }
-  __m256 __buf0 = _mm512_extractf32x8_ps(__part3,0);
-  __m256 __buf1 = _mm512_extractf32x8_ps(__part3,1);
+  __m256 __buf0 = _mm512_extractf32x8_ps(__part0,0);
+  __m256 __buf1 = _mm512_extractf32x8_ps(__part0,1);
   __buf1 = _mm256_add_ps(__buf0,__buf1);
   __buf1 = _mm256_hadd_ps(__buf1,__buf1);
   __buf1 = _mm256_hadd_ps(__buf1,__buf1);

@@ -105,34 +105,36 @@ int main(int argc,char *argv[])
   int flops = 0;
   for (row = 0; row < nrows; row++) {
     double sum = 0.0;
+    __m512d __vec0 = _mm512_set1_pd(sum);
     __mmask16 __mask0;
     __mmask16 __mask1;
     __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
     __m512d __buf0 = _mm512_setzero_pd();
-    __m512d __part0 = _mm512_setzero_pd();
-    __m512i __vec6 = _mm512_set1_epi32(2);
-    __m512i __part5 = _mm512_setzero_epi32();
+    __m512d __part5 = _mm512_setzero_pd();
+    __m512i __vec6 = _mm512_set1_epi32(flops);
+    __m512i __vec7 = _mm512_set1_epi32(2);
+    __m512i __part9 = _mm512_setzero_epi32();
     for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
       __m512d __vec1 = _mm512_loadu_pd(&a[idx]);
       __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
       __m256i __vindex02 = _mm512_extracti32x8_epi32(__vindex0,0);
       __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask2,__vindex02,x,8);
       __m512d __vec3 = _mm512_mul_pd(__vec2,__vec1);
-      __m512d __vec4 = _mm512_add_pd(__vec3,__part0);
-      __part0 = (__vec4);
-      __m512i __vec7 = _mm512_add_epi32(__vec6,__part5);
-      __part5 = (__vec7);
+      __m512d __vec4 = _mm512_add_pd(__vec3,__vec0);
+      __part5 = _mm512_add_pd(__part5,__vec4);
+      __m512i __vec8 = _mm512_add_epi32(__vec7,__vec6);
+      __part9 = _mm512_add_epi32(__part9,__vec8);
     }
-    __m256i __buf4 = _mm512_extracti32x8_epi32(__part5,0);
-    __m256i __buf5 = _mm512_extracti32x8_epi32(__part5,1);
+    __m256i __buf4 = _mm512_extracti32x8_epi32(__part9,0);
+    __m256i __buf5 = _mm512_extracti32x8_epi32(__part9,1);
     __buf5 = _mm256_add_epi32(__buf4,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     __buf5 = _mm256_hadd_epi32(__buf5,__buf5);
     int __buf6[8];
     _mm256_storeu_si256((__m256i *)(&__buf6),__buf5);
     flops = __buf6[0] + __buf6[6];
-    __m256d __buf1 = _mm512_extractf64x4_pd(__part0,0);
-    __m256d __buf2 = _mm512_extractf64x4_pd(__part0,1);
+    __m256d __buf1 = _mm512_extractf64x4_pd(__part5,0);
+    __m256d __buf2 = _mm512_extractf64x4_pd(__part5,1);
     __buf2 = _mm256_add_pd(__buf1,__buf2);
     __buf2 = _mm256_hadd_pd(__buf2,__buf2);
     double __buf3[4];
