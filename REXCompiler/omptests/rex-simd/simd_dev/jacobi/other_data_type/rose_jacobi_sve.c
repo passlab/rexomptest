@@ -4,7 +4,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <math.h>
+#include <arm_sve.h> 
 #include <arm_sve.h> 
 #define REAL float
 
@@ -101,6 +101,7 @@ void error_check(int n,int m,float alpha,float dx,float dy,float *u_p,float *f_p
   error = 0.0;
   float (*u)[m] = ((float (*)[m])u_p);
   float (*f)[m] = ((float (*)[m])f_p);
+//#pragma omp parallel for private(xx,yy,temp,j,i) reduction(+:error)
   for (i = 0; i < n; i++) 
     for (j = 0; j < m; j++) {
       xx = (- 1.0 + (dx * (i - 1)));
@@ -179,31 +180,19 @@ int main(int argc,char *argv[])
 /* grid spacing in y direction */
   initialize(n,m,alpha,&dx,&dy,u,f);
   memcpy(uomp,u,sizeof(float ) * n * m);
-//warming up
+  double elapsed = read_timer_ms();
   jacobi_seq(n,m,dx,dy,alpha,relax,u,f,tol,mits);
-  jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
-  initialize(n,m,alpha,&dx,&dy,u,f);
-  memcpy(uomp,u,sizeof(float ) * n * m);
-  int num_runs = 20;
-  double elapsed = 0;
-  for (int i = 0; i < 20; i++) {
-    double elapsed1 = read_timer_ms();
-    jacobi_seq(n,m,dx,dy,alpha,relax,u,f,tol,mits);
-    elapsed += read_timer_ms() - elapsed1;
-  }
-  printf("seq elasped time(ms): %4f\n",elapsed / num_runs);
-//double mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-//printf("MFLOPS: %12.6g\n", mflops);
+  elapsed = read_timer_ms() - elapsed;
+  printf("seq elasped time(ms): %4f\n",elapsed);
+  double mflops = 0.001 * mits * (n - 2) * (m - 2) * 13 / elapsed;
+  printf("MFLOPS: %12.6g\n",mflops);
   puts("================");
-  double elapsed2 = 0;
-  for (int i = 0; i < 20; i++) {
-    double elapsed3 = read_timer_ms();
-    jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
-    elapsed2 += read_timer_ms() - elapsed3;
-  }
-  printf("OpenMP elasped time(ms): %4f\n",elapsed2 / num_runs);
-//mflops = (0.001 * mits * (n - 2) * (m - 2) * 13) / elapsed;
-//printf("MFLOPS: %12.6g\n", mflops);
+  elapsed = read_timer_ms();
+  jacobi_omp(n,m,dx,dy,alpha,relax,uomp,f,tol,mits);
+  elapsed = read_timer_ms() - elapsed;
+  printf("OpenMP elasped time(ms): %4f\n",elapsed);
+  mflops = 0.001 * mits * (n - 2) * (m - 2) * 13 / elapsed;
+  printf("MFLOPS: %12.6g\n",mflops);
 //print_array("Sequential Run", "u",(REAL*)u, n, m);
   error_check(n,m,alpha,dx,dy,u,f);
   free(u);
@@ -308,23 +297,72 @@ void jacobi_omp(int n,int m,float dx,float dy,float alpha,float omega,float *u_p
 //printf("===================== iteration %d ===========================\n", k);
 /* Copy new solution into old */
     for (i = 0; i < n; i++) {
-      svbool_t __pg0 = svwhilelt_b32(0,m - 1);
+      svbool_t __pg1 = svwhilelt_b32(0,m - 1);
       for (j = 0; j <= m - 1; j += svcntw()) {
-        float *__ptr0 = uold[i];
-        float *__ptr1 = u[i];
-        svfloat32_t __vec2 = svld1(__pg0,&__ptr1[j]);
-        svst1(__pg0,&__ptr0[j],__vec2);
-        __pg0 = svwhilelt_b32(j,m - 1);
+        float *__ptr39 = uold[i];
+        float *__ptr40 = u[i];
+        svfloat32_t __vec41 = svld1(__pg1,&__ptr40[j]);
+        svst1(__pg1,&__ptr39[j],__vec41);
+        __pg1 = svwhilelt_b32(j,m - 1);
       }
     }
     for (i = 1; i < n - 1; i++) {
-#pragma omp simd  reduction(+ : error)
-      for (j = 1; j <= m - 1 - 1; j += 1) {
-        resid = (ax * (uold[i - 1][j] + uold[i + 1][j]) + ay * (uold[i][j - 1] + uold[i][j + 1]) + b * uold[i][j] - f[i][j]) / b;
-//printf("i: %d, j: %d, resid: %f\n", i, j, resid);
-        u[i][j] = uold[i][j] - omega * resid;
-        error = error + resid * resid;
+      svbool_t __pg0 = svwhilelt_b32(0,m - 1 - 1);
+      svfloat32_t __vec0 = svdup_f32(ax);
+      svfloat32_t __vec7 = svdup_f32(ay);
+      svfloat32_t __vec15 = svdup_f32(b);
+      svfloat32_t __vec23 = svdup_f32(b);
+      svfloat32_t __part25 = svdup_f32(0.00000L);
+      svfloat32_t __vec29 = svdup_f32(omega);
+      svfloat32_t __vec30 = svdup_f32(resid);
+      svfloat32_t __vec33 = svdup_f32(error);
+      svfloat32_t __vec34 = svdup_f32(resid);
+      svfloat32_t __vec35 = svdup_f32(resid);
+      svfloat32_t __part38 = svdup_f32(0.00000L);
+      for (j = 1; j <= m - 1 - 1; j += svcntw()) {
+        float *__ptr1 = uold[i - 1];
+        svfloat32_t __vec2 = svld1(__pg0,&__ptr1[j]);
+        float *__ptr3 = uold[i + 1];
+        svfloat32_t __vec4 = svld1(__pg0,&__ptr3[j]);
+        svfloat32_t __vec5 = svadd_f32_m(__pg0,__vec4,__vec2);
+        svfloat32_t __vec6 = svmul_f32_m(__pg0,__vec5,__vec0);
+        float *__ptr8 = uold[i];
+        svfloat32_t __vec9 = svld1(__pg0,&__ptr8[j - 1]);
+        float *__ptr10 = uold[i];
+        svfloat32_t __vec11 = svld1(__pg0,&__ptr10[j + 1]);
+        svfloat32_t __vec12 = svadd_f32_m(__pg0,__vec11,__vec9);
+        svfloat32_t __vec13 = svmul_f32_m(__pg0,__vec12,__vec7);
+        svfloat32_t __vec14 = svadd_f32_m(__pg0,__vec13,__vec6);
+        float *__ptr16 = uold[i];
+        svfloat32_t __vec17 = svld1(__pg0,&__ptr16[j]);
+        svfloat32_t __vec18 = svmul_f32_m(__pg0,__vec17,__vec15);
+        svfloat32_t __vec19 = svadd_f32_m(__pg0,__vec18,__vec14);
+        float *__ptr20 = f[i];
+        svfloat32_t __vec21 = svld1(__pg0,&__ptr20[j]);
+        svfloat32_t __vec22 = svsub_f32_m(__pg0,__vec21,__vec19);
+        svfloat32_t __vec24 = svdiv_f32_m(__pg0,__vec23,__vec22);
+        __part25 = svadd_f32_m(__pg0,__part25,__vec24);
+        float *__ptr26 = u[i];
+        float *__ptr27 = uold[i];
+        svfloat32_t __vec28 = svld1(__pg0,&__ptr27[j]);
+        svfloat32_t __vec31 = svmul_f32_m(__pg0,__vec30,__vec29);
+        svfloat32_t __vec32 = svsub_f32_m(__pg0,__vec31,__vec28);
+        svst1(__pg0,&__ptr26[j],__vec32);
+        svfloat32_t __vec36 = svmul_f32_m(__pg0,__vec35,__vec34);
+        svfloat32_t __vec37 = svadd_f32_m(__pg0,__vec36,__vec33);
+        __part38 = svadd_f32_m(__pg0,__part38,__vec37);
+        __pg0 = svwhilelt_b32(j,m - 1 - 1);
       }
+      float __buf1[(svcntw())];
+      __pg0 = svwhilelt_b32((uint64_t )0,(svcntw()));
+      svst1(__pg0,&__buf1,__part38);
+      for (int __i = 0; __i < svcntw(); ++__i) 
+        error += __buf1[__i];
+      float __buf0[(svcntw())];
+      __pg0 = svwhilelt_b32((uint64_t )0,(svcntw()));
+      svst1(__pg0,&__buf0,__part25);
+      for (int __i = 0; __i < svcntw(); ++__i) 
+        resid += __buf0[__i];
     }
 /* Error check */
 //if (k % 500 == 0)

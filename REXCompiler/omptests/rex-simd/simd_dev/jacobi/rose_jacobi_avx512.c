@@ -5,7 +5,7 @@
 #include <sys/timeb.h>
 #include <malloc.h>
 #include <math.h>
-#include <arm_sve.h> 
+#include <immintrin.h> 
 #define REAL float
 
 static double read_timer_ms()
@@ -308,13 +308,11 @@ void jacobi_omp(int n,int m,float dx,float dy,float alpha,float omega,float *u_p
 //printf("===================== iteration %d ===========================\n", k);
 /* Copy new solution into old */
     for (i = 0; i < n; i++) {
-      svbool_t __pg0 = svwhilelt_b32(0,m - 1);
-      for (j = 0; j <= m - 1; j += svcntw()) {
+      for (j = 0; j <= m - 1; j += 16) {
         float *__ptr0 = uold[i];
         float *__ptr1 = u[i];
-        svfloat32_t __vec2 = svld1(__pg0,&__ptr1[j]);
-        svst1(__pg0,&__ptr0[j],__vec2);
-        __pg0 = svwhilelt_b32(j,m - 1);
+        __m512 __vec2 = _mm512_loadu_ps(&__ptr1[j]);
+        _mm512_storeu_ps(&__ptr0[j],__vec2);
       }
     }
     for (i = 1; i < n - 1; i++) {
