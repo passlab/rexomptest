@@ -1,6 +1,12 @@
 #include "rex_kmp.h" 
-char OUT__1__7560__axpy_ompacc__68__id__ = 0;
-struct __tgt_offload_entry OUT__1__7560__axpy_ompacc__68__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__7560__axpy_ompacc__68__id__)), "OUT__1__7560__axpy_ompacc__68__kernel__", 0, 0, 0};
+char OUT__4__9500__axpy_ompacc__67__id__ = 0;
+struct __tgt_offload_entry OUT__4__9500__axpy_ompacc__67__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__4__9500__axpy_ompacc__67__id__)), "OUT__4__9500__axpy_ompacc__67__kernel__", 0, 0, 0};
+char OUT__3__9500__axpy_ompacc__70__id__ = 0;
+struct __tgt_offload_entry OUT__3__9500__axpy_ompacc__70__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__3__9500__axpy_ompacc__70__id__)), "OUT__3__9500__axpy_ompacc__70__kernel__", 0, 0, 0};
+char OUT__2__9500__axpy_ompacc__75__id__ = 0;
+struct __tgt_offload_entry OUT__2__9500__axpy_ompacc__75__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__2__9500__axpy_ompacc__75__id__)), "OUT__2__9500__axpy_ompacc__75__kernel__", 0, 0, 0};
+char OUT__1__9500__axpy_ompacc__80__id__ = 0;
+struct __tgt_offload_entry OUT__1__9500__axpy_ompacc__80__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__9500__axpy_ompacc__80__id__)), "OUT__1__9500__axpy_ompacc__80__kernel__", 0, 0, 0};
 // Experimental test input for Accelerator directives
 //  simplest scalar*vector operations
 // Liao 1/15/2013
@@ -69,26 +75,26 @@ void axpy_ompacc(double *x,double *y,int n,double a)
   for (i = 0; i < n; ++i)
     y[i] += a * x[i];
 */
+  double *_dev_x;
+  int _dev_x_size[1] = {n};
+  int _dev_x_offset[1] = {0};
+  int _dev_x_Dim[1] = {n};
+  double *_dev_y;
+  int _dev_y_size[1] = {n};
+  int _dev_y_offset[1] = {0};
+  int _dev_y_Dim[1] = {n};
 {
-    double *_dev_x;
-    int _dev_x_size[1] = {n};
-    int _dev_x_offset[1] = {0};
-    int _dev_x_Dim[1] = {n};
-    double *_dev_y;
-    int _dev_y_size[1] = {n};
-    int _dev_y_offset[1] = {0};
-    int _dev_y_Dim[1] = {n};
 /* Launch CUDA kernel ... */
     int _threads_per_block_ = 1;
     int _num_blocks_ = 1;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)(&OUT__1__7560__axpy_ompacc__68__id__);
-    void *__args_base[] = {&n, &a, x, y};
-    void *__args[] = {&n, &a, x + 0, y + 0};
-    int64_t __arg_sizes[] = {((int64_t )(sizeof(int ))), ((int64_t )(sizeof(double ))), ((int64_t )(sizeof(double ) * n)), ((int64_t )(sizeof(double ) * n))};
-    int64_t __arg_types[] = {33, 33, 33, 35};
-    int32_t __arg_num = 4;
-    __tgt_target_teams(__device_id,__host_ptr,__arg_num,__args_base,__args,__arg_sizes,__arg_types,_threads_per_block_,_num_blocks_);
+    void *__host_ptr = (void *)(&OUT__4__9500__axpy_ompacc__67__id__);
+    void *__args_base[] = {&n, &a, &i, x, y};
+    void *__args[] = {&n, &a, &i, x + 0, y + 0};
+    int64_t __arg_sizes[] = {((int64_t )(sizeof(int ))), ((int64_t )(sizeof(double ))), ((int64_t )(sizeof(int ))), ((int64_t )(sizeof(double ) * n)), ((int64_t )(sizeof(double ) * n))};
+    int64_t __arg_types[] = {33, 33, 33, 32, 35};
+    int32_t __arg_num = 5;
+    __tgt_target_teams(OUT__4__9500__axpy_ompacc__67__id__,__host_ptr,__arg_num,__args_base,__args,__arg_sizes,__arg_types,_threads_per_block_,_num_blocks_);
   }
 }
 
