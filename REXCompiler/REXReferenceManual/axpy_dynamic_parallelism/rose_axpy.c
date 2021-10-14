@@ -1,12 +1,10 @@
 #include "rex_kmp.h" 
-char OUT__4__9500__axpy_ompacc__67__id__ = 0;
-struct __tgt_offload_entry OUT__4__9500__axpy_ompacc__67__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__4__9500__axpy_ompacc__67__id__)), "OUT__4__9500__axpy_ompacc__67__kernel__", 0, 0, 0};
-char OUT__3__9500__axpy_ompacc__70__id__ = 0;
-struct __tgt_offload_entry OUT__3__9500__axpy_ompacc__70__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__3__9500__axpy_ompacc__70__id__)), "OUT__3__9500__axpy_ompacc__70__kernel__", 0, 0, 0};
-char OUT__2__9500__axpy_ompacc__75__id__ = 0;
-struct __tgt_offload_entry OUT__2__9500__axpy_ompacc__75__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__2__9500__axpy_ompacc__75__id__)), "OUT__2__9500__axpy_ompacc__75__kernel__", 0, 0, 0};
-char OUT__1__9500__axpy_ompacc__80__id__ = 0;
-struct __tgt_offload_entry OUT__1__9500__axpy_ompacc__80__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__9500__axpy_ompacc__80__id__)), "OUT__1__9500__axpy_ompacc__80__kernel__", 0, 0, 0};
+char OUT__3__9500__axpy_ompacc__67__id__ = 0;
+struct __tgt_offload_entry OUT__3__9500__axpy_ompacc__67__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__3__9500__axpy_ompacc__67__id__)), "OUT__3__9500__axpy_ompacc__67__kernel__", 0, 0, 0};
+char OUT__2__9500__axpy_ompacc__70__id__ = 0;
+struct __tgt_offload_entry OUT__2__9500__axpy_ompacc__70__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__2__9500__axpy_ompacc__70__id__)), "OUT__2__9500__axpy_ompacc__70__kernel__", 0, 0, 0};
+char OUT__1__9500__axpy_ompacc__75__id__ = 0;
+struct __tgt_offload_entry OUT__1__9500__axpy_ompacc__75__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__9500__axpy_ompacc__75__id__)), "OUT__1__9500__axpy_ompacc__75__kernel__", 0, 0, 0};
 // Experimental test input for Accelerator directives
 //  simplest scalar*vector operations
 // Liao 1/15/2013
@@ -88,13 +86,13 @@ void axpy_ompacc(double *x,double *y,int n,double a)
     int _threads_per_block_ = 1;
     int _num_blocks_ = 1;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)(&OUT__4__9500__axpy_ompacc__67__id__);
+    void *__host_ptr = (void *)(&OUT__3__9500__axpy_ompacc__67__id__);
     void *__args_base[] = {&n, &a, &i, x, y};
     void *__args[] = {&n, &a, &i, x + 0, y + 0};
     int64_t __arg_sizes[] = {((int64_t )(sizeof(int ))), ((int64_t )(sizeof(double ))), ((int64_t )(sizeof(int ))), ((int64_t )(sizeof(double ) * n)), ((int64_t )(sizeof(double ) * n))};
     int64_t __arg_types[] = {33, 33, 33, 32, 35};
     int32_t __arg_num = 5;
-    __tgt_target_teams(OUT__4__9500__axpy_ompacc__67__id__,__host_ptr,__arg_num,__args_base,__args,__arg_sizes,__arg_types,_threads_per_block_,_num_blocks_);
+    __tgt_target_teams(OUT__3__9500__axpy_ompacc__67__id__,__host_ptr,__arg_num,__args_base,__args,__arg_sizes,__arg_types,_threads_per_block_,_num_blocks_);
   }
 }
 

@@ -77,7 +77,6 @@ void axpy_ompacc(REAL* x, REAL* y, int n, REAL a) {
       y[i] += a * x[i];
 
     printf("Serial Kernel\n");
-#pragma omp parallel for
     for (i = 0; i < n; i++)
       y[i] += a * x[i];
   }
