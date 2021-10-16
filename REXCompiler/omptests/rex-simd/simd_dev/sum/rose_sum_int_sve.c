@@ -18,21 +18,21 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *X)
+void init(int *X)
 {
   for (int i = 0; i < 10240000; i++) {
-    X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    X[i] = ((int )(rand())) / ((int )(2147483647 / 10.0));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
 
-float sum(float *X)
+int sum(int *X)
 {
   int i;
-  float result = 0;
+  int result = 0;
   svbool_t __pg0 = svwhilelt_b32(0,10239999);
   for (i = 0; i <= 10239999; i += svcntw()) {
-    svfloat32_t __vec0 = svld1(__pg0,&X[i]);
+    svint32_t __vec0 = svld1(__pg0,&X[i]);
     result += svaddv(__pg0,__vec0);
     __pg0 = svwhilelt_b32(i,10239999);
   }
@@ -40,16 +40,16 @@ float sum(float *X)
 }
 // Debug functions
 
-float sum_serial(float *X)
+int sum_serial(int *X)
 {
-  float result = 0;
+  int result = 0;
   for (int i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
 }
 
-void print_vector(float *vector)
+void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -62,9 +62,9 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *X = (malloc(sizeof(float ) * 10240000));
-  float result;
-  float result_serial;
+  int *X = (malloc(sizeof(int ) * 10240000));
+  int result;
+  int result_serial;
   srand((time(((void *)0))));
   init(X);
 //warming up
@@ -92,7 +92,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("Sum (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("Sum (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",(result_serial - result));
+  printf("Correctness check: %f\n",result_serial - result);
   free(X);
   return 0;
 }

@@ -21,33 +21,33 @@ double read_timer()
   return ((double )tm . time) + ((double )tm . millitm) / 1000.0;
 }
 
-void init(float **A)
+void init(int **A)
 {
   int i;
   int j;
   for (i = 0; i < 1024; i++) {
     for (j = 0; j < 1024; j++) {
-      A[i][j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+      A[i][j] = ((int )(rand())) / ((int )(2147483647 / 10.0));
     }
   }
 }
 
-void matmul_simd(float **A,float **B,float **C)
+void matmul_simd(int **A,int **B,int **C)
 {
   int i;
   int j;
   int k;
-  float temp;
+  int temp;
   for (i = 0; i < 1024; i++) {
     for (j = 0; j < 1024; j++) {
       temp = 0;
       svbool_t __pg0 = svwhilelt_b32(0,1023);
       for (k = 0; k <= 1023; k += svcntw()) {
-        float *__ptr0 = A[i];
-        svfloat32_t __vec1 = svld1(__pg0,&__ptr0[k]);
-        float *__ptr2 = B[j];
-        svfloat32_t __vec3 = svld1(__pg0,&__ptr2[k]);
-        svfloat32_t __vec4 = svmul_f32_m(__pg0,__vec3,__vec1);
+        int *__ptr0 = A[i];
+        svint32_t __vec1 = svld1(__pg0,&__ptr0[k]);
+        int *__ptr2 = B[j];
+        svint32_t __vec3 = svld1(__pg0,&__ptr2[k]);
+        svint32_t __vec4 = svmul_s32_m(__pg0,__vec3,__vec1);
         temp += svaddv(__pg0,__vec4);
         __pg0 = svwhilelt_b32(k,1023);
       }
@@ -57,7 +57,7 @@ void matmul_simd(float **A,float **B,float **C)
 }
 // Debug functions
 
-void print_matrix(float **matrix)
+void print_matrix(int **matrix)
 {
   for (int i = 0; i < 8; i++) {
     printf("[");
@@ -69,12 +69,12 @@ void print_matrix(float **matrix)
   puts("");
 }
 
-void matmul_serial(float **A,float **B,float **C)
+void matmul_serial(int **A,int **B,int **C)
 {
   int i;
   int j;
   int k;
-  float temp;
+  int temp;
   for (i = 0; i < 1024; i++) {
     for (j = 0; j < 1024; j++) {
       temp = 0;
@@ -86,9 +86,9 @@ void matmul_serial(float **A,float **B,float **C)
   }
 }
 
-float check(float **A,float **B)
+int check(int **A,int **B)
 {
-  float difference = 0;
+  int difference = 0;
   for (int i = 0; i < 1024; i++) {
     for (int j = 0; j < 1024; j++) {
       difference += A[i][j] - B[i][j];
@@ -102,17 +102,17 @@ int main(int argc,char *argv[])
 {
   int status = 0;
 //Set everything up
-  float **A = (malloc(sizeof(float *) * 1024));
-  float **B = (malloc(sizeof(float *) * 1024));
-  float **C_simd = (malloc(sizeof(float *) * 1024));
-  float **C_serial = (malloc(sizeof(float *) * 1024));
-  float **BT = (malloc(sizeof(float *) * 1024));
+  int **A = (malloc(sizeof(int *) * 1024));
+  int **B = (malloc(sizeof(int *) * 1024));
+  int **C_simd = (malloc(sizeof(int *) * 1024));
+  int **C_serial = (malloc(sizeof(int *) * 1024));
+  int **BT = (malloc(sizeof(int *) * 1024));
   for (int i = 0; i < 1024; i++) {
-    A[i] = (malloc(sizeof(float ) * 1024));
-    B[i] = (malloc(sizeof(float ) * 1024));
-    C_simd[i] = (malloc(sizeof(float ) * 1024));
-    C_serial[i] = (malloc(sizeof(float ) * 1024));
-    BT[i] = (malloc(sizeof(float ) * 1024));
+    A[i] = (malloc(sizeof(int ) * 1024));
+    B[i] = (malloc(sizeof(int ) * 1024));
+    C_simd[i] = (malloc(sizeof(int ) * 1024));
+    C_serial[i] = (malloc(sizeof(int ) * 1024));
+    BT[i] = (malloc(sizeof(int ) * 1024));
   }
   srand((time(((void *)0))));
   init(A);

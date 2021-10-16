@@ -18,26 +18,26 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *matrix,float *vector)
+void init(int *matrix,int *vector)
 {
   for (int i = 0; i < 10240; i++) {
     for (int j = 0; j < 10240; j++) {
-      matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+      matrix[i * 10240 + j] = ((int )(rand())) / ((int )(2147483647 / 10.0));
     }
-    vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    vector[i] = ((int )(rand())) / ((int )(2147483647 / 10.0));
   }
 }
 
-void matvec_simd(float *matrix,float *vector,float *dest)
+void matvec_simd(int *matrix,int *vector,int *dest)
 {
   int j;
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
+    int tmp = 0;
     svbool_t __pg0 = svwhilelt_b32(0,10239);
     for (j = 0; j <= 10239; j += svcntw()) {
-      svfloat32_t __vec0 = svld1(__pg0,&matrix[i * 10240 + j]);
-      svfloat32_t __vec1 = svld1(__pg0,&vector[j]);
-      svfloat32_t __vec2 = svmul_f32_m(__pg0,__vec1,__vec0);
+      svint32_t __vec0 = svld1(__pg0,&matrix[i * 10240 + j]);
+      svint32_t __vec1 = svld1(__pg0,&vector[j]);
+      svint32_t __vec2 = svmul_s32_m(__pg0,__vec1,__vec0);
       tmp += svaddv(__pg0,__vec2);
       __pg0 = svwhilelt_b32(j,10239);
     }
@@ -46,10 +46,10 @@ void matvec_simd(float *matrix,float *vector,float *dest)
 }
 // Debug functions
 
-void matvec_serial(float *matrix,float *vector,float *dest)
+void matvec_serial(int *matrix,int *vector,int *dest)
 {
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
+    int tmp = 0;
     for (int j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
@@ -57,7 +57,7 @@ void matvec_serial(float *matrix,float *vector,float *dest)
   }
 }
 
-void print_matrix(float *matrix)
+void print_matrix(int *matrix)
 {
   for (int i = 0; i < 8; i++) {
     printf("[");
@@ -69,7 +69,7 @@ void print_matrix(float *matrix)
   puts("");
 }
 
-void print_vector(float *vector)
+void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -78,11 +78,11 @@ void print_vector(float *vector)
   puts("]");
 }
 
-float check(float *A,float *B)
+int check(int *A,int *B)
 {
-  float difference = 0;
+  int difference = 0;
   for (int i = 0; i < 10240; i++) {
-    difference += fabsf(A[i] - B[i]);
+    difference += fabsf((A[i] - B[i]));
   }
   return difference;
 }
@@ -91,10 +91,10 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *dest_vector = (malloc(sizeof(float *) * 10240));
-  float *serial_vector = (malloc(sizeof(float *) * 10240));
-  float *matrix = (malloc(sizeof(float *) * 10240 * 10240));
-  float *vector = (malloc(sizeof(float ) * 10240));
+  int *dest_vector = (malloc(sizeof(int *) * 10240));
+  int *serial_vector = (malloc(sizeof(int *) * 10240));
+  int *matrix = (malloc(sizeof(int *) * 10240 * 10240));
+  int *vector = (malloc(sizeof(int ) * 10240));
   srand((time(((void *)0))));
   init(matrix,vector);
 //warming up

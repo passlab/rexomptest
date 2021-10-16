@@ -5,7 +5,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <arm_sve.h> 
+#include <immintrin.h> 
 #define N_RUNS 20
 #define N 10240000
 // read timer in second
@@ -18,38 +18,46 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *X)
+void init(int *X)
 {
   for (int i = 0; i < 10240000; i++) {
-    X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    X[i] = ((int )(rand())) / ((int )(2147483647 / 10.0));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
 
-float sum(float *X)
+int sum(int *X)
 {
   int i;
-  float result = 0;
-  svbool_t __pg0 = svwhilelt_b32(0,10239999);
-  for (i = 0; i <= 10239999; i += svcntw()) {
-    svfloat32_t __vec0 = svld1(__pg0,&X[i]);
-    result += svaddv(__pg0,__vec0);
-    __pg0 = svwhilelt_b32(i,10239999);
+  int result = 0;
+  __m512i __part0 = _mm512_setzero_epi32();
+  for (i = 0; i <= 10239999; i += 16) {
+    __m512i __vec1 = _mm512_loadu_si512((__m512i *)(&X[i]));
+    __m512i __vec2 = _mm512_add_epi32(__vec1,__part0);
+    __part0 = (__vec2);
   }
+  __m256i __buf0 = _mm512_extracti32x8_epi32(__part0,0);
+  __m256i __buf1 = _mm512_extracti32x8_epi32(__part0,1);
+  __buf1 = _mm256_add_epi32(__buf0,__buf1);
+  __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
+  __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
+  int __buf2[8];
+  _mm256_storeu_si256((__m256i *)(&__buf2),__buf1);
+  result = __buf2[0] + __buf2[6];
   return result;
 }
 // Debug functions
 
-float sum_serial(float *X)
+int sum_serial(int *X)
 {
-  float result = 0;
+  int result = 0;
   for (int i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
 }
 
-void print_vector(float *vector)
+void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -62,9 +70,9 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *X = (malloc(sizeof(float ) * 10240000));
-  float result;
-  float result_serial;
+  int *X = (malloc(sizeof(int ) * 10240000));
+  int result;
+  int result_serial;
   srand((time(((void *)0))));
   init(X);
 //warming up
@@ -92,7 +100,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("Sum (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("Sum (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",(result_serial - result));
+  printf("Correctness check: %f\n",result_serial - result);
   free(X);
   return 0;
 }

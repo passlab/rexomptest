@@ -5,7 +5,6 @@
 #include <sys/timeb.h>
 #include <malloc.h>
 #include <math.h>
-#include <arm_sve.h> 
 #define N_RUNS 20
 #define N 10240
 // read timer in second
@@ -18,38 +17,33 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *matrix,float *vector)
+void init(double *matrix,double *vector)
 {
   for (int i = 0; i < 10240; i++) {
     for (int j = 0; j < 10240; j++) {
-      matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+      matrix[i * 10240 + j] = ((double )(rand())) / ((double )(2147483647 / 10.0));
     }
-    vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    vector[i] = ((double )(rand())) / ((double )(2147483647 / 10.0));
   }
 }
 
-void matvec_simd(float *matrix,float *vector,float *dest)
+void matvec_simd(double *matrix,double *vector,double *dest)
 {
-  int j;
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
-    svbool_t __pg0 = svwhilelt_b32(0,10239);
-    for (j = 0; j <= 10239; j += svcntw()) {
-      svfloat32_t __vec0 = svld1(__pg0,&matrix[i * 10240 + j]);
-      svfloat32_t __vec1 = svld1(__pg0,&vector[j]);
-      svfloat32_t __vec2 = svmul_f32_m(__pg0,__vec1,__vec0);
-      tmp += svaddv(__pg0,__vec2);
-      __pg0 = svwhilelt_b32(j,10239);
+    double tmp = 0;
+#pragma omp simd  reduction(+ : tmp)
+    for (int j = 0; j < 10240; j++) {
+      tmp += matrix[i * 10240 + j] * vector[j];
     }
     dest[i] = tmp;
   }
 }
 // Debug functions
 
-void matvec_serial(float *matrix,float *vector,float *dest)
+void matvec_serial(double *matrix,double *vector,double *dest)
 {
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
+    double tmp = 0;
     for (int j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
@@ -57,7 +51,7 @@ void matvec_serial(float *matrix,float *vector,float *dest)
   }
 }
 
-void print_matrix(float *matrix)
+void print_matrix(double *matrix)
 {
   for (int i = 0; i < 8; i++) {
     printf("[");
@@ -69,7 +63,7 @@ void print_matrix(float *matrix)
   puts("");
 }
 
-void print_vector(float *vector)
+void print_vector(double *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -78,11 +72,11 @@ void print_vector(float *vector)
   puts("]");
 }
 
-float check(float *A,float *B)
+double check(double *A,double *B)
 {
-  float difference = 0;
+  double difference = 0;
   for (int i = 0; i < 10240; i++) {
-    difference += fabsf(A[i] - B[i]);
+    difference += (fabsf((A[i] - B[i])));
   }
   return difference;
 }
@@ -91,10 +85,10 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *dest_vector = (malloc(sizeof(float *) * 10240));
-  float *serial_vector = (malloc(sizeof(float *) * 10240));
-  float *matrix = (malloc(sizeof(float *) * 10240 * 10240));
-  float *vector = (malloc(sizeof(float ) * 10240));
+  double *dest_vector = (malloc(sizeof(double *) * 10240));
+  double *serial_vector = (malloc(sizeof(double *) * 10240));
+  double *matrix = (malloc(sizeof(double *) * 10240 * 10240));
+  double *vector = (malloc(sizeof(double ) * 10240));
   srand((time(((void *)0))));
   init(matrix,vector);
 //warming up

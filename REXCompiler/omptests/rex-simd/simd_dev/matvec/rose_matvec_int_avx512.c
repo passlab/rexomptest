@@ -5,7 +5,7 @@
 #include <sys/timeb.h>
 #include <malloc.h>
 #include <math.h>
-#include <arm_sve.h> 
+#include <immintrin.h> 
 #define N_RUNS 20
 #define N 10240
 // read timer in second
@@ -18,38 +18,46 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *matrix,float *vector)
+void init(int *matrix,int *vector)
 {
   for (int i = 0; i < 10240; i++) {
     for (int j = 0; j < 10240; j++) {
-      matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+      matrix[i * 10240 + j] = ((int )(rand())) / ((int )(2147483647 / 10.0));
     }
-    vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    vector[i] = ((int )(rand())) / ((int )(2147483647 / 10.0));
   }
 }
 
-void matvec_simd(float *matrix,float *vector,float *dest)
+void matvec_simd(int *matrix,int *vector,int *dest)
 {
   int j;
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
-    svbool_t __pg0 = svwhilelt_b32(0,10239);
-    for (j = 0; j <= 10239; j += svcntw()) {
-      svfloat32_t __vec0 = svld1(__pg0,&matrix[i * 10240 + j]);
-      svfloat32_t __vec1 = svld1(__pg0,&vector[j]);
-      svfloat32_t __vec2 = svmul_f32_m(__pg0,__vec1,__vec0);
-      tmp += svaddv(__pg0,__vec2);
-      __pg0 = svwhilelt_b32(j,10239);
+    int tmp = 0;
+    __m512i __part0 = _mm512_setzero_epi32();
+    for (j = 0; j <= 10239; j += 16) {
+      __m512i __vec1 = _mm512_loadu_si512((__m512i *)(&matrix[i * 10240 + j]));
+      __m512i __vec2 = _mm512_loadu_si512((__m512i *)(&vector[j]));
+      __m512i __vec3 = _mm512_mullo_epi32(__vec2,__vec1);
+      __m512i __vec4 = _mm512_add_epi32(__vec3,__part0);
+      __part0 = (__vec4);
     }
+    __m256i __buf0 = _mm512_extracti32x8_epi32(__part0,0);
+    __m256i __buf1 = _mm512_extracti32x8_epi32(__part0,1);
+    __buf1 = _mm256_add_epi32(__buf0,__buf1);
+    __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
+    __buf1 = _mm256_hadd_epi32(__buf1,__buf1);
+    int __buf2[8];
+    _mm256_storeu_si256((__m256i *)(&__buf2),__buf1);
+    tmp = __buf2[0] + __buf2[6];
     dest[i] = tmp;
   }
 }
 // Debug functions
 
-void matvec_serial(float *matrix,float *vector,float *dest)
+void matvec_serial(int *matrix,int *vector,int *dest)
 {
   for (int i = 0; i < 10240; i++) {
-    float tmp = 0;
+    int tmp = 0;
     for (int j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
@@ -57,7 +65,7 @@ void matvec_serial(float *matrix,float *vector,float *dest)
   }
 }
 
-void print_matrix(float *matrix)
+void print_matrix(int *matrix)
 {
   for (int i = 0; i < 8; i++) {
     printf("[");
@@ -69,7 +77,7 @@ void print_matrix(float *matrix)
   puts("");
 }
 
-void print_vector(float *vector)
+void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -78,11 +86,11 @@ void print_vector(float *vector)
   puts("]");
 }
 
-float check(float *A,float *B)
+int check(int *A,int *B)
 {
-  float difference = 0;
+  int difference = 0;
   for (int i = 0; i < 10240; i++) {
-    difference += fabsf(A[i] - B[i]);
+    difference += fabsf((A[i] - B[i]));
   }
   return difference;
 }
@@ -91,10 +99,10 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *dest_vector = (malloc(sizeof(float *) * 10240));
-  float *serial_vector = (malloc(sizeof(float *) * 10240));
-  float *matrix = (malloc(sizeof(float *) * 10240 * 10240));
-  float *vector = (malloc(sizeof(float ) * 10240));
+  int *dest_vector = (malloc(sizeof(int *) * 10240));
+  int *serial_vector = (malloc(sizeof(int *) * 10240));
+  int *matrix = (malloc(sizeof(int *) * 10240 * 10240));
+  int *vector = (malloc(sizeof(int ) * 10240));
   srand((time(((void *)0))));
   init(matrix,vector);
 //warming up

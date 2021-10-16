@@ -5,7 +5,6 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <arm_sve.h> 
 #define N_RUNS 20
 #define N 10240000
 // read timer in second
@@ -18,38 +17,35 @@ double read_timer()
 }
 //Create a matrix and a vector and fill with random numbers
 
-void init(float *X)
+void init(double *X)
 {
   for (int i = 0; i < 10240000; i++) {
-    X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
+    X[i] = ((double )(rand())) / ((double )(2147483647 / 10.0));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
 
-float sum(float *X)
+double sum(double *X)
 {
-  int i;
-  float result = 0;
-  svbool_t __pg0 = svwhilelt_b32(0,10239999);
-  for (i = 0; i <= 10239999; i += svcntw()) {
-    svfloat32_t __vec0 = svld1(__pg0,&X[i]);
-    result += svaddv(__pg0,__vec0);
-    __pg0 = svwhilelt_b32(i,10239999);
+  double result = 0;
+#pragma omp simd  reduction(+ : result)
+  for (int i = 0; i < 10240000; i++) {
+    result += X[i];
   }
   return result;
 }
 // Debug functions
 
-float sum_serial(float *X)
+double sum_serial(double *X)
 {
-  float result = 0;
+  double result = 0;
   for (int i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
 }
 
-void print_vector(float *vector)
+void print_vector(double *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
@@ -62,9 +58,9 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *X = (malloc(sizeof(float ) * 10240000));
-  float result;
-  float result_serial;
+  double *X = (malloc(sizeof(double ) * 10240000));
+  double result;
+  double result_serial;
   srand((time(((void *)0))));
   init(X);
 //warming up
@@ -92,7 +88,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("Sum (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("Sum (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",(result_serial - result));
+  printf("Correctness check: %f\n",result_serial - result);
   free(X);
   return 0;
 }
