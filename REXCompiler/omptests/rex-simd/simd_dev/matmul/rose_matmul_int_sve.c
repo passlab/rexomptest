@@ -62,7 +62,7 @@ void print_matrix(int **matrix)
   for (int i = 0; i < 8; i++) {
     printf("[");
     for (int j = 0; j < 8; j++) {
-      printf("%.2f ",matrix[i][j]);
+      printf("%d ",matrix[i][j]);
     }
     puts("]");
   }
@@ -152,6 +152,6 @@ int main(int argc,char *argv[])
   printf("------------------------------------------------------------------------------------------------------\n");
   printf("matmul_omp:\t\t%4f\t%4f\n",elapsed / num_runs,gflops_omp);
   printf("matmul_serial:\t\t%4f\t%4f\n",elapsed_serial / num_runs,gflops_serial);
-  printf("Correctness check: %f\n",(check(C_simd,C_serial)));
+  printf("Correctness check: %d\n",(check(C_simd,C_serial)));
   return 0;
 }

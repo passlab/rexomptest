@@ -21,7 +21,7 @@ void print_array(char *title, char *name, REAL *A, int n, int m) {
     int i, j;
     for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++) {
-            printf("%s[%d][%d]:%f  ", name, i, j, A[i * m + j]);
+            printf("%s[%d][%d]:%d  ", name, i, j, A[i * m + j]);
         }
         printf("\n");
     }

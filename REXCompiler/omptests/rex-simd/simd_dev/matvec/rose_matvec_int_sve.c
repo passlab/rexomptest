@@ -62,7 +62,7 @@ void print_matrix(int *matrix)
   for (int i = 0; i < 8; i++) {
     printf("[");
     for (int j = 0; j < 8; j++) {
-      printf("%.2f ",matrix[i * 10240 + j]);
+      printf("%d ",matrix[i * 10240 + j]);
     }
     puts("]");
   }
@@ -73,7 +73,7 @@ void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
-    printf("%.2f ",vector[i]);
+    printf("%d ",vector[i]);
   }
   puts("]");
 }
@@ -82,7 +82,7 @@ int check(int *A,int *B)
 {
   int difference = 0;
   for (int i = 0; i < 10240; i++) {
-    difference += fabsf((A[i] - B[i]));
+    difference += abs(A[i] - B[i]);
   }
   return difference;
 }
@@ -122,7 +122,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("Matrix-vector (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("Matrix-vector (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",(check(dest_vector,serial_vector)));
+  printf("Correctness check: %d\n",(check(dest_vector,serial_vector)));
   free(dest_vector);
   free(serial_vector);
   free(matrix);
