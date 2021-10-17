@@ -5,6 +5,7 @@
 #include <string.h>
 // Add timing support
 #include <sys/timeb.h>
+#include <immintrin.h> 
 #define REAL double
 
 double read_timer()
@@ -104,10 +105,27 @@ int main(int argc,char *argv[])
   double elapsed = read_timer();
   for (row = 0; row < nrows; row++) {
     double sum = 0.0;
-#pragma omp simd  reduction(+ : sum)
-    for (idx = ia[row]; idx < ia[row + 1]; idx++) {
-      sum += a[idx] * x[ja[idx]];
+    __mmask16 __mask0;
+    __mmask16 __mask1;
+    __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
+    __m512d __buf0 = _mm512_setzero_pd();
+    __m512d __part0 = _mm512_setzero_pd();
+    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
+      __m512d __vec1 = _mm512_loadu_pd(&a[idx]);
+      __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
+      __m256i __vindex02 = _mm512_extracti32x8_epi32(__vindex0,0);
+      __m512d __vec2 = _mm512_mask_i32gather_pd(__buf0,__mask2,__vindex02,x,8);
+      __m512d __vec3 = _mm512_mul_pd(__vec2,__vec1);
+      __m512d __vec4 = _mm512_add_pd(__vec3,__part0);
+      __part0 = (__vec4);
     }
+    __m256d __buf1 = _mm512_extractf64x4_pd(__part0,0);
+    __m256d __buf2 = _mm512_extractf64x4_pd(__part0,1);
+    __buf2 = _mm256_add_pd(__buf1,__buf2);
+    __buf2 = _mm256_hadd_pd(__buf2,__buf2);
+    double __buf3[4];
+    _mm256_storeu_pd(&__buf3,__buf2);
+    sum = __buf3[0] + __buf3[2];
     y[row] = sum;
   }
   elapsed = read_timer() - elapsed;

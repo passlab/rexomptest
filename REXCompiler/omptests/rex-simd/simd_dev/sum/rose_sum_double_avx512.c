@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <immintrin.h> 
 #define N_RUNS 20
 #define N 10240000
 // read timer in second
@@ -27,11 +28,21 @@ void init(double *X)
 
 double sum(double *X)
 {
+  int i;
   double result = 0;
-#pragma omp simd  reduction(+ : result)
-  for (int i = 0; i < 10240000; i++) {
-    result += X[i];
+  __m512d __part0 = _mm512_setzero_pd();
+  for (i = 0; i <= 10239999; i += 8) {
+    __m512d __vec1 = _mm512_loadu_pd(&X[i]);
+    __m512d __vec2 = _mm512_add_pd(__vec1,__part0);
+    __part0 = (__vec2);
   }
+  __m256d __buf0 = _mm512_extractf64x4_pd(__part0,0);
+  __m256d __buf1 = _mm512_extractf64x4_pd(__part0,1);
+  __buf1 = _mm256_add_pd(__buf0,__buf1);
+  __buf1 = _mm256_hadd_pd(__buf1,__buf1);
+  double __buf2[4];
+  _mm256_storeu_pd(&__buf2,__buf1);
+  result = __buf2[0] + __buf2[2];
   return result;
 }
 // Debug functions

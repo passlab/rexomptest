@@ -5,6 +5,7 @@
 #include <sys/timeb.h>
 #include <malloc.h>
 #include <math.h>
+#include <immintrin.h> 
 #define REAL float
 
 static double read_timer_ms()
@@ -307,13 +308,16 @@ void jacobi_omp(int n,int m,float dx,float dy,float alpha,float omega,float *u_p
 //printf("===================== iteration %d ===========================\n", k);
 /* Copy new solution into old */
     for (i = 0; i < n; i++) {
-#pragma omp simd 
-      for (j = 0; j < m; j++) 
-        uold[i][j] = u[i][j];
+      for (j = 0; j <= m - 1; j += 16) {
+        float *__ptr0 = uold[i];
+        float *__ptr1 = u[i];
+        __m512 __vec2 = _mm512_loadu_ps(&__ptr1[j]);
+        _mm512_storeu_ps(&__ptr0[j],__vec2);
+      }
     }
     for (i = 1; i < n - 1; i++) {
 #pragma omp simd  reduction(+ : error)
-      for (j = 1; j < m - 1; j++) {
+      for (j = 1; j <= m - 1 - 1; j += 1) {
         resid = (ax * (uold[i - 1][j] + uold[i + 1][j]) + ay * (uold[i][j - 1] + uold[i][j + 1]) + b * uold[i][j] - f[i][j]) / b;
 //printf("i: %d, j: %d, resid: %f\n", i, j, resid);
         u[i][j] = uold[i][j] - omega * resid;
