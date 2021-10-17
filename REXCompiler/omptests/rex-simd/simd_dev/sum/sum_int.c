@@ -18,7 +18,7 @@ double read_timer() {
 //Create a matrix and a vector and fill with random numbers
 void init(int *X) {
     for (int i = 0; i<N; i++) {
-        X[i] = (int)rand()/(int)(RAND_MAX/10.0);
+        X[i] = (int)rand();
     }
 }
 
@@ -48,7 +48,7 @@ int sum_serial(int *X) {
 void print_vector(int *vector) {
     printf("[");
     for (int i = 0; i<8; i++) {
-        printf("%.2f ", vector[i]);
+        printf("%d ", vector[i]);
     }
     puts("]");
 }
@@ -79,9 +79,9 @@ int main(int argc, char **argv) {
     
     print_vector(X);
     puts("=\n");
-    printf("SIMD: %f\n", result);
+    printf("SIMD: %d\n", result);
     puts("---------------------------------");
-    printf("Serial: %f\n", result_serial);
+    printf("Serial: %d\n", result_serial);
     
     double gflops = ((2.0 * N) * N * N_RUNS) / (1.0e9 * t);
     double gflops_serial = ((2.0 * N) * N * N_RUNS) / (1.0e9 * t_serial);
@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
     printf("------------------------------------------------------------------\n");
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
-    printf("Correctness check: %f\n", result_serial - result);
+    printf("Correctness check: %d\n", result_serial - result);
     
     free(X);
     

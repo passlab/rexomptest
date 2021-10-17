@@ -21,7 +21,7 @@ double read_timer()
 void init(int *X)
 {
   for (int i = 0; i < 10240000; i++) {
-    X[i] = ((int )(rand())) / ((int )(2147483647 / 10.0));
+    X[i] = ((int )(rand()));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
@@ -61,7 +61,7 @@ void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
-    printf("%.2f ",vector[i]);
+    printf("%d ",vector[i]);
   }
   puts("]");
 }
@@ -90,9 +90,9 @@ int main(int argc,char **argv)
   t_serial += read_timer() - start_serial;
   print_vector(X);
   puts("=\n");
-  printf("SIMD: %f\n",result);
+  printf("SIMD: %d\n",result);
   puts("---------------------------------");
-  printf("Serial: %f\n",result_serial);
+  printf("Serial: %d\n",result_serial);
   double gflops = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t);
   double gflops_serial = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t_serial);
   printf("==================================================================\n");
@@ -100,7 +100,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("Sum (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("Sum (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",result_serial - result);
+  printf("Correctness check: %d\n",result_serial - result);
   free(X);
   return 0;
 }
