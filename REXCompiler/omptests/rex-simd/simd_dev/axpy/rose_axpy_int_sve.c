@@ -54,7 +54,7 @@ void print_vector(int *vector)
 {
   printf("[");
   for (int i = 0; i < 8; i++) {
-    printf("%.2f ",vector[i]);
+    printf("%d ",vector[i]);
   }
   puts("]");
 }
@@ -75,14 +75,14 @@ int main(int argc,char **argv)
   int *X = (malloc(sizeof(int ) * 102400000));
   int *Y = (malloc(sizeof(int ) * 102400000));
   int *Y_serial = (malloc(sizeof(int ) * 102400000));
-  int a = 3.14;
+  int a = 3;
   srand((time(((void *)0))));
   init(X,Y);
   for (int i = 0; i < 102400000; i++) 
     Y_serial[i] = Y[i];
   print_vector(Y);
   print_vector(X);
-  printf("%.2f\n",a);
+  printf("%d\n",a);
   puts("=\n");
 //warming up
   axpy(X,Y,a);
@@ -110,7 +110,7 @@ int main(int argc,char **argv)
   printf("------------------------------------------------------------------\n");
   printf("AXPY (SIMD):\t\t%4f\t%4f\n",t / 20,gflops);
   printf("AXPY (Serial):\t\t%4f\t%4f\n",t_serial / 20,gflops_serial);
-  printf("Correctness check: %f\n",(check(Y,Y_serial)));
+  printf("Correctness check: %d\n",(check(Y,Y_serial)));
   free(X);
   free(Y);
   free(Y_serial);
