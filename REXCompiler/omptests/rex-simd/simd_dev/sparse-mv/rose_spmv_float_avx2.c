@@ -113,7 +113,7 @@ int main(int argc,char *argv[])
     for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 8) {
       __m256 __vec1 = _mm256_loadu_ps(&a[idx]);
       __m256i __vindex0 = _mm256_loadu_si256((__m256i *)(&ja[idx]));
-      __m256 __vec2 = _mm256_mask_i32gather_ps(__buf0,__mask2,__vindex0,x,4);
+      __m256 __vec2 = _mm256_mmask_i32gather_ps(__buf0,__mask2,__vindex0,x,4);
       __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
       __m256 __vec4 = _mm256_add_ps(__vec3,__part0);
       __part0 = (__vec4);
