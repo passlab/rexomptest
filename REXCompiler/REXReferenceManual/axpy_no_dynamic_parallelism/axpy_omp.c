@@ -64,22 +64,12 @@ void axpy_ompacc(REAL* x, REAL* y, int n, REAL a) {
   for (i = 0; i < n; ++i)
     y[i] += a * x[i];
 */
-#pragma omp target map(tofrom: y[0:n]) map(to: x[0:n])
-  {
-    printf("Parallel Kernel 1\n");
-#pragma omp parallel for
-    for (i = 0; i < n; i++)
-      y[i] += a * x[i];
+//#pragma omp target map(tofrom: y[0:n]) map(to: x[0:n],a,n)
+//#pragma omp parallel for shared(x, y, n, a) private(i)
+#pragma omp target teams distribute parallel for map(tofrom: y[0:n]) map(to: x[0:n],a,n) shared(x, y, n, a) private(i) num_teams(256) num_threads(1024) 
+  for (i = 0; i < n; i++)
+    y[i] += a * x[i];
 
-    printf("Parallel Kernel 2\n");
-#pragma omp parallel for
-    for (i = 0; i < n; i++)
-      y[i] += a * x[i];
-
-    printf("Serial Kernel\n");
-    for (i = 0; i < n; i++)
-      y[i] += a * x[i];
-  }
 }
 
 int main(int argc, char *argv[])

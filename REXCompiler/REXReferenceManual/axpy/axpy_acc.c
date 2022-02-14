@@ -41,10 +41,9 @@ void init(REAL *A, int n)
 
 /*serial version */
 void axpy(REAL* x, REAL* y, long n, REAL a) {
-  int i;
-  #pragma omp target map(to: a, n, x[0:n]) map(tofrom: y[0:n])
-  #pragma omp parallel for num_threads(TEAM_SIZE)
-  for (i = 0; i < n; ++i)
+  //int i;
+  #pragma acc parallel loop copyin(a, n, x[0:n]) copyout(y[0:n]) num_gangs(1) num_workers(1) vector_length(TEAM_SIZE)
+  for (int i = 0; i < n; ++i)
   {
     y[i] += a * x[i];
   }
