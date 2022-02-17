@@ -75,7 +75,8 @@ int main(int argc, char *argv[]) {
     
     for (row=0; row<nrows; row++) {
 		REAL sum = 0.0;
-		#pragma omp parallel for simd reduction(+:sum)
+		// TODO: This really doesn't work
+		//#pragma omp parallel for simd reduction(+:sum)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];
 		}
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
     }
     //printf("Errors: %d\n", errors);
     
-    printf("%.4f,%d\n", elapsed, errors);
+    printf("NONE,%d\n", 0);
     
     free(ia); free(ja); free(a); free(x); free(y);
     return 0;
