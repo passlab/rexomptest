@@ -21,6 +21,8 @@ function build_intel() {
     CURRENT=$2
     
     clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
+    clang -lm -O2 -march=native "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"
+    clang -lm -O2 -march=knl "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec2"
     clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
     clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
     clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"

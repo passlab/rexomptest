@@ -10,11 +10,17 @@
 function run_intel() {
     CSV=$1".csv"
     LAST=$(($2 + 1))
-    echo "Serial,,OpenMP (AVX-2),,OpenMP (AVX-512),,Rex," 1>> $CSV
+    echo "Serial,,Autovec (AVX-2),,Autovec (AVX-512),,OpenMP (AVX-2),,OpenMP (AVX-512),,Rex," 1>> $CSV
     
     for i in 1 .. $2
     do
         ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
         printf "," 1>> $CSV
         
         ./$1/$1"1" | tr -d '\n' 1>> $CSV
@@ -26,7 +32,7 @@ function run_intel() {
         ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
         echo "" 1>> $CSV
     done
-    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST)," 1>> $CSV
+    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST)," 1>> $CSV
 }
 
 # Arm function; this is the same as the Intel
