@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i<N_RUNS; i++) {
         fprintf(stderr, "%d ", i);
         result = sum(X);
+        fprintf(stderr, "(%f)", result);
     }
     fprintf(stderr, "\n");
     t += (read_timer() - start);

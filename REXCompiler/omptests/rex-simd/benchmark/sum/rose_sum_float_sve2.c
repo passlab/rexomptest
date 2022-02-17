@@ -78,6 +78,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     printf("%d ", i);
     result = sum(X);
+    fprintf(stderr, "(%f)", result);
   }
   puts("");
   t += read_timer() - start;

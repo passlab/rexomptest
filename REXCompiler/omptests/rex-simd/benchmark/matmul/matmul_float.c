@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
     for (i=0; i<num_runs; i++) {
         fprintf(stderr, "%d ", i);
         matmul_simd(A, BT, C_simd);
+        fprintf(stderr, "(%f,%f,%f)", C_simd[0], C_simd[N-10], C_simd[N/10]);
     }
     fprintf(stderr, "\n");
     elapsed += (read_timer() - elapsed1);

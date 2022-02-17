@@ -82,6 +82,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     axpy(X,Y,a);
+    fprintf(stderr, "(%f,%f,%f)", Y[0], Y[N-10], Y[N/10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

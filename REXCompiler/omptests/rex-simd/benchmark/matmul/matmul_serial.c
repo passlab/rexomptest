@@ -78,6 +78,7 @@ int main(int argc, char *argv[]) {
     for (i=0; i<num_runs; i++) {
         fprintf(stderr, "%d ", i);
         matmul_serial(A, BT, C_serial);
+        fprintf(stderr, "(%f,%f,%f)", C_serial[0], C_serial[N-10], C_serial[N/10]);
     }
     fprintf(stderr, "\n");
     elapsed += (read_timer() - elapsed1);

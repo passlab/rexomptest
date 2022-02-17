@@ -82,6 +82,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     matvec_simd(matrix,vector,dest_vector);
+    fprintf(stderr, "(%f,%f,%f)", dest_vector[0], dest_vector[N-10], dest_vector[N/10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;
