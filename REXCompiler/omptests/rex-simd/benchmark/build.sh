@@ -13,6 +13,19 @@ function build_arm() {
     armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
 }
 
+# Build on the Intel platform
+#
+# Syntax the same as above
+function build_intel() {
+    cd "$1"
+    CURRENT=$2
+    
+    clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
+    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
+    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
+    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+}
+
 if [ -z "$1" ]; then
     echo "Error: No command line argument specified."
     echo "Please enter \"intel\" or \"arm\"."
@@ -32,12 +45,13 @@ if [[ $1 == "intel" ]] ; then
             echo $CURRENT
             mkdir -p build/$CURRENT
             touch build/$CURRENT/rex_kmp.h
-            (cd "$d" &&
-                clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial" &&
-                clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1" &&
-                clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2" &&
-                clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
-            )
+            (build_intel $d $CURRENT)
+            #(cd "$d" &&
+            #    clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial" &&
+            #    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1" &&
+            #    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2" &&
+            #    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+            #)
         fi
     done
 
