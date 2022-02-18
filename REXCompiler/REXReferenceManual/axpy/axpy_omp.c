@@ -42,7 +42,8 @@ void init(REAL *A, int n)
 /*serial version */
 void axpy(REAL* x, REAL* y, long n, REAL a) {
   int i;
-  #pragma omp target map(to: a, n, x[0:n]) map(tofrom: y[0:n])
+  #pragma omp target teams num_teams(1) map(to: a, n, x[0:n]) map(tofrom: y[0:n])
+  //#pragma omp target map(to: a, n, x[0:n]) map(tofrom: y[0:n])
   #pragma omp parallel for num_threads(TEAM_SIZE)
   for (i = 0; i < n; ++i)
   {
@@ -70,12 +71,15 @@ int main(int argc, char *argv[])
   REAL *y, *x;
   REAL a = 123.456;
 
-  n = VEC_LEN;
-  fprintf(stderr, "Usage: axpy <n>\n");
   if (argc >= 2) {
     n = atoi(argv[1]);
   }
-  y  = (REAL *) malloc(n * sizeof(REAL));
+  else {
+    n = VEC_LEN;
+    fprintf(stderr, "Usage: axpy <n>. By default n = %d\n", n);
+  };
+
+  y = (REAL *) malloc(n * sizeof(REAL));
   x = (REAL *) malloc(n * sizeof(REAL));
 
   srand48(1<<12);
