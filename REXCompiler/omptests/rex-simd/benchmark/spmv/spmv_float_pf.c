@@ -73,10 +73,10 @@ int main(int argc, char *argv[]) {
 
     double elapsed = read_timer();
     
+    #pragma omp parallel for
     for (row=0; row<nrows; row++) {
 		REAL sum = 0.0;
-		// TODO: This really doesn't work
-		//#pragma omp parallel for simd reduction(+:sum)
+		#pragma omp simd reduction(+:sum)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];
 		}

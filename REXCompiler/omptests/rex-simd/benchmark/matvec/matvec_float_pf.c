@@ -27,9 +27,10 @@ void init(float *matrix, float *vector) {
 }
 
 void matvec_simd(float *matrix, float *vector, float *dest) {
+    #pragma omp parallel for
     for (int i = 0; i<N; i++) {
         float tmp = 0;
-        #pragma omp parallel for simd reduction(+: tmp)
+        #pragma omp simd reduction(+: tmp)
         for (int j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }

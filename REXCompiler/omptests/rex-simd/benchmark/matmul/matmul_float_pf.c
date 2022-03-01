@@ -33,10 +33,11 @@ void matmul_simd(float **A, float **B, float **C) {
     int i,j,k;
     float temp;
 
+    #pragma omp parallel for
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             temp = 0;
-            #pragma omp parallel for simd reduction(+:temp)
+            #pragma omp simd reduction(+:temp)
             for (k = 0; k < N; k++) {
                 temp += A[i][k] * B[j][k];
             }
