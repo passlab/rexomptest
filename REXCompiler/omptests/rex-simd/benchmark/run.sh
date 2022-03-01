@@ -29,6 +29,12 @@ function run_intel() {
         ./$1/$1"2" | tr -d '\n' 1>> $CSV
         printf "," 1>> $CSV
         
+        ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
+        printf "," 1>> $CSV
+        
+        ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
+        printf "," 1>> $CSV
+        
         ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
         printf "," 1>> $CSV
         
