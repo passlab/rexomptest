@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     
     double gflops_omp = ((((2.0 * N) * N) * N * num_runs) / (1.0e9 * elapsed));
     
-    printf("%4f,\n", elapsed/num_runs);
+    printf("%4f,0\n", elapsed/num_runs);
     
     return 0;
 }
