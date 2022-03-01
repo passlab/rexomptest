@@ -30,6 +30,10 @@ function build_intel() {
     clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
     
     # OpenMP SIMD Parallel for
+    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"1_p"
+    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"2_p"
+    
+    # OpenMP SIMD Parallel for with SIMD
     clang -fopenmp -O2 -lm -march=native "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"1_pf"
     clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
     
