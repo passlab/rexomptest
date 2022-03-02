@@ -4,6 +4,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <immintrin.h> 
 #define N_RUNS 20
 #define N 102400000
 // read timer in second

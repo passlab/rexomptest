@@ -8,6 +8,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <immintrin.h> 
 #define N 1024
 //#define N 16
 // read timer in second
