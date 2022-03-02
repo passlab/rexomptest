@@ -39,6 +39,8 @@ function build_intel() {
     
     # Rex builds
     clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_p_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_p"
+    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_pf_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
 
 if [ -z "$1" ]; then
