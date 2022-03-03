@@ -15,21 +15,39 @@ function run_intel() {
     for i in $(seq 1 $2)
     do
         ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"1" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"2" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
@@ -39,18 +57,33 @@ function run_intel() {
         printf "," 1>> $CSV
         
         ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"2_pf" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         echo "" 1>> $CSV
     done
     echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST),,=AVERAGE(M2:M$LAST),,=AVERAGE(O2:O$LAST),,=AVERAGE(Q2:Q$LAST),,=AVERAGE(S2:S$LAST),,=AVERAGE(U2:U$LAST),,=AVERAGE(W2:W$LAST)," 1>> $CSV
