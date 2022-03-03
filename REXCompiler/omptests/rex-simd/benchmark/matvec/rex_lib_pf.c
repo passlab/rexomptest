@@ -34,8 +34,8 @@ void OUT__1__3684__matvec_simd__30__(int *__global_tid,int *__bound_tid,float **
   if (__upper_ > 10239) 
     __upper_ = 10239;
   for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
-    typedef int __m256;
-    typedef int __m512;
+    //typedef int __m256;
+    //typedef int __m512;
     float tmp = (float )0;
     __m512 __part0 = _mm512_setzero_ps();
     for ( *j = 0;  *j <= 10239;  *j += 16) {

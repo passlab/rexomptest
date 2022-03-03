@@ -21,7 +21,7 @@ float check(float **,float **);
 // Main
 int main(int ,char *[]);
 
-void OUT__1__3684__matmul_simd__37__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__,int *ip__,float *tempp__)
+void OUT__1__3684__matmul_simd__36__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__,int *ip__,float *tempp__)
 {
   float ***A = (float ***)Ap__;
   float ***B = (float ***)Bp__;

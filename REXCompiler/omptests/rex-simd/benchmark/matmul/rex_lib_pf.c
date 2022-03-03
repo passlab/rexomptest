@@ -41,8 +41,8 @@ void OUT__1__3684__matmul_simd__36__(int *__global_tid,int *__bound_tid,float **
     __upper_ = 1023;
   for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
     for (_p_j = 0; _p_j < 1024; _p_j++) {
-      typedef int __m256;
-      typedef int __m512;
+      //typedef int __m256;
+      //typedef int __m512;
        *temp = ((float )0);
       __m512 __part0 = _mm512_setzero_ps();
       for (_p_k = 0; _p_k <= 1023; _p_k += 16) {

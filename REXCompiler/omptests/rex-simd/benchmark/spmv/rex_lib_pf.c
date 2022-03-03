@@ -38,9 +38,9 @@ void OUT__1__3684__main__76__(int *__global_tid,int *__bound_tid,int **iap__,int
   if (__upper_ >  *nrows - 1) 
     __upper_ =  *nrows - 1;
   for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
-    typedef int __m256;
+    /*typedef int __m256;
     typedef int __m512i;
-    typedef int __m512;
+    typedef int __m512;*/
     float sum = (float )0.0;
     __mmask16 __mask0;
     __mmask16 __mask1;
