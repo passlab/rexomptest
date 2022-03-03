@@ -33,6 +33,9 @@ function run_intel() {
         printf "," 1>> $CSV
         
         ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
+	if [[ ${PIPESTATUS[0]} != 0 ]]; then
+		printf "SEG,0" 1>> $CSV
+	fi
         printf "," 1>> $CSV
         
         ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
