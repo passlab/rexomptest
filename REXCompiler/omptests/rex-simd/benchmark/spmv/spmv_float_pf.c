@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
     }
     //printf("Errors: %d\n", errors);
     
-    printf("NONE,%d\n", 0);
+    printf("%.4f,%d\n", elapsed, errors);
     
     free(ia); free(ja); free(a); free(x); free(y);
     return 0;
