@@ -8,6 +8,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <arm_sve.h> 
 #define N 1024
 //#define N 16
 // read timer in second
@@ -43,8 +44,8 @@ void OUT__1__3684__matmul_simd__36__(int *__global_tid,int *__bound_tid,float **
        *temp = ((float )0);
       svbool_t __pg0 = svwhilelt_b32(0,1023);
       for (_p_k = 0; _p_k <= 1023; _p_k += svcntw()) {
-        typedef int svfloat32_t;
-        typedef int svbool_t;
+        //typedef int svfloat32_t;
+        //typedef int svbool_t;
         float *__ptr0 = ( *A)[__index_];
         svfloat32_t __vec1 = svld1(__pg0,&__ptr0[_p_k]);
         float *__ptr2 = ( *B)[_p_j];

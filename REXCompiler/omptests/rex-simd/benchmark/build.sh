@@ -7,6 +7,10 @@ function build_arm() {
     cd "$1"
     CURRENT=$2
     
+    echo ""
+    echo $CURRENT
+    echo ""
+    
     # Serial
     armclang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
     armclang -lm -O2 -march=armv8-a+sve "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"

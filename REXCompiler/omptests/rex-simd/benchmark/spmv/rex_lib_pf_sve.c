@@ -4,6 +4,7 @@
 #include <string.h>
 // Add timing support
 #include <sys/timeb.h>
+#include <arm_sve.h> 
 #define REAL float
 #include "rex_kmp.h" 
 double read_timer();
@@ -40,9 +41,9 @@ void OUT__1__3684__main__76__(int *__global_tid,int *__bound_tid,int **iap__,int
     float sum = (float )0.0;
     svbool_t __pg0 = svwhilelt_b32(0,( *ia)[__index_ + 1] - 1);
     for (_p_idx = ( *ia)[__index_]; _p_idx <= ( *ia)[__index_ + 1] - 1; _p_idx += svcntw()) {
-      typedef int svint32_t;
+      /*typedef int svint32_t;
       typedef int svfloat32_t;
-      typedef int svbool_t;
+      typedef int svbool_t;*/
       svfloat32_t __vec0 = svld1(__pg0,&( *a)[_p_idx]);
       svint32_t __vindex0 = svld1(__pg0,&( *ja)[_p_idx]);
       svfloat32_t __vec1 = svld1_gather_index(__pg0, *x,__vindex0);
