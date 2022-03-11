@@ -12,9 +12,17 @@ function build_arm() {
     armclang -lm -O2 -march=armv8-a+sve "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"
     armclang -lm -O2 -march=armv8-a+sve -ffp-model=fast "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec2"
     
-    # OpenMP
+    # OpenMP SIMD
     armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
     armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
+    
+    # OpenMP SIMD Parallel for
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"1_p"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"2_p"
+    
+    # OpenMP SIMD Parallel for with SIMD
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"1_pf"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
     
     # Rex Builds
     armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
