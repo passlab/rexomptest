@@ -93,7 +93,7 @@ function run_intel() {
 function run_arm() {
     CSV=$1"_arm.csv"
     LAST=$(($2 + 1))
-    echo "Serial,,Autovec,,Autovec (faddv),,OMP SIMD,,OMP SIMD (faddv),,OMP Parallel For,,OMP Parallel For (faddv),,OMP SIMD/Parallel For,,OMP SIMD/Parallel For (faddv),,Rex (SIMD)," 1>> $CSV
+    echo "Serial,,Autovec,,Autovec (faddv),,OMP SIMD,,OMP SIMD (faddv),,OMP Parallel For,,OMP Parallel For (faddv),,OMP SIMD/Parallel For,,OMP SIMD/Parallel For (faddv),,Rex (SIMD),,Rex (Parallel),,Rex (Parallel SIMD)," 1>> $CSV
 
     for i in $(seq 1 $2)
     do
@@ -155,9 +155,21 @@ function run_arm() {
         if [[ ${PIPESTATUS[0]} != 0 ]]; then
             printf "SEG,0" 1>> $CSV
         fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG,0" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG,0" 1>> $CSV
+        fi
         echo "" 1>> $CSV
     done
-    "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST),,=AVERAGE(M2:M$LAST),,=AVERAGE(O2:O$LAST),,=AVERAGE(Q2:Q$LAST),,=AVERAGE(S2:S$LAST)," 1>> $CSV
+    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST),,=AVERAGE(M2:M$LAST),,=AVERAGE(O2:O$LAST),,=AVERAGE(Q2:Q$LAST),,=AVERAGE(S2:S$LAST),,=AVERAGE(U2:U$LAST),,=AVERAGE(W2:W$LAST)," 1>> $CSV
 }
 
 # Make sure we have a command line argument

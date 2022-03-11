@@ -26,6 +26,8 @@ function build_arm() {
     
     # Rex Builds
     armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_p_sve.c rex_lib_p_sve.c -o ../build/$CURRENT/$CURRENT"_rex_p"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_pf_sve.c rex_lib_pf_sve.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
 
 # Build on the Intel platform
