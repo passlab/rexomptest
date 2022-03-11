@@ -7,9 +7,16 @@ function build_arm() {
     cd "$1"
     CURRENT=$2
     
-    armclang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial" &&
-    armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1" &&
-    armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2" &&
+    # Serial
+    armclang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
+    armclang -lm -O2 -march=armv8-a+sve "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"
+    armclang -lm -O2 -march=armv8-a+sve -ffp-model=fast "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec2"
+    
+    # OpenMP
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
+    
+    # Rex Builds
     armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
 }
 

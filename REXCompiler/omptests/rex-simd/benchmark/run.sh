@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Params: $1 = $CSV
+function check_error() {
+    $1=$CSV
+    if [[ ${PIPESTATUS[0]} != 0 ]]; then
+        printf "SEG,0" 1>> $CSV
+    fi
+}
+
 # <prog>_serial -> This is the serial, unoptimized version
 # <prog>1 -->    This is compiler-generated (generally AVX512)
 # <prog>2 -->    This is forced AVX-512 (knl flag)
@@ -93,23 +101,35 @@ function run_intel() {
 function run_arm() {
     CSV=$1"_arm.csv"
     LAST=$(($2 + 1))
-    echo "Serial,,OpenMP (SVE2),,OpenMP (SVE2 with faddv),,Rex," 1>> $CSV
+    echo "Serial,,Autovec,,Auotvec (faddv),,OpenMP (SVE2),,OpenMP (SVE2 with faddv),,Rex," 1>> $CSV
 
     for i in $(seq 1 $2)
     do
         ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
+        check_error $CSV
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
+        check_error $CSV
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
+        check_error $CSV
         printf "," 1>> $CSV
         
         ./$1/$1"1" | tr -d '\n' 1>> $CSV
+        check_error $CSV
         printf "," 1>> $CSV
         
         ./$1/$1"2" | tr -d '\n' 1>> $CSV
+        check_error $CSV
         printf "," 1>> $CSV
         
         ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
+        check_error $CSV
         echo "" 1>> $CSV
     done
-    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST)," 1>> $CSV
+    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST)," 1>> $CSV
 }
 
 # Make sure we have a command line argument
