@@ -33,8 +33,8 @@ void matmul_simd(float **A, float **B, float **C) {
     int i,j,k;
     float temp;
 
+    #pragma omp parallel for private(i, j, k, temp)
     for (i = 0; i < N; i++) {
-	#pragma omp parallel for
         for (j = 0; j < N; j++) {
             temp = 0;
             for (k = 0; k < N; k++) {
