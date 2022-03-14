@@ -36,7 +36,7 @@ void matmul_simd(float **A, float **B, float **C) {
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             temp = 0;
-            #pragma omp simd reduction(+:temp)
+            #pragma omp simd reduction(+:temp) private(k) shared(N, A, B, C)
             for (k = 0; k < N; k++) {
                 temp += A[i][k] * B[j][k];
             }
