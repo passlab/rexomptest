@@ -17,7 +17,7 @@ double read_timer() {
 
 //Create a matrix and a vector and fill with random numbers
 void init(float *X) {
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         X[i] = (float)rand()/(float)(RAND_MAX/10.0);
     }
 }
@@ -27,7 +27,7 @@ float sum(float *X) {
     float result = 0;
     
     #pragma omp simd reduction(+:result)
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         result += X[i];
     }
     
@@ -38,7 +38,7 @@ float sum(float *X) {
 float sum_serial(float *X) {
     float result = 0;
     
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         result += X[i];
     }
     

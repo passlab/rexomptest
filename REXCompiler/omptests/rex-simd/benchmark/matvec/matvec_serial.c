@@ -17,8 +17,8 @@ double read_timer() {
 
 //Create a matrix and a vector and fill with random numbers
 void init(float *matrix, float *vector) {
-    for (int i = 0; i<N; i++) {
-        for (int j = 0; j<N; j++) {
+    for (size_t i = 0; i<N; i++) {
+        for (size_t j = 0; j<N; j++) {
             matrix[i*N+j] = (float)rand()/(float)(RAND_MAX/10.0);
         }
         
@@ -27,9 +27,9 @@ void init(float *matrix, float *vector) {
 }
 
 void matvec_serial(float *matrix, float *vector, float *dest) {
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         float tmp = 0;
-        for (int j = 0; j<N; j++) {
+        for (size_t j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }
         dest[i] = tmp;

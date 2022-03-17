@@ -17,7 +17,7 @@ double read_timer() {
 
 //Create a matrix and a vector and fill with random numbers
 void init(float *X, float *Y) {
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         X[i] = (float)rand()/(float)(RAND_MAX/10.0);
         Y[i] = (float)rand()/(float)(RAND_MAX/10.0);
     }
@@ -25,22 +25,22 @@ void init(float *X, float *Y) {
 
 //Our sum function- what it does is pretty straight-forward.
 void axpy(float *X, float *Y, float a) {
-    #pragma omp parallel for simd
-    for (int i = 0; i<N; i++) {
+    #pragma omp parallel for simd private(i) shared(a, X, Y)
+    for (size_t i = 0; i<N; i++) {
         Y[i] += a * X[i];
     }
 }
 
 // Debug functions
 void axpy_serial(float *X, float *Y, float a) {
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         Y[i] += a * X[i];
     }
 }
 
 float check(float *A, float *B){
     float difference = 0;
-    for(int i = 0;i<N; i++){
+    for(size_t i = 0;i<N; i++){
         difference += A[i]- B[i];
     }
     return difference;

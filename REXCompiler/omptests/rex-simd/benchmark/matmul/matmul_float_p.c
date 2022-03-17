@@ -20,9 +20,8 @@ double read_timer() {
 }
 
 void init(float **A) {
-    int i, j;
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             A[i][j] = (float)rand()/(float)(RAND_MAX/10.0);
         }
     }
@@ -30,14 +29,13 @@ void init(float **A) {
 
 
 void matmul_simd(float **A, float **B, float **C) {
-    int i,j,k;
     float temp;
 
-    #pragma omp parallel for private(i, j, k, temp)
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
+    #pragma omp parallel for private(i, j, k, temp) shared(A,B,C)
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             temp = 0;
-            for (k = 0; k < N; k++) {
+            for (size_t k = 0; k < N; k++) {
                 temp += A[i][k] * B[j][k];
             }
             C[i][j] = temp;
@@ -46,13 +44,12 @@ void matmul_simd(float **A, float **B, float **C) {
 }
 
 void matmul_serial(float **A, float **B, float **C) {
-    int i,j,k;
     float temp;
 
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             temp = 0;
-            for (k = 0; k < N; k++) {
+            for (size_t k = 0; k < N; k++) {
                 temp += A[i][k] * B[j][k];
             }
             C[i][j] = temp;
@@ -62,8 +59,8 @@ void matmul_serial(float **A, float **B, float **C) {
 
 float check(float **A, float **B){
     float difference = 0;
-    for(int i = 0;i<N; i++){
-        for (int j = 0; j<N; j++)
+    for(size_t i = 0;i<N; i++){
+        for (size_t j = 0; j<N; j++)
         { difference += A[i][j]- B[i][j];}
     }
     return difference;
@@ -78,7 +75,7 @@ int main(int argc, char *argv[]) {
     float **C_serial = malloc(sizeof(float*)*N);
     float **BT = malloc(sizeof(float*)*N);
     
-    for (int i = 0; i<N; i++) {
+    for (size_t i = 0; i<N; i++) {
         A[i] = malloc(sizeof(float)*N);
         B[i] = malloc(sizeof(float)*N);
         C_simd[i] = malloc(sizeof(float)*N);
@@ -90,12 +87,11 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
     init(A);
     init(B);
-    for(int line = 0; line<N; line++){
+    for(size_t line = 0; line<N; line++){
         for(int col = 0; col<N; col++){
             BT[line][col] = B[col][line];
         }
     }
-    int i;
     int num_runs = 20;
     
     //Warming up
@@ -105,7 +101,7 @@ int main(int argc, char *argv[]) {
 
     double elapsed = 0;
     double elapsed1 = read_timer();
-    for (i=0; i<num_runs; i++) {
+    for (int i=0; i<num_runs; i++) {
         fprintf(stderr, "%d ", i);
         matmul_simd(A, BT, C_simd);
         fprintf(stderr, "(%f,%f,%f)", C_simd[0], C_simd[N-10], C_simd[N/10]);
@@ -115,7 +111,7 @@ int main(int argc, char *argv[]) {
     
     double elapsed_serial = 0;
     double elapsed_serial1 = read_timer();
-    for (i=0; i<num_runs; i++)
+    for (int i=0; i<num_runs; i++)
         matmul_serial(A, BT, C_serial);
     elapsed_serial += (read_timer() - elapsed_serial1);
     
