@@ -4,6 +4,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <math.h>
 #include <arm_sve.h> 
 #define N_RUNS 20
 #define N 10240
@@ -19,8 +20,8 @@ double read_timer()
 
 void init(float *matrix,float *vector)
 {
-  for (int i = 0; i < 10240; i++) {
-    for (int j = 0; j < 10240; j++) {
+  for (size_t i = 0; i < 10240; i++) {
+    for (size_t j = 0; j < 10240; j++) {
       matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     }
     vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
@@ -29,16 +30,16 @@ void init(float *matrix,float *vector)
 
 void matvec_simd(float *matrix,float *vector,float *dest)
 {
-  int j;
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
-    svbool_t __pg0 = svwhilelt_b32(0,10239);
-    for (j = 0; j <= 10239; j += svcntw()) {
-      svfloat32_t __vec0 = svld1(__pg0,&matrix[i * 10240 + j]);
+    size_t j = 0;
+    svbool_t __pg0 = svwhilelt_b32_u64(0,((unsigned long )10240) - 1);
+    for (j = 0; j <= ((unsigned long )10240) - 1; j += svcntw()) {
+      svfloat32_t __vec0 = svld1(__pg0,&matrix[i * ((unsigned long )10240) + j]);
       svfloat32_t __vec1 = svld1(__pg0,&vector[j]);
       svfloat32_t __vec2 = svmul_f32_m(__pg0,__vec1,__vec0);
       tmp += svaddv(__pg0,__vec2);
-      __pg0 = svwhilelt_b32(j,10239);
+      __pg0 = svwhilelt_b32_u64(j,((unsigned long )10240) - 1);
     }
     dest[i] = tmp;
   }
@@ -47,9 +48,9 @@ void matvec_simd(float *matrix,float *vector,float *dest)
 
 void matvec_serial(float *matrix,float *vector,float *dest)
 {
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
-    for (int j = 0; j < 10240; j++) {
+    for (size_t j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
     dest[i] = tmp;
@@ -59,8 +60,8 @@ void matvec_serial(float *matrix,float *vector,float *dest)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 10240; i++) {
-    difference += (fabsf((A[i] - B[i])));
+  for (size_t i = 0; i < 10240; i++) {
+    difference += fabsf(A[i] - B[i]);
   }
   return difference;
 }
@@ -82,7 +83,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     matvec_simd(matrix,vector,dest_vector);
-    fprintf(stderr, "(%f,%f,%f)", dest_vector[0], dest_vector[N-10], dest_vector[N/10]);
+    fprintf(stderr,"(%f,%f,%f)",dest_vector[0],dest_vector[10240 - 10],dest_vector[10240 / 10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

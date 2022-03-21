@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X)
 {
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
@@ -28,10 +28,10 @@ void init(float *X)
 
 float sum(float *X)
 {
-  int i;
+  size_t i;
   float result = 0;
   __m512 __part0 = _mm512_setzero_ps();
-  for (i = 0; i <= 10239999; i += 16) {
+  for (i = ((size_t )0); i <= ((unsigned long )10240000) - 1; i += 16) {
     __m512 __vec1 = _mm512_loadu_ps(&X[i]);
     __m512 __vec2 = _mm512_add_ps(__vec1,__part0);
     __part0 = (__vec2);
@@ -51,7 +51,7 @@ float sum(float *X)
 float sum_serial(float *X)
 {
   float result = 0;
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
@@ -74,7 +74,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     result = sum(X);
-    fprintf(stderr, "(%f)", result);
+    fprintf(stderr,"(%f)",result);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

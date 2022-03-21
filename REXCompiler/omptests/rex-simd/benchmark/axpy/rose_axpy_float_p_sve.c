@@ -19,28 +19,28 @@ double read_timer()
 
 void init(float *X,float *Y)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     Y[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
-extern void OUT__1__3684__axpy__28__(int *__global_tid,int *__bound_tid,float **Xp__,float **Yp__,float *ap__);
+extern void OUT__1__3684__axpy__29__(int *__global_tid,int *__bound_tid,float **Xp__,float **Yp__,float *ap__);
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
+  size_t i = 0;
   void *__out_argv1__3684__[3];
   __out_argv1__3684__[0] = ((void *)(&a));
   __out_argv1__3684__[1] = ((void *)(&Y));
   __out_argv1__3684__[2] = ((void *)(&X));
-  __kmpc_fork_call(0,3,OUT__1__3684__axpy__28__,&X,&Y,&a);
+  __kmpc_fork_call(0,3,OUT__1__3684__axpy__29__,&X,&Y,&a);
 }
 // Debug functions
 
 void axpy_serial(float *X,float *Y,float a)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     Y[i] += a * X[i];
   }
 }
@@ -48,7 +48,7 @@ void axpy_serial(float *X,float *Y,float a)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     difference += A[i] - B[i];
   }
   return difference;

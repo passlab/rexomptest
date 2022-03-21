@@ -42,26 +42,26 @@ function build_intel() {
     CURRENT=$2
     
     # Serial
-    clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
-    clang -lm -O2 -march=native "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"
-    clang -lm -O2 -march=knl "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec2"
+    clang-12 -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial"
+    clang-12 -lm -O2 -march=native "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec1"
+    clang-12 -lm -O2 -march=knl "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_autovec2"
     
     # OpenMP SIMD
-    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
-    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
+    clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
+    clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
     
     # OpenMP SIMD Parallel for
-    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"1_p"
-    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"2_p"
+    clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"1_p"
+    clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"2_p"
     
     # OpenMP SIMD Parallel for with SIMD
-    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"1_pf"
-    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
+    clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"1_pf"
+    clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
     
     # Rex builds
-    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
-    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_p_avx512.c rex_lib_p.c -o ../build/$CURRENT/$CURRENT"_rex_p"
-    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_pf_avx512.c rex_lib_pf.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
+    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_p_avx512.c rex_lib_p.c -o ../build/$CURRENT/$CURRENT"_rex_p"
+    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_pf_avx512.c rex_lib_pf.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
 
 if [ -z "$1" ]; then

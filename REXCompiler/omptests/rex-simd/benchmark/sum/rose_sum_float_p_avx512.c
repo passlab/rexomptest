@@ -19,21 +19,21 @@ double read_timer()
 
 void init(float *X)
 {
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
 //Our sum function- what it does is pretty straight-forward.
-extern void OUT__1__3684__sum__29__(int *__global_tid,int *__bound_tid,float **Xp__,float *resultp__);
+extern void OUT__1__3684__sum__30__(int *__global_tid,int *__bound_tid,float **Xp__,float *resultp__);
 
 float sum(float *X)
 {
-  int i;
   float result = 0;
+  size_t i = 0;
   void *__out_argv1__3684__[2];
   __out_argv1__3684__[0] = ((void *)(&result));
   __out_argv1__3684__[1] = ((void *)(&X));
-  __kmpc_fork_call(0,2,OUT__1__3684__sum__29__,&X,&result);
+  __kmpc_fork_call(0,2,OUT__1__3684__sum__30__,&X,&result);
   return result;
 }
 // Debug functions
@@ -41,7 +41,7 @@ float sum(float *X)
 float sum_serial(float *X)
 {
   float result = 0;
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;

@@ -4,6 +4,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
+#include <math.h>
 #include <immintrin.h> 
 #define N_RUNS 20
 #define N 10240
@@ -19,8 +20,8 @@ double read_timer()
 
 void init(float *matrix,float *vector)
 {
-  for (int i = 0; i < 10240; i++) {
-    for (int j = 0; j < 10240; j++) {
+  for (size_t i = 0; i < 10240; i++) {
+    for (size_t j = 0; j < 10240; j++) {
       matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     }
     vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
@@ -29,12 +30,12 @@ void init(float *matrix,float *vector)
 
 void matvec_simd(float *matrix,float *vector,float *dest)
 {
-  int j;
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
+    size_t j = 0;
     __m512 __part0 = _mm512_setzero_ps();
-    for (j = 0; j <= 10239; j += 16) {
-      __m512 __vec1 = _mm512_loadu_ps(&matrix[i * 10240 + j]);
+    for (j = 0; j <= ((unsigned long )10240) - 1; j += 16) {
+      __m512 __vec1 = _mm512_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
       __m512 __vec2 = _mm512_loadu_ps(&vector[j]);
       __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
       __m512 __vec4 = _mm512_add_ps(__vec3,__part0);
@@ -55,9 +56,9 @@ void matvec_simd(float *matrix,float *vector,float *dest)
 
 void matvec_serial(float *matrix,float *vector,float *dest)
 {
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
-    for (int j = 0; j < 10240; j++) {
+    for (size_t j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
     dest[i] = tmp;
@@ -67,8 +68,8 @@ void matvec_serial(float *matrix,float *vector,float *dest)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 10240; i++) {
-    difference += (fabsf((A[i] - B[i])));
+  for (size_t i = 0; i < 10240; i++) {
+    difference += fabsf(A[i] - B[i]);
   }
   return difference;
 }
@@ -90,7 +91,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     matvec_simd(matrix,vector,dest_vector);
-    fprintf(stderr, "(%f,%f,%f)", dest_vector[0], dest_vector[N-10], dest_vector[N/10]);
+    fprintf(stderr,"(%f,%f,%f)",dest_vector[0],dest_vector[10240 - 10],dest_vector[10240 / 10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

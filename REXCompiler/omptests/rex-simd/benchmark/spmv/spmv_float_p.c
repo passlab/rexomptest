@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 
     double elapsed = read_timer();
     
-    #pragma omp parallel for private(row, idx, sum) shared(y)
+    #pragma omp parallel for private(row, idx) shared(y)
     for (row=0; row<nrows; row++) {
 		REAL sum = 0.0;
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {

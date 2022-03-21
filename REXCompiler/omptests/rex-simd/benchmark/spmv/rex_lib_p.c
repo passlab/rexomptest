@@ -4,7 +4,6 @@
 #include <string.h>
 // Add timing support
 #include <sys/timeb.h>
-#include <immintrin.h> 
 #define REAL float
 #include "rex_kmp.h" 
 double read_timer();

@@ -8,7 +8,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <immintrin.h>
 #define N 1024
 //#define N 16
 // read timer in second
@@ -21,31 +21,30 @@ float check(float **,float **);
 // Main
 int main(int ,char *[]);
 
-void OUT__1__3684__matmul_simd__36__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__,float *tempp__)
+void OUT__1__3684__matmul_simd__34__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__)
 {
   float ***A = (float ***)Ap__;
   float ***B = (float ***)Bp__;
   float ***C = (float ***)Cp__;
-  float *temp = (float *)tempp__;
-  int _p_i;
-  int _p_j;
-  int _p_k;
+  size_t _p_i;
+  size_t _p_j;
+  size_t _p_k;
   int __index_;
-  int __lower_ = 0;
-  int __upper_ = 1023;
+  int __lower_ = (size_t )0;
+  int __upper_ = ((unsigned long )1024) - 1;
   int __stride_ = 1;
   int __last_iter_ = 0;
-  int __global_tid_matmul_simd_36_0 = __kmpc_global_thread_num(0);
-  __kmpc_for_static_init_4(0,__global_tid_matmul_simd_36_0,34,&__last_iter_,&__lower_,&__upper_,&__stride_,1,1);
-  if (__upper_ > 1023) 
-    __upper_ = 1023;
+  int __global_tid_matmul_simd_34_0 = __kmpc_global_thread_num(0);
+  __kmpc_for_static_init_4(0,__global_tid_matmul_simd_34_0,34,&__last_iter_,&__lower_,&__upper_,&__stride_,1,1);
+  if (__upper_ > ((unsigned long )1024) - 1) 
+    __upper_ = ((unsigned long )1024) - 1;
   for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
-    for (_p_j = 0; _p_j < 1024; _p_j++) {
+    for (_p_j = ((size_t )0); _p_j < ((unsigned long )1024); _p_j++) {
       //typedef int __m256;
       //typedef int __m512;
-       *temp = ((float )0);
+      float temp = (float )0;
       __m512 __part0 = _mm512_setzero_ps();
-      for (_p_k = 0; _p_k <= 1023; _p_k += 16) {
+      for (_p_k = ((size_t )0); _p_k <= ((unsigned long )1024) - 1; _p_k += 16) {
         float *__ptr1 = ( *A)[__index_];
         __m512 __vec2 = _mm512_loadu_ps(&__ptr1[_p_k]);
         float *__ptr3 = ( *B)[_p_j];
@@ -61,10 +60,10 @@ void OUT__1__3684__matmul_simd__36__(int *__global_tid,int *__bound_tid,float **
       __buf1 = _mm256_hadd_ps(__buf1,__buf1);
       float __buf2[8];
       _mm256_storeu_ps(&__buf2,__buf1);
-       *temp = __buf2[0] + __buf2[6];
-      ( *C)[__index_][_p_j] =  *temp;
+      temp = __buf2[0] + __buf2[6];
+      ( *C)[__index_][_p_j] = temp;
     }
   }
-  __kmpc_for_static_fini(0,__global_tid_matmul_simd_36_0);
-  __kmpc_barrier(0,__global_tid_matmul_simd_36_0);
+  __kmpc_for_static_fini(0,__global_tid_matmul_simd_34_0);
+  __kmpc_barrier(0,__global_tid_matmul_simd_34_0);
 }

@@ -48,7 +48,7 @@ void OUT__1__3684__main__76__(int *__global_tid,int *__bound_tid,int **iap__,int
     __m512 __buf0 = _mm512_setzero_ps();
     __m512 __part0 = _mm512_setzero_ps();
     for (_p_idx = ( *ia)[__index_]; _p_idx <= ( *ia)[__index_ + 1] - 1; _p_idx += 16) {
-      typedef int __mmask16;
+      //typedef int __mmask16;
       __m512 __vec1 = _mm512_loadu_ps(&( *a)[_p_idx]);
       __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&( *ja)[_p_idx]));
       __m512 __vec2 = _mm512_mask_i32gather_ps(__buf0,__mask2,__vindex0, *x,4);

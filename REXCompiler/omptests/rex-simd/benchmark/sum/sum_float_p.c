@@ -25,9 +25,10 @@ void init(float *X) {
 //Our sum function- what it does is pretty straight-forward.
 float sum(float *X) {
     float result = 0;
+    size_t i = 0;
     
     #pragma omp parallel for reduction(+:result) private(i) shared(X)
-    for (size_t i = 0; i<N; i++) {
+    for (i = 0; i<N; i++) {
         result += X[i];
     }
     

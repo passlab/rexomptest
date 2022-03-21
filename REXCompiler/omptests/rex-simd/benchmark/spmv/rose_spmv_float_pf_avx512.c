@@ -122,7 +122,7 @@ int main(int argc,char *argv[])
     }
   }
 //printf("Errors: %d\n", errors);
-  printf("%.4f,%d\n", elapsed, errors);
+  printf("%.4f,%d\n",elapsed,errors);
   free(ia);
   free(ja);
   free(a);

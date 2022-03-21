@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X,float *Y)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     Y[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
@@ -29,23 +29,23 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
-  svbool_t __pg0 = svwhilelt_b32(0,102399999);
+  size_t i = 0;
+  svbool_t __pg0 = svwhilelt_b32_u64(0,((unsigned long )102400000) - 1);
   svfloat32_t __vec1 = svdup_f32(a);
-  for (i = 0; i <= 102399999; i += svcntw()) {
+  for (i = 0; i <= ((unsigned long )102400000) - 1; i += svcntw()) {
     svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
     svfloat32_t __vec2 = svld1(__pg0,&X[i]);
     svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
     svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
     svst1(__pg0,&Y[i],__vec4);
-    __pg0 = svwhilelt_b32(i,102399999);
+    __pg0 = svwhilelt_b32_u64(i,((unsigned long )102400000) - 1);
   }
 }
 // Debug functions
 
 void axpy_serial(float *X,float *Y,float a)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     Y[i] += a * X[i];
   }
 }
@@ -53,7 +53,7 @@ void axpy_serial(float *X,float *Y,float a)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     difference += A[i] - B[i];
   }
   return difference;
@@ -82,7 +82,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     axpy(X,Y,a);
-    fprintf(stderr, "(%f,%f,%f)", Y[0], Y[N-10], Y[N/10]);
+    fprintf(stderr,"(%f,%f,%f)",Y[0],Y[102400000 - 10],Y[102400000 / 10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

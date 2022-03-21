@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X)
 {
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
@@ -28,13 +28,13 @@ void init(float *X)
 
 float sum(float *X)
 {
-  int i;
+  size_t i;
   float result = 0;
-  svbool_t __pg0 = svwhilelt_b32(0,10239999);
-  for (i = 0; i <= 10239999; i += svcntw()) {
+  svbool_t __pg0 = svwhilelt_b32_u64(0,((unsigned long )10240000) - 1);
+  for (i = ((size_t )0); i <= ((unsigned long )10240000) - 1; i += svcntw()) {
     svfloat32_t __vec0 = svld1(__pg0,&X[i]);
     result += svaddv(__pg0,__vec0);
-    __pg0 = svwhilelt_b32(i,10239999);
+    __pg0 = svwhilelt_b32_u64(i,((unsigned long )10240000) - 1);
   }
   return result;
 }
@@ -43,7 +43,7 @@ float sum(float *X)
 float sum_serial(float *X)
 {
   float result = 0;
-  for (int i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240000; i++) {
     result += X[i];
   }
   return result;
@@ -66,7 +66,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     result = sum(X);
-    fprintf(stderr, "(%f)", result);
+    fprintf(stderr,"(%f)",result);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

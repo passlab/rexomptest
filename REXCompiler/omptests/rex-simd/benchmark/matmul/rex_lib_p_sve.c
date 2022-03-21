@@ -20,31 +20,33 @@ float check(float **,float **);
 // Main
 int main(int ,char *[]);
 
-void OUT__1__3684__matmul_simd__37__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__,int *ip__,float *tempp__)
+void OUT__1__3684__matmul_simd__35__(int *__global_tid,int *__bound_tid,float ***Ap__,float ***Bp__,float ***Cp__,float *tempp__)
 {
   float ***A = (float ***)Ap__;
   float ***B = (float ***)Bp__;
   float ***C = (float ***)Cp__;
-  int *i = (int *)ip__;
   float *temp = (float *)tempp__;
-  int _p_j;
-  int _p_k;
+  size_t _p_i;
+  size_t _p_j;
+  size_t _p_k;
   int __index_;
-  int __lower_ = 0;
-  int __upper_ = 1023;
+  int __lower_ = (size_t )0;
+  int __upper_ = ((unsigned long )1024) - 1;
   int __stride_ = 1;
   int __last_iter_ = 0;
-  int __global_tid_matmul_simd_37_0 = __kmpc_global_thread_num(0);
-  __kmpc_for_static_init_4(0,__global_tid_matmul_simd_37_0,34,&__last_iter_,&__lower_,&__upper_,&__stride_,1,1);
-  if (__upper_ > 1023) 
-    __upper_ = 1023;
+  int __global_tid_matmul_simd_35_0 = __kmpc_global_thread_num(0);
+  __kmpc_for_static_init_4(0,__global_tid_matmul_simd_35_0,34,&__last_iter_,&__lower_,&__upper_,&__stride_,1,1);
+  if (__upper_ > ((unsigned long )1024) - 1) 
+    __upper_ = ((unsigned long )1024) - 1;
   for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
-     *temp = ((float )0);
-    for (_p_k = 0; _p_k < 1024; _p_k++) {
-       *temp += ( *A)[ *i][_p_k] * ( *B)[__index_][_p_k];
+    for (_p_j = ((size_t )0); _p_j < ((unsigned long )1024); _p_j++) {
+       *temp = ((float )0);
+      for (_p_k = ((size_t )0); _p_k < ((unsigned long )1024); _p_k++) {
+         *temp += ( *A)[__index_][_p_k] * ( *B)[_p_j][_p_k];
+      }
+      ( *C)[__index_][_p_j] =  *temp;
     }
-    ( *C)[ *i][__index_] =  *temp;
   }
-  __kmpc_for_static_fini(0,__global_tid_matmul_simd_37_0);
-  __kmpc_barrier(0,__global_tid_matmul_simd_37_0);
+  __kmpc_for_static_fini(0,__global_tid_matmul_simd_35_0);
+  __kmpc_barrier(0,__global_tid_matmul_simd_35_0);
 }

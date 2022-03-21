@@ -27,10 +27,11 @@ void init(float *matrix, float *vector) {
 }
 
 void matvec_simd(float *matrix, float *vector, float *dest) {
-    #pragma omp parallel for private(i, j, tmp)
-    for (size_t i = 0; i<N; i++) {
+    size_t i, j;
+    #pragma omp parallel for private(i, j)
+    for (i = 0; i<N; i++) {
         float tmp = 0;
-        for (size_t j = 0; j<N; j++) {
+        for (j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }
         dest[i] = tmp;

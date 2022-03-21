@@ -29,8 +29,9 @@ void init(float *matrix, float *vector) {
 void matvec_simd(float *matrix, float *vector, float *dest) {
     for (size_t i = 0; i<N; i++) {
         float tmp = 0;
-        #pragma omp simd reduction(+: tmp) private(j) shared(matrix, vector)
-        for (size_t j = 0; j<N; j++) {
+        size_t j = 0;
+        #pragma omp simd reduction(+: tmp) private(j)
+        for (j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
         }
         dest[i] = tmp;

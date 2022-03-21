@@ -25,8 +25,9 @@ void init(float *X, float *Y) {
 
 //Our sum function- what it does is pretty straight-forward.
 void axpy(float *X, float *Y, float a) {
+    size_t i = 0;
     #pragma omp parallel for simd private(i) shared(a, X, Y)
-    for (size_t i = 0; i<N; i++) {
+    for (i = 0; i<N; i++) {
         Y[i] += a * X[i];
     }
 }

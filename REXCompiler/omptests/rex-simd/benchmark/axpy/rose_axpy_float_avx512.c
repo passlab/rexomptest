@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X,float *Y)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     Y[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
@@ -29,9 +29,9 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
+  size_t i = 0;
   __m512 __vec1 = _mm512_set1_ps(a);
-  for (i = 0; i <= 102399999; i += 16) {
+  for (i = 0; i <= ((unsigned long )102400000) - 1; i += 16) {
     __m512 __vec0 = _mm512_loadu_ps(&Y[i]);
     __m512 __vec2 = _mm512_loadu_ps(&X[i]);
     __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
@@ -43,7 +43,7 @@ void axpy(float *X,float *Y,float a)
 
 void axpy_serial(float *X,float *Y,float a)
 {
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     Y[i] += a * X[i];
   }
 }
@@ -51,7 +51,7 @@ void axpy_serial(float *X,float *Y,float a)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 102400000; i++) {
+  for (size_t i = 0; i < 102400000; i++) {
     difference += A[i] - B[i];
   }
   return difference;
@@ -80,7 +80,7 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     axpy(X,Y,a);
-    fprintf(stderr, "(%f,%f,%f)", Y[0], Y[N-10], Y[N/10]);
+    fprintf(stderr,"(%f,%f,%f)",Y[0],Y[102400000 - 10],Y[102400000 / 10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;

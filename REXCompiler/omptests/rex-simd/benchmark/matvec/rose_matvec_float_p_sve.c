@@ -19,31 +19,32 @@ double read_timer()
 
 void init(float *matrix,float *vector)
 {
-  for (int i = 0; i < 10240; i++) {
-    for (int j = 0; j < 10240; j++) {
+  for (size_t i = 0; i < 10240; i++) {
+    for (size_t j = 0; j < 10240; j++) {
       matrix[i * 10240 + j] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     }
     vector[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
-extern void OUT__1__3684__matvec_simd__30__(int *__global_tid,int *__bound_tid,float **matrixp__,float **vectorp__,float **destp__);
+extern void OUT__1__3684__matvec_simd__31__(int *__global_tid,int *__bound_tid,float **matrixp__,float **vectorp__,float **destp__);
 
 void matvec_simd(float *matrix,float *vector,float *dest)
 {
-  int i;
+  size_t i;
+  size_t j;
   void *__out_argv1__3684__[3];
   __out_argv1__3684__[0] = ((void *)(&dest));
   __out_argv1__3684__[1] = ((void *)(&vector));
   __out_argv1__3684__[2] = ((void *)(&matrix));
-  __kmpc_fork_call(0,3,OUT__1__3684__matvec_simd__30__,&matrix,&vector,&dest);
+  __kmpc_fork_call(0,3,OUT__1__3684__matvec_simd__31__,&matrix,&vector,&dest);
 }
 // Debug functions
 
 void matvec_serial(float *matrix,float *vector,float *dest)
 {
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
-    for (int j = 0; j < 10240; j++) {
+    for (size_t j = 0; j < 10240; j++) {
       tmp += matrix[i * 10240 + j] * vector[j];
     }
     dest[i] = tmp;
@@ -53,7 +54,7 @@ void matvec_serial(float *matrix,float *vector,float *dest)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (int i = 0; i < 10240; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     difference += fabsf(A[i] - B[i]);
   }
   return difference;
