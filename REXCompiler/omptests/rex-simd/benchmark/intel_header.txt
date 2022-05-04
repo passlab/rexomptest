@@ -1,0 +1,12 @@
+Serial
+Autovec (AVX-2
+Autovec (AVX-512)
+OMP SIMD (AVX-2)
+OMP SIMD (AVX-512)
+OMP Parallel For (AVX-2)
+OMP Parallel For (AVX-512)
+OMP SIMD/Parallel For (AVX-2)
+OMP SIMD/Parallel For (AVX-512)
+Rex (SIMD)
+Rex (Parallel)
+Rex (Parallel SIMD)

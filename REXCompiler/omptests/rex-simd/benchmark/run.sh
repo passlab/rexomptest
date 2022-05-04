@@ -10,8 +10,98 @@
 function run_intel() {
     CSV=$1".csv"
     LAST=$(($2 + 1))
-    echo "Serial,Autovec (AVX-2),Autovec (AVX-512),OMP SIMD (AVX-2),OMP SIMD (AVX-512),OMP Parallel For (AVX-2),OMP Parallel For (AVX-512),OMP SIMD/Parallel For (AVX-2),OMP SIMD/Parallel For (AVX-512),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
+    #echo "Serial,Autovec (AVX-2),Autovec (AVX-512),OMP SIMD (AVX-2),OMP SIMD (AVX-512),OMP Parallel For (AVX-2),OMP Parallel For (AVX-512),OMP SIMD/Parallel For (AVX-2),OMP SIMD/Parallel For (AVX-512),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
     
+    config="../intel_header.txt"
+    while read -r line
+    do
+        printf "$line," 1>> $CSV
+    done <$config
+    printf "\n" >> $CSV
+    
+    for i in $(seq 1 $2)
+    do
+        ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"1" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"2" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"2_pf" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        printf "," 1>> $CSV
+        
+        ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
+        if [[ ${PIPESTATUS[0]} != 0 ]]; then
+            printf "SEG" 1>> $CSV
+        fi
+        echo "," 1>> $CSV
+    done
+    echo "=AVERAGE(A2:A$LAST),=AVERAGE(B2:B$LAST),=AVERAGE(C2:C$LAST),=AVERAGE(D2:D$LAST),=AVERAGE(E2:E$LAST),=AVERAGE(F2:F$LAST),=AVERAGE(G2:G$LAST),=AVERAGE(H2:H$LAST),=AVERAGE(I2:I$LAST),=AVERAGE(J2:J$LAST),=AVERAGE(K2:K$LAST),=AVERAGE(L2:L$LAST)," 1>> $CSV
+}
+
+# Arm function; this is the same as the Intel
+function run_arm() {
+    CSV=$1"_arm.csv"
+    LAST=$(($2 + 1))
+    echo "Serial,Autovec,Autovec (faddv),OMP SIMD,OMP SIMD (faddv),OMP Parallel For,OMP Parallel For (faddv),OMP SIMD/Parallel For,OMP SIMD/Parallel For (faddv),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
+
     for i in $(seq 1 $2)
     do
         ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
@@ -87,89 +177,6 @@ function run_intel() {
         echo "" 1>> $CSV
     done
     echo "=AVERAGE(A2:A$LAST),=AVERAGE(B2:B$LAST),=AVERAGE(C2:C$LAST),=AVERAGE(D2:D$LAST),=AVERAGE(E2:E$LAST),=AVERAGE(F2:F$LAST),=AVERAGE(G2:G$LAST),=AVERAGE(H2:H$LAST),=AVERAGE(I2:I$LAST),=AVERAGE(J2:J$LAST),=AVERAGE(K2:K$LAST),=AVERAGE(L2:L$LAST)" 1>> $CSV
-}
-
-# Arm function; this is the same as the Intel
-function run_arm() {
-    CSV=$1"_arm.csv"
-    LAST=$(($2 + 1))
-    echo "Serial,,Autovec,,Autovec (faddv),,OMP SIMD,,OMP SIMD (faddv),,OMP Parallel For,,OMP Parallel For (faddv),,OMP SIMD/Parallel For,,OMP SIMD/Parallel For (faddv),,Rex (SIMD),,Rex (Parallel),,Rex (Parallel SIMD)," 1>> $CSV
-
-    for i in $(seq 1 $2)
-    do
-        ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG,0" 1>> $CSV
-        fi
-        echo "" 1>> $CSV
-    done
-    echo "=AVERAGE(A2:A$LAST),,=AVERAGE(C2:C$LAST),,=AVERAGE(E2:E$LAST),,=AVERAGE(G2:G$LAST),,=AVERAGE(I2:I$LAST),,=AVERAGE(K2:K$LAST),,=AVERAGE(M2:M$LAST),,=AVERAGE(O2:O$LAST),,=AVERAGE(Q2:Q$LAST),,=AVERAGE(S2:S$LAST),,=AVERAGE(U2:U$LAST),,=AVERAGE(W2:W$LAST)," 1>> $CSV
 }
 
 # Make sure we have a command line argument
