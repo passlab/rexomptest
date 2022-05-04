@@ -20,7 +20,7 @@ source $HOME/passlab/setup.sh
 
 function gen_dummy() {
     echo "int main() { return 0; }" > $1
-    echo "void foo() {}" >> $2
+    echo "void foo() {}" > $2
 }
 
 # Params:
