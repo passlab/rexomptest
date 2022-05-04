@@ -36,6 +36,18 @@ function generate_average_line() {
     printf "\n" >> $CSV
 }
 
+# Params
+#1 -> program
+#2 -> prefix
+#3 -> CSV
+function run_program() {
+    ./$1/$1"$2" | tr -d '\n' 1>> $3
+    if [[ ${PIPESTATUS[0]} != 0 ]]; then
+        printf "SEG" 1>> $3
+    fi
+    printf "," 1>> $3
+}
+
 # <prog>_serial -> This is the serial, unoptimized version
 # <prog>1 -->    This is compiler-generated (generally AVX512)
 # <prog>2 -->    This is forced AVX-512 (knl flag)
@@ -50,85 +62,23 @@ function run_intel() {
     
     config="../intel.txt"
     generate_csv_line $config $CSV
-    #while read -r line
-    #do
-    #    printf "$line," 1>> $CSV
-    #done <$config
-    #printf "\n" >> $CSV
     
     for i in $(seq 1 $2)
     do
-        ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        echo "," 1>> $CSV
+        run_program $1 "_serial" $CSV
+        run_program $1 "_autovec1" $CSV
+        run_program $1 "_autovec2" $CSV
+        run_program $1 "1" $CSV
+        run_program $1 "2" $CSV
+        run_program $1 "1_p" $CSV
+        run_program $1 "2_p" $CSV
+        run_program $1 "1_pf" $CSV
+        run_program $1 "2_pf" $CSV
+        run_program $1 "_rex" $CSV
+        run_program $1 "_rex_p" $CSV
+	run_program $1 "_rex_pf" $CSV
+
+	echo "" 1>> $CSV
     done
     
     config="../intel.txt"
