@@ -29,9 +29,9 @@ function build_arm() {
     armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
     
     # Rex Builds
-    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
-    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_p_sve.c rex_lib_p_sve.c -o ../build/$CURRENT/$CURRENT"_rex_p"
-    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_pf_sve.c rex_lib_pf_sve.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose/rose_"$CURRENT"_float_sve.c -o ../build/$CURRENT/$CURRENT"_rex"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose/rose_"$CURRENT"_float_p_sve.c rose/rex_lib_p_sve.c -o ../build/$CURRENT/$CURRENT"_rex_p"
+    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose/rose_"$CURRENT"_float_pf_sve.c rose/rex_lib_pf_sve.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
 
 # Build on the Intel platform
@@ -59,9 +59,9 @@ function build_intel() {
     clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_pf.c -o ../build/$CURRENT/$CURRENT"2_pf"
     
     # Rex builds
-    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
-    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_p_avx512.c rex_lib_p.c -o ../build/$CURRENT/$CURRENT"_rex_p"
-    clang-12 -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_pf_avx512.c rex_lib_pf.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
+    clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+    clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_p_avx512.c rose/rex_lib_p_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_p"
+    clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_pf_avx512.c rose/rex_lib_pf_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
 
 if [ -z "$1" ]; then
@@ -84,12 +84,6 @@ if [[ $1 == "intel" ]] ; then
             mkdir -p build/$CURRENT
             touch build/$CURRENT/rex_kmp.h
             (build_intel $d $CURRENT)
-            #(cd "$d" &&
-            #    clang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial" &&
-            #    clang -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1" &&
-            #    clang -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2" &&
-            #    clang -fopenmp -O2 -lm -march=native rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
-            #)
         fi
     done
 
@@ -103,12 +97,6 @@ elif [[ $1 == "arm" ]] ; then
             mkdir -p build/$CURRENT
             touch build/$CURRENT/rex_kmp.h
             (build_arm $d $CURRENT)
-            #(cd "$d" &&
-            #    armclang -lm -O0 "$CURRENT"_serial.c -o ../build/$CURRENT/$CURRENT"_serial" &&
-            #    armclang -fopenmp -O2 -lm -march=armv8-a+sve "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1" &&
-            #    armclang -fopenmp -O2 -lm -march=armv8-a+sve -ffp-model=fast "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2" &&
-            #    armclang -fopenmp -O2 -lm -march=armv8-a+sve rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
-            #)
         fi
     done
     
