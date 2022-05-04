@@ -30,7 +30,7 @@ float sum(float *X)
 {
   size_t i;
   float result = 0;
-  svbool_t __pg0 = svwhilelt_b32(0,((unsigned long )10240000) - 1);
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )10240000) - 1);
   svfloat32_t __part0 = svdup_f32(0.00000L);
   for (i = ((size_t )0); i <= ((unsigned long )10240000) - 1; i += svcntw()) {
     svfloat32_t __vec1 = svld1(__pg0,&X[i]);
