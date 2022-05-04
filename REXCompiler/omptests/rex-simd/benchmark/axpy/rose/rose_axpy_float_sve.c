@@ -99,7 +99,7 @@ int main(int argc,char **argv)
     printf("AXPY (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("AXPY (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
     printf("Correctness check: %f\n", check(Y,Y_serial));*/
-  printf("%4f,%f\n",t / 20,(check(Y,Y_serial)));
+  printf("%4f\n",t / 20);
   free(X);
   free(Y);
   free(Y_serial);
