@@ -5,7 +5,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <arm_sve.h> 
 #define N_RUNS 20
 #define N 10240000
 // read timer in second
@@ -30,20 +30,16 @@ float sum(float *X)
 {
   size_t i;
   float result = 0;
-  __m512 __part0 = _mm512_setzero_ps();
-  for (i = ((size_t )0); i <= ((unsigned long )10240000) - 1; i += 16) {
-    __m512 __vec1 = _mm512_loadu_ps(&X[i]);
-    __m512 __vec2 = _mm512_add_ps(__vec1,__part0);
+  svbool_t __pg0 = svwhilelt_b32(0,((unsigned long )10240000) - 1);
+  svfloat32_t __part0 = svdup_f32(0.00000L);
+  for (i = ((size_t )0); i <= ((unsigned long )10240000) - 1; i += svcntw()) {
+    svfloat32_t __vec1 = svld1(__pg0,&X[i]);
+    svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__part0);
     __part0 = (__vec2);
+    __pg0 = svwhilelt_b32(i,((unsigned long )10240000) - 1);
   }
-  __m256 __buf0 = _mm512_extractf32x8_ps(__part0,0);
-  __m256 __buf1 = _mm512_extractf32x8_ps(__part0,1);
-  __buf1 = _mm256_add_ps(__buf0,__buf1);
-  __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-  __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-  float __buf2[8];
-  _mm256_storeu_ps(&__buf2,__buf1);
-  result = __buf2[0] + __buf2[6];
+  __pg0 = svptrue_b32();
+  result = svaddv(__pg0,__part0);
   return result;
 }
 // Debug functions

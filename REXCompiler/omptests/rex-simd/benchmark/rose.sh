@@ -23,6 +23,17 @@ function gen_dummy() {
     echo "void foo() {}" > $2
 }
 
+# Params
+#1 -> the input
+#2 -> the architecture
+function compile() {
+    if [[ $2 == "sve" ]] ; then
+        rose-sve $1
+    else
+        rose $1
+    fi
+}
+
 # Params:
 # $1 -> directory
 # $2 -> Name
@@ -37,10 +48,10 @@ function run_rose() {
     fi
     cd rose
     
-    rose ../"$CURRENT"_float.c
+    compile ../"$CURRENT"_float.c $ARCH
     mv rose_"$CURRENT"_float.c rose_"$CURRENT"_float_$ARCH.c
     
-    rose ../"$CURRENT"_float_p.c
+    compile ../"$CURRENT"_float_p.c $ARCH
     if [[ -f rex_lib.c ]] ; then
         mv rose_"$CURRENT"_float_p.c rose_"$CURRENT"_float_p_$ARCH.c
         mv rex_lib.c rex_lib_p_$ARCH.c
@@ -48,7 +59,7 @@ function run_rose() {
         gen_dummy rose_"$CURRENT"_float_p_$ARCH.c rex_lib_p_$ARCH.c
     fi
     
-    rose ../"$CURRENT"_float_pf.c
+    compile ../"$CURRENT"_float_pf.c $ARCH
     if [[ -f rex_lib.c ]] ; then
         mv rose_"$CURRENT"_float_pf.c rose_"$CURRENT"_float_pf_$ARCH.c
         mv rex_lib.c rex_lib_pf_$ARCH.c
