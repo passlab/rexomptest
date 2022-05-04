@@ -45,6 +45,7 @@ function run_rose() {
     
     if [ ! -d ./rose ] ;then
         mkdir rose
+        touch rose/rex_kmp.h
     fi
     cd rose
     
