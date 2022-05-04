@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#Params
+#1 -> config
+#2 -> CSV
+function generate_csv_line() {
+    config=$1
+    CSV=$2
+    while read -r line
+    do
+        printf "$line," 1>> $CSV
+    done <$config
+    printf "\n" >> $CSV
+}
+
 # <prog>_serial -> This is the serial, unoptimized version
 # <prog>1 -->    This is compiler-generated (generally AVX512)
 # <prog>2 -->    This is forced AVX-512 (knl flag)
@@ -13,11 +26,12 @@ function run_intel() {
     #echo "Serial,Autovec (AVX-2),Autovec (AVX-512),OMP SIMD (AVX-2),OMP SIMD (AVX-512),OMP Parallel For (AVX-2),OMP Parallel For (AVX-512),OMP SIMD/Parallel For (AVX-2),OMP SIMD/Parallel For (AVX-512),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
     
     config="../intel_header.txt"
-    while read -r line
-    do
-        printf "$line," 1>> $CSV
-    done <$config
-    printf "\n" >> $CSV
+    generate_csv_line $config $CSV
+    #while read -r line
+    #do
+    #    printf "$line," 1>> $CSV
+    #done <$config
+    #printf "\n" >> $CSV
     
     for i in $(seq 1 $2)
     do
@@ -93,7 +107,9 @@ function run_intel() {
         fi
         echo "," 1>> $CSV
     done
-    echo "=AVERAGE(A2:A$LAST),=AVERAGE(B2:B$LAST),=AVERAGE(C2:C$LAST),=AVERAGE(D2:D$LAST),=AVERAGE(E2:E$LAST),=AVERAGE(F2:F$LAST),=AVERAGE(G2:G$LAST),=AVERAGE(H2:H$LAST),=AVERAGE(I2:I$LAST),=AVERAGE(J2:J$LAST),=AVERAGE(K2:K$LAST),=AVERAGE(L2:L$LAST)," 1>> $CSV
+    
+    config="../intel_avg.txt"
+    generate_csv_line $config $CSV
 }
 
 # Arm function; this is the same as the Intel
