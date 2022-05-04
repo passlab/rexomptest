@@ -31,6 +31,7 @@ function generate_average_line() {
         printf "2:$letter" 1>> $CSV
         printf "$LAST" 1>> $CSV
         printf ")," 1>> $CSV
+        ascii=$((ascii+1))
     done <$config
     printf "\n" >> $CSV
 }
