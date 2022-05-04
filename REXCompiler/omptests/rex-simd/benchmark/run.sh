@@ -76,9 +76,9 @@ function run_intel() {
         run_program $1 "2_pf" $CSV
         run_program $1 "_rex" $CSV
         run_program $1 "_rex_p" $CSV
-	run_program $1 "_rex_pf" $CSV
+	    run_program $1 "_rex_pf" $CSV
 
-	echo "" 1>> $CSV
+	    echo "" 1>> $CSV
     done
     
     config="../intel.txt"
@@ -89,83 +89,32 @@ function run_intel() {
 function run_arm() {
     CSV=$1"_arm.csv"
     LAST=$(($2 + 1))
-    echo "Serial,Autovec,Autovec (faddv),OMP SIMD,OMP SIMD (faddv),OMP Parallel For,OMP Parallel For (faddv),OMP SIMD/Parallel For,OMP SIMD/Parallel For (faddv),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
+    #echo "Serial,Autovec,Autovec (faddv),OMP SIMD,OMP SIMD (faddv),OMP Parallel For,OMP Parallel For (faddv),OMP SIMD/Parallel For,OMP SIMD/Parallel For (faddv),Rex (SIMD),Rex (Parallel),Rex (Parallel SIMD)" 1>> $CSV
+    
+    config="../arm.txt"
+    generate_csv_line $config $CSV
 
     for i in $(seq 1 $2)
     do
-        ./$1/$1"_serial" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
+        run_program $1 "_serial" $CSV
+        run_program $1 "_autovec1" $CSV
+        run_program $1 "_autovec2" $CSV
+        run_program $1 "1" $CSV
+        run_program $1 "2" $CSV
+        run_program $1 "1_p" $CSV
+        run_program $1 "2_p" $CSV
+        run_program $1 "1_pf" $CSV
+        run_program $1 "2_pf" $CSV
+        run_program $1 "_rex" $CSV
+        run_program $1 "_rex_p" $CSV
+        run_program $1 "_rex_pf" $CSV
         
-        ./$1/$1"_autovec1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_autovec2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"1_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"2_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_p" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
-        printf "," 1>> $CSV
-        
-        ./$1/$1"_rex_pf" | tr -d '\n' 1>> $CSV
-        if [[ ${PIPESTATUS[0]} != 0 ]]; then
-            printf "SEG" 1>> $CSV
-        fi
         echo "" 1>> $CSV
     done
-    echo "=AVERAGE(A2:A$LAST),=AVERAGE(B2:B$LAST),=AVERAGE(C2:C$LAST),=AVERAGE(D2:D$LAST),=AVERAGE(E2:E$LAST),=AVERAGE(F2:F$LAST),=AVERAGE(G2:G$LAST),=AVERAGE(H2:H$LAST),=AVERAGE(I2:I$LAST),=AVERAGE(J2:J$LAST),=AVERAGE(K2:K$LAST),=AVERAGE(L2:L$LAST)" 1>> $CSV
+    echo #"=AVERAGE(A2:A$LAST),=AVERAGE(B2:B$LAST),=AVERAGE(C2:C$LAST),=AVERAGE(D2:D$LAST),=AVERAGE(E2:E$LAST),=AVERAGE(F2:F$LAST),=AVERAGE(G2:G$LAST),=AVERAGE(H2:H$LAST),=AVERAGE(I2:I$LAST),=AVERAGE(J2:J$LAST),=AVERAGE(K2:K$LAST),=AVERAGE(L2:L$LAST)" 1>> $CSV
+    
+    config="../arm.txt"
+    generate_average_line $config $CSV $LAST
 }
 
 # Make sure we have a command line argument

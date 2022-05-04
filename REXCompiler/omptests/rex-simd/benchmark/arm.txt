@@ -1,0 +1,12 @@
+Serial
+Autovec
+Autovec (faddv)
+OMP SIMD
+OMP SIMD (faddv)
+OMP Parallel For
+OMP Parallel For (faddv)
+OMP SIMD/Parallel For
+OMP SIMD/Parallel For (faddv)
+Rex (SIMD)
+Rex (Parallel)
+Rex (Parallel SIMD)
