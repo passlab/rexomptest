@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
     printf("Correctness check: %f\n", result_serial - result);*/
-    printf("%4f,%f\n", t/N_RUNS, result_serial - result);
+    printf("%4f\n", t/N_RUNS);
     
     free(X);
     

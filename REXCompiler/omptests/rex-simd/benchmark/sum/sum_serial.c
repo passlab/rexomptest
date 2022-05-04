@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     
     double gflops = ((2.0 * N) * N * N_RUNS) / (1.0e9 * t);
     
-    printf("%4f,%f\n", t/N_RUNS);
+    printf("%4f\n", t/N_RUNS);
     
     free(X);
     
