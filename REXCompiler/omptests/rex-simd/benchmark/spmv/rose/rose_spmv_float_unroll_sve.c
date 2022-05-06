@@ -105,12 +105,12 @@ int main(int argc,char *argv[])
   double elapsed = read_timer();
   for (row = 0; row < nrows; row++) {
     float sum = 0.0;
-    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,ia[row + 1] - 1);
+    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(ia[row + 1] - 1));
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part5 = svdup_f32(0.00000L);
     svfloat32_t __part10 = svdup_f32(0.00000L);
     svfloat32_t __part15 = svdup_f32(0.00000L);
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 4 * svcntw()) {
+    for (idx = ia[row]; idx <= (ia[row + 1] - 1); idx += 4 * svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&a[idx]);
       svint32_t __vindex0 = svld1(__pg0,&ja[idx]);
       svfloat32_t __vec2 = svld1_gather_index(__pg0,x,__vindex0);
@@ -135,7 +135,7 @@ int main(int argc,char *argv[])
       svfloat32_t __vec18 = svmul_f32_m(__pg0,__vec17,__vec16);
       svfloat32_t __vec19 = svadd_f32_m(__pg0,__vec18,__part15);
       __part15 = (__vec19);
-      __pg0 = svwhilelt_b32(idx,ia[row + 1] - 1);
+      __pg0 = svwhilelt_b32(idx,(unsigned long )(ia[row + 1] - 1));
     }
     __pg0 = svptrue_b32();
     sum += svaddv(__pg0,__part15);

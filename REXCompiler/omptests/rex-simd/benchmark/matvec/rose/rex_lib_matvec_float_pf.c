@@ -33,7 +33,7 @@ void OUT__1__9574__matvec_simd__31__(int *__global_tid,int *__bound_tid)
       __upper_ = ((unsigned long )10240) - 1;
     for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
       float tmp = (float )0;
-      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )10240) - 1);
+      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));
       svfloat32_t __part0 = svdup_f32(0.00000L);
       __pg0 = svptrue_b32();
       tmp += svaddv(__pg0,__part0);

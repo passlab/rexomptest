@@ -30,7 +30,7 @@ void init(float *X,float *Y)
 void axpy(float *X,float *Y,float a)
 {
   int i;
-  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,102399999);
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )102399999);
   svfloat32_t __vec1 = svdup_f32(a);
   svfloat32_t __vec6 = svdup_f32(a);
   svfloat32_t __vec11 = svdup_f32(a);
@@ -80,7 +80,7 @@ void axpy(float *X,float *Y,float a)
     svfloat32_t __vec38 = svmul_f32_m(__pg0,__vec37,__vec36);
     svfloat32_t __vec39 = svadd_f32_m(__pg0,__vec38,__vec35);
     svst1(__pg0,&Y[i + svcntw() * 7],__vec39);
-    __pg0 = svwhilelt_b32(i,102399999);
+    __pg0 = svwhilelt_b32(i,(unsigned long )102399999);
   }
 }
 // Debug functions

@@ -33,7 +33,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
   for (size_t i = 0; i < 10240; i++) {
     float tmp = 0;
     size_t j = 0;
-    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )10240) - 1);
+    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part5 = svdup_f32(0.00000L);
     svfloat32_t __part10 = svdup_f32(0.00000L);
@@ -42,7 +42,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
     svfloat32_t __part25 = svdup_f32(0.00000L);
     svfloat32_t __part30 = svdup_f32(0.00000L);
     svfloat32_t __part35 = svdup_f32(0.00000L);
-    for (j = 0; j <= ((unsigned long )10240) - 1; j += 8 * svcntw()) {
+    for (j = 0; j <= (((unsigned long )10240) - 1); j += 8 * svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&matrix[i * ((unsigned long )10240) + j]);
       svfloat32_t __vec2 = svld1(__pg0,&vector[j]);
       svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
@@ -83,7 +83,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
       svfloat32_t __vec38 = svmul_f32_m(__pg0,__vec37,__vec36);
       svfloat32_t __vec39 = svadd_f32_m(__pg0,__vec38,__part35);
       __part35 = (__vec39);
-      __pg0 = svwhilelt_b32(j,((unsigned long )10240) - 1);
+      __pg0 = svwhilelt_b32(j,(unsigned long )(((unsigned long )10240) - 1));
     }
     __pg0 = svptrue_b32();
     tmp += svaddv(__pg0,__part35);

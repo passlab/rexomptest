@@ -33,7 +33,7 @@ void OUT__1__9202__main__76__(int *__global_tid,int *__bound_tid)
       __upper_ = nrows - 1;
     for (__index_ = __lower_; __index_ <= __upper_; __index_ += 1) {
       float sum = (float )0.0;
-      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,ia[row + 1] - 1);
+      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(ia[row + 1] - 1));
       svfloat32_t __part0 = svdup_f32(0.00000L);
       __pg0 = svptrue_b32();
       sum += svaddv(__pg0,__part0);
