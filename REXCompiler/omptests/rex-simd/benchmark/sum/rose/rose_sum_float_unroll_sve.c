@@ -123,13 +123,13 @@ int main(int argc,char **argv)
   t_serial += read_timer() - start_serial;
   double gflops = 2.0 * 10240 * 10240 * 500 / (1.0e9 * t);
   double gflops_serial = 2.0 * 10240 * 10240 * 500 / (1.0e9 * t_serial);
-  printf("==================================================================\n");
-  printf("Performance:\t\t\tRuntime (s)\t GFLOPS\n");
-  printf("------------------------------------------------------------------\n");
-  printf("Sum (SIMD):\t\t%4f\t%4f\n",t / 500,gflops);
-  printf("Sum (Serial):\t\t%4f\t%4f\n",t_serial / 500,gflops_serial);
-  printf("Correctness check: %f (Serial: %f | SIMD: %f)\n",(result_serial - result),result_serial,result);
-//printf("%4f\n", t/N_RUNS);
+/*printf("==================================================================\n");
+    printf("Performance:\t\t\tRuntime (s)\t GFLOPS\n");
+    printf("------------------------------------------------------------------\n");
+    printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
+    printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
+    printf("Correctness check: %f (Serial: %f | SIMD: %f)\n", result_serial - result, result_serial, result);*/
+  printf("%4f\n",t / 500);
   free(X);
   return 0;
 }
