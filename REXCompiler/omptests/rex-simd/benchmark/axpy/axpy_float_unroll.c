@@ -25,7 +25,7 @@ void init(float *X, float *Y) {
 
 //Our sum function- what it does is pretty straight-forward.
 void axpy(float *X, float *Y, float a) {
-    #pragma omp unroll partial(8)
+    #pragma omp unroll partial(16)
     #pragma omp simd
     for (int i = 0; i<N; i++) {
         Y[i] += a * X[i];
