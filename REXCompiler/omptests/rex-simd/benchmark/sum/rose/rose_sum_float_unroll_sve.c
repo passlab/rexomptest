@@ -64,7 +64,7 @@ float sum(float *X)
     svfloat32_t __vec22 = svld1(__pg0,&X[i + svcntw() * 7]);
     svfloat32_t __vec23 = svadd_f32_m(__pg0,__vec22,__part21);
     __part21 = (__vec23);
-    __pg0 = svwhilelt_b32(i,(unsigned long )(((unsigned long )10240) - 1));
+    __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((unsigned long )10240) - 1));
   }
   __pg0 = svptrue_b32();
   result += svaddv(__pg0,__part21);

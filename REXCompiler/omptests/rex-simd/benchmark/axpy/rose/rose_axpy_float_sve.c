@@ -38,7 +38,7 @@ void axpy(float *X,float *Y,float a)
     svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
     svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
     svst1(__pg0,&Y[i],__vec4);
-    __pg0 = svwhilelt_b32(i,(unsigned long )(((unsigned long )102400000) - 1));
+    __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((unsigned long )102400000) - 1));
   }
 }
 // Debug functions

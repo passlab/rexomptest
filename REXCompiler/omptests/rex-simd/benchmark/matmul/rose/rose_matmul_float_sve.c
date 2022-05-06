@@ -47,7 +47,7 @@ void matmul_simd(float **A,float **B,float **C)
         svfloat32_t __vec5 = svmul_f32_m(__pg0,__vec4,__vec2);
         svfloat32_t __vec6 = svadd_f32_m(__pg0,__vec5,__part0);
         __part0 = (__vec6);
-        __pg0 = svwhilelt_b32(k,(unsigned long )(((unsigned long )1024) - 1));
+        __pg0 = svwhilelt_b32((unsigned long )k,(unsigned long )(((unsigned long )1024) - 1));
       }
       __pg0 = svptrue_b32();
       temp += svaddv(__pg0,__part0);

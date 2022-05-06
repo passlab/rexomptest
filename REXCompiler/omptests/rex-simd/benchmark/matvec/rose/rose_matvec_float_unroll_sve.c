@@ -83,7 +83,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
       svfloat32_t __vec38 = svmul_f32_m(__pg0,__vec37,__vec36);
       svfloat32_t __vec39 = svadd_f32_m(__pg0,__vec38,__part35);
       __part35 = (__vec39);
-      __pg0 = svwhilelt_b32(j,(unsigned long )(((unsigned long )10240) - 1));
+      __pg0 = svwhilelt_b32((unsigned long )j,(unsigned long )(((unsigned long )10240) - 1));
     }
     __pg0 = svptrue_b32();
     tmp += svaddv(__pg0,__part35);

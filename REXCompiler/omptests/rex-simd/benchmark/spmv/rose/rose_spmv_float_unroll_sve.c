@@ -135,7 +135,7 @@ int main(int argc,char *argv[])
       svfloat32_t __vec18 = svmul_f32_m(__pg0,__vec17,__vec16);
       svfloat32_t __vec19 = svadd_f32_m(__pg0,__vec18,__part15);
       __part15 = (__vec19);
-      __pg0 = svwhilelt_b32(idx,(unsigned long )(ia[row + 1] - 1));
+      __pg0 = svwhilelt_b32((unsigned long )idx,(unsigned long )(ia[row + 1] - 1));
     }
     __pg0 = svptrue_b32();
     sum += svaddv(__pg0,__part15);
