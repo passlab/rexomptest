@@ -39,15 +39,7 @@ void axpy(float *X,float *Y,float a)
   svfloat32_t __vec26 = svdup_f32(a);
   svfloat32_t __vec31 = svdup_f32(a);
   svfloat32_t __vec36 = svdup_f32(a);
-  svfloat32_t __vec41 = svdup_f32(a);
-  svfloat32_t __vec46 = svdup_f32(a);
-  svfloat32_t __vec51 = svdup_f32(a);
-  svfloat32_t __vec56 = svdup_f32(a);
-  svfloat32_t __vec61 = svdup_f32(a);
-  svfloat32_t __vec66 = svdup_f32(a);
-  svfloat32_t __vec71 = svdup_f32(a);
-  svfloat32_t __vec76 = svdup_f32(a);
-  for (i = 0; i <= 102399999; i += 16 * svcntw()) {
+  for (i = 0; i <= 102399999; i += 8 * svcntw()) {
     svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
     svfloat32_t __vec2 = svld1(__pg0,&X[i]);
     svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
@@ -88,46 +80,6 @@ void axpy(float *X,float *Y,float a)
     svfloat32_t __vec38 = svmul_f32_m(__pg0,__vec37,__vec36);
     svfloat32_t __vec39 = svadd_f32_m(__pg0,__vec38,__vec35);
     svst1(__pg0,&Y[i + svcntw() * 7],__vec39);
-    svfloat32_t __vec40 = svld1(__pg0,&Y[i + svcntw() * 8]);
-    svfloat32_t __vec42 = svld1(__pg0,&X[i + svcntw() * 8]);
-    svfloat32_t __vec43 = svmul_f32_m(__pg0,__vec42,__vec41);
-    svfloat32_t __vec44 = svadd_f32_m(__pg0,__vec43,__vec40);
-    svst1(__pg0,&Y[i + svcntw() * 8],__vec44);
-    svfloat32_t __vec45 = svld1(__pg0,&Y[i + svcntw() * 9]);
-    svfloat32_t __vec47 = svld1(__pg0,&X[i + svcntw() * 9]);
-    svfloat32_t __vec48 = svmul_f32_m(__pg0,__vec47,__vec46);
-    svfloat32_t __vec49 = svadd_f32_m(__pg0,__vec48,__vec45);
-    svst1(__pg0,&Y[i + svcntw() * 9],__vec49);
-    svfloat32_t __vec50 = svld1(__pg0,&Y[i + svcntw() * 10]);
-    svfloat32_t __vec52 = svld1(__pg0,&X[i + svcntw() * 10]);
-    svfloat32_t __vec53 = svmul_f32_m(__pg0,__vec52,__vec51);
-    svfloat32_t __vec54 = svadd_f32_m(__pg0,__vec53,__vec50);
-    svst1(__pg0,&Y[i + svcntw() * 10],__vec54);
-    svfloat32_t __vec55 = svld1(__pg0,&Y[i + svcntw() * 11]);
-    svfloat32_t __vec57 = svld1(__pg0,&X[i + svcntw() * 11]);
-    svfloat32_t __vec58 = svmul_f32_m(__pg0,__vec57,__vec56);
-    svfloat32_t __vec59 = svadd_f32_m(__pg0,__vec58,__vec55);
-    svst1(__pg0,&Y[i + svcntw() * 11],__vec59);
-    svfloat32_t __vec60 = svld1(__pg0,&Y[i + svcntw() * 12]);
-    svfloat32_t __vec62 = svld1(__pg0,&X[i + svcntw() * 12]);
-    svfloat32_t __vec63 = svmul_f32_m(__pg0,__vec62,__vec61);
-    svfloat32_t __vec64 = svadd_f32_m(__pg0,__vec63,__vec60);
-    svst1(__pg0,&Y[i + svcntw() * 12],__vec64);
-    svfloat32_t __vec65 = svld1(__pg0,&Y[i + svcntw() * 13]);
-    svfloat32_t __vec67 = svld1(__pg0,&X[i + svcntw() * 13]);
-    svfloat32_t __vec68 = svmul_f32_m(__pg0,__vec67,__vec66);
-    svfloat32_t __vec69 = svadd_f32_m(__pg0,__vec68,__vec65);
-    svst1(__pg0,&Y[i + svcntw() * 13],__vec69);
-    svfloat32_t __vec70 = svld1(__pg0,&Y[i + svcntw() * 14]);
-    svfloat32_t __vec72 = svld1(__pg0,&X[i + svcntw() * 14]);
-    svfloat32_t __vec73 = svmul_f32_m(__pg0,__vec72,__vec71);
-    svfloat32_t __vec74 = svadd_f32_m(__pg0,__vec73,__vec70);
-    svst1(__pg0,&Y[i + svcntw() * 14],__vec74);
-    svfloat32_t __vec75 = svld1(__pg0,&Y[i + svcntw() * 15]);
-    svfloat32_t __vec77 = svld1(__pg0,&X[i + svcntw() * 15]);
-    svfloat32_t __vec78 = svmul_f32_m(__pg0,__vec77,__vec76);
-    svfloat32_t __vec79 = svadd_f32_m(__pg0,__vec78,__vec75);
-    svst1(__pg0,&Y[i + svcntw() * 15],__vec79);
     __pg0 = svwhilelt_b32(i,102399999);
   }
 }
