@@ -8,5 +8,6 @@ OMP Parallel For (faddv)
 OMP SIMD/Parallel For
 OMP SIMD/Parallel For (faddv)
 Rex (SIMD)
+Rex (SIMD with unroll)
 Rex (Parallel)
 Rex (Parallel SIMD)

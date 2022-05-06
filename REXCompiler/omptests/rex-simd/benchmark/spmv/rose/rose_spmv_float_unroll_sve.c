@@ -107,15 +107,42 @@ int main(int argc,char *argv[])
     float sum = 0.0;
     svbool_t __pg0 = svwhilelt_b32((unsigned long )0,ia[row + 1] - 1);
     svfloat32_t __part0 = svdup_f32(0.00000L);
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 1 * svcntw()) {
+    svfloat32_t __part5 = svdup_f32(0.00000L);
+    svfloat32_t __part10 = svdup_f32(0.00000L);
+    svfloat32_t __part15 = svdup_f32(0.00000L);
+    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 4 * svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&a[idx]);
       svint32_t __vindex0 = svld1(__pg0,&ja[idx]);
       svfloat32_t __vec2 = svld1_gather_index(__pg0,x,__vindex0);
       svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
       svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__part0);
       __part0 = (__vec4);
+      svfloat32_t __vec6 = svld1(__pg0,&a[idx + svcntw() * 1]);
+      svint32_t __vindex0 = svld1(__pg0,&ja[idx + 1 * 1]);
+      svfloat32_t __vec7 = svld1_gather_index(__pg0,x,__vindex0);
+      svfloat32_t __vec8 = svmul_f32_m(__pg0,__vec7,__vec6);
+      svfloat32_t __vec9 = svadd_f32_m(__pg0,__vec8,__part5);
+      __part5 = (__vec9);
+      svfloat32_t __vec11 = svld1(__pg0,&a[idx + svcntw() * 2]);
+      svint32_t __vindex0 = svld1(__pg0,&ja[idx + 1 * 2]);
+      svfloat32_t __vec12 = svld1_gather_index(__pg0,x,__vindex0);
+      svfloat32_t __vec13 = svmul_f32_m(__pg0,__vec12,__vec11);
+      svfloat32_t __vec14 = svadd_f32_m(__pg0,__vec13,__part10);
+      __part10 = (__vec14);
+      svfloat32_t __vec16 = svld1(__pg0,&a[idx + svcntw() * 3]);
+      svint32_t __vindex0 = svld1(__pg0,&ja[idx + 1 * 3]);
+      svfloat32_t __vec17 = svld1_gather_index(__pg0,x,__vindex0);
+      svfloat32_t __vec18 = svmul_f32_m(__pg0,__vec17,__vec16);
+      svfloat32_t __vec19 = svadd_f32_m(__pg0,__vec18,__part15);
+      __part15 = (__vec19);
       __pg0 = svwhilelt_b32(idx,ia[row + 1] - 1);
     }
+    __pg0 = svptrue_b32();
+    sum += svaddv(__pg0,__part15);
+    __pg0 = svptrue_b32();
+    sum += svaddv(__pg0,__part10);
+    __pg0 = svptrue_b32();
+    sum += svaddv(__pg0,__part5);
     __pg0 = svptrue_b32();
     sum += svaddv(__pg0,__part0);
     y[row] = sum;

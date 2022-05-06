@@ -36,7 +36,7 @@ void OUT__1__9574__matvec_simd__31__(int *__global_tid,int *__bound_tid)
       svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )10240) - 1);
       svfloat32_t __part0 = svdup_f32(0.00000L);
       __pg0 = svptrue_b32();
-      tmp = svaddv(__pg0,__part0);
+      tmp += svaddv(__pg0,__part0);
       dest[__index_] = tmp;
     }
     __kmpc_for_static_fini(0,__global_tid_OUT__1__9574__matvec_simd__31___0_0);

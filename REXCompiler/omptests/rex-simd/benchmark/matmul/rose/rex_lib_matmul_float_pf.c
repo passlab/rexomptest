@@ -41,7 +41,7 @@ void OUT__1__9606__matmul_simd__34__(int *__global_tid,int *__bound_tid)
         svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )1024) - 1);
         svfloat32_t __part0 = svdup_f32(0.00000L);
         __pg0 = svptrue_b32();
-        temp = svaddv(__pg0,__part0);
+        temp += svaddv(__pg0,__part0);
         C[__index_][_p_j] = temp;
       }
     }

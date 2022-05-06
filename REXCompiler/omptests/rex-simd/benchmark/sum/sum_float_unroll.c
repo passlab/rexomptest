@@ -25,10 +25,10 @@ void init(float *X) {
 //Our sum function- what it does is pretty straight-forward.
 float sum(float *X) {
     float result = 0;
-    size_t i = 0;
     
-    #pragma omp parallel for simd reduction(+:result) private(i) shared(X)
-    for (i = 0; i<N; i++) {
+    #pragma omp unroll partial(8)
+    #pragma omp simd reduction(+:result)
+    for (size_t i = 0; i<N; i++) {
         result += X[i];
     }
     
@@ -77,13 +77,13 @@ int main(int argc, char **argv) {
     double gflops = ((2.0 * N) * N * N_RUNS) / (1.0e9 * t);
     double gflops_serial = ((2.0 * N) * N * N_RUNS) / (1.0e9 * t_serial);
     
-    /*printf("==================================================================\n");
+    printf("==================================================================\n");
     printf("Performance:\t\t\tRuntime (s)\t GFLOPS\n");
     printf("------------------------------------------------------------------\n");
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
-    printf("Correctness check: %f\n", result_serial - result);*/
-    printf("%4f\n", t/N_RUNS);
+    printf("Correctness check: %f (Serial: %f | SIMD: %f)\n", result_serial - result, result_serial, result);
+    //printf("%4f\n", t/N_RUNS);
     
     free(X);
     

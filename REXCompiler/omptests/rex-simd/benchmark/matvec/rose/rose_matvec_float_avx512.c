@@ -34,7 +34,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
     float tmp = 0;
     size_t j = 0;
     __m512 __part0 = _mm512_setzero_ps();
-    for (j = 0; j <= ((unsigned long )10240) - 1; j += 16) {
+    for (j = 0; j <= ((unsigned long )10240) - 1; j += 1 * 16) {
       __m512 __vec1 = _mm512_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
       __m512 __vec2 = _mm512_loadu_ps(&vector[j]);
       __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
@@ -48,7 +48,7 @@ void matvec_simd(float *matrix,float *vector,float *dest)
     __buf1 = _mm256_hadd_ps(__buf1,__buf1);
     float __buf2[8];
     _mm256_storeu_ps(&__buf2,__buf1);
-    tmp = __buf2[0] + __buf2[6];
+    tmp += __buf2[0] + __buf2[6];
     dest[i] = tmp;
   }
 }

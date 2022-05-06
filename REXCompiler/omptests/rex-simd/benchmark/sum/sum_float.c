@@ -5,8 +5,8 @@
 #include <sys/timeb.h>
 #include <malloc.h>
 
-#define N_RUNS 20
-#define N 10240000
+#define N_RUNS 500
+#define N 10240
 
 // read timer in second
 double read_timer() {

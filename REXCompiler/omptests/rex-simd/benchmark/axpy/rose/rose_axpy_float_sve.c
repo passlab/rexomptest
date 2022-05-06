@@ -32,7 +32,7 @@ void axpy(float *X,float *Y,float a)
   size_t i = 0;
   svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )102400000) - 1);
   svfloat32_t __vec1 = svdup_f32(a);
-  for (i = 0; i <= ((unsigned long )102400000) - 1; i += svcntw()) {
+  for (i = 0; i <= ((unsigned long )102400000) - 1; i += 1 * svcntw()) {
     svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
     svfloat32_t __vec2 = svld1(__pg0,&X[i]);
     svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);

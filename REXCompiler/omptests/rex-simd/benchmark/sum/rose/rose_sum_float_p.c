@@ -5,8 +5,8 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#define N_RUNS 20
-#define N 10240000
+#define N_RUNS 500
+#define N 10240
 // read timer in second
 
 double read_timer()
@@ -19,7 +19,7 @@ double read_timer()
 
 void init(float *X)
 {
-  for (size_t i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
 }
@@ -38,7 +38,7 @@ float sum(float *X)
 float sum_serial(float *X)
 {
   float result = 0;
-  for (size_t i = 0; i < 10240000; i++) {
+  for (size_t i = 0; i < 10240; i++) {
     result += X[i];
   }
   return result;
@@ -48,7 +48,7 @@ int main(int argc,char **argv)
 {
   int status = 0;
 //Set everything up
-  float *X = (malloc(sizeof(float ) * 10240000));
+  float *X = (malloc(sizeof(float ) * 10240));
   float result;
   float result_serial;
   srand((time(((void *)0))));
@@ -58,7 +58,7 @@ int main(int argc,char **argv)
   result_serial = sum_serial(X);
   double t = 0;
   double start = read_timer();
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 500; i++) {
     fprintf(stderr,"%d ",i);
     result = sum(X);
     fprintf(stderr,"(%f)",result);
@@ -67,18 +67,18 @@ int main(int argc,char **argv)
   t += read_timer() - start;
   double t_serial = 0;
   double start_serial = read_timer();
-  for (int i = 0; i < 20; i++) 
+  for (int i = 0; i < 500; i++) 
     result_serial = sum_serial(X);
   t_serial += read_timer() - start_serial;
-  double gflops = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t);
-  double gflops_serial = 2.0 * 10240000 * 10240000 * 20 / (1.0e9 * t_serial);
+  double gflops = 2.0 * 10240 * 10240 * 500 / (1.0e9 * t);
+  double gflops_serial = 2.0 * 10240 * 10240 * 500 / (1.0e9 * t_serial);
 /*printf("==================================================================\n");
     printf("Performance:\t\t\tRuntime (s)\t GFLOPS\n");
     printf("------------------------------------------------------------------\n");
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
     printf("Correctness check: %f\n", result_serial - result);*/
-  printf("%4f\n",t / 20);
+  printf("%4f\n",t / 500);
   free(X);
   return 0;
 }

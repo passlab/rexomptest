@@ -9,7 +9,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <arm_sve.h> 
 #define N 1024
 //#define N 16
 // read timer in second
@@ -37,24 +37,50 @@ void matmul_simd(float **A,float **B,float **C)
     for (size_t j = 0; j < 1024; j++) {
       temp = 0;
       size_t k = 0;
-      __m512 __part0 = _mm512_setzero_ps();
-      for (k = 0; k <= ((unsigned long )1024) - 1; k += 1 * 16) {
+      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,((unsigned long )1024) - 1);
+      svfloat32_t __part0 = svdup_f32(0.00000L);
+      svfloat32_t __part7 = svdup_f32(0.00000L);
+      svfloat32_t __part14 = svdup_f32(0.00000L);
+      svfloat32_t __part21 = svdup_f32(0.00000L);
+      for (k = 0; k <= ((unsigned long )1024) - 1; k += 4 * svcntw()) {
         float *__ptr1 = A[i];
-        __m512 __vec2 = _mm512_loadu_ps(&__ptr1[k]);
+        svfloat32_t __vec2 = svld1(__pg0,&__ptr1[k]);
         float *__ptr3 = B[j];
-        __m512 __vec4 = _mm512_loadu_ps(&__ptr3[k]);
-        __m512 __vec5 = _mm512_mul_ps(__vec4,__vec2);
-        __m512 __vec6 = _mm512_add_ps(__vec5,__part0);
+        svfloat32_t __vec4 = svld1(__pg0,&__ptr3[k]);
+        svfloat32_t __vec5 = svmul_f32_m(__pg0,__vec4,__vec2);
+        svfloat32_t __vec6 = svadd_f32_m(__pg0,__vec5,__part0);
         __part0 = (__vec6);
+        float *__ptr8 = A[i];
+        svfloat32_t __vec9 = svld1(__pg0,&__ptr8[k + svcntw() * 1]);
+        float *__ptr10 = B[j];
+        svfloat32_t __vec11 = svld1(__pg0,&__ptr10[k + svcntw() * 1]);
+        svfloat32_t __vec12 = svmul_f32_m(__pg0,__vec11,__vec9);
+        svfloat32_t __vec13 = svadd_f32_m(__pg0,__vec12,__part7);
+        __part7 = (__vec13);
+        float *__ptr15 = A[i];
+        svfloat32_t __vec16 = svld1(__pg0,&__ptr15[k + svcntw() * 2]);
+        float *__ptr17 = B[j];
+        svfloat32_t __vec18 = svld1(__pg0,&__ptr17[k + svcntw() * 2]);
+        svfloat32_t __vec19 = svmul_f32_m(__pg0,__vec18,__vec16);
+        svfloat32_t __vec20 = svadd_f32_m(__pg0,__vec19,__part14);
+        __part14 = (__vec20);
+        float *__ptr22 = A[i];
+        svfloat32_t __vec23 = svld1(__pg0,&__ptr22[k + svcntw() * 3]);
+        float *__ptr24 = B[j];
+        svfloat32_t __vec25 = svld1(__pg0,&__ptr24[k + svcntw() * 3]);
+        svfloat32_t __vec26 = svmul_f32_m(__pg0,__vec25,__vec23);
+        svfloat32_t __vec27 = svadd_f32_m(__pg0,__vec26,__part21);
+        __part21 = (__vec27);
+        __pg0 = svwhilelt_b32(k,((unsigned long )1024) - 1);
       }
-      __m256 __buf0 = _mm512_extractf32x8_ps(__part0,0);
-      __m256 __buf1 = _mm512_extractf32x8_ps(__part0,1);
-      __buf1 = _mm256_add_ps(__buf0,__buf1);
-      __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-      __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-      float __buf2[8];
-      _mm256_storeu_ps(&__buf2,__buf1);
-      temp += __buf2[0] + __buf2[6];
+      __pg0 = svptrue_b32();
+      temp += svaddv(__pg0,__part21);
+      __pg0 = svptrue_b32();
+      temp += svaddv(__pg0,__part14);
+      __pg0 = svptrue_b32();
+      temp += svaddv(__pg0,__part7);
+      __pg0 = svptrue_b32();
+      temp += svaddv(__pg0,__part0);
       C[i][j] = temp;
     }
   }

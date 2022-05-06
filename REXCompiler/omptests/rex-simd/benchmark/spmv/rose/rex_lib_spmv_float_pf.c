@@ -36,7 +36,7 @@ void OUT__1__9202__main__76__(int *__global_tid,int *__bound_tid)
       svbool_t __pg0 = svwhilelt_b32((unsigned long )0,ia[row + 1] - 1);
       svfloat32_t __part0 = svdup_f32(0.00000L);
       __pg0 = svptrue_b32();
-      sum = svaddv(__pg0,__part0);
+      sum += svaddv(__pg0,__part0);
       y[__index_] = sum;
     }
     __kmpc_for_static_fini(0,__global_tid_OUT__1__9202__main__76___0_0);

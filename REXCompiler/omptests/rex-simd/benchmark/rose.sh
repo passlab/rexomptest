@@ -68,6 +68,9 @@ function run_rose() {
         gen_dummy rose_"$CURRENT"_float_pf_$ARCH.c rex_lib_pf_$ARCH.c
     fi
     
+    compile ../"$CURRENT"_float_unroll.c $ARCH
+    mv rose_"$CURRENT"_float_unroll.c rose_"$CURRENT"_float_unroll_$ARCH.c
+    
     echo ""
     echo ""
 }
