@@ -71,6 +71,14 @@ function run_rose() {
     compile ../"$CURRENT"_float_unroll.c $ARCH
     mv rose_"$CURRENT"_float_unroll.c rose_"$CURRENT"_float_unroll_$ARCH.c
     
+    if [[ $ARCH == "avx512" ]] ; then
+        compile ../"$CURRENT"_float_avx2.c $ARCH
+        mv rose_"$CURRENT"_float_avx2.c rose_"$CURRENT"_float_avx2.c
+        
+        compile ../"$CURRENT"_float_unroll2.c $ARCH
+        mv rose_"$CURRENT"_float_unroll2.c rose_"$CURRENT"_float_unroll_avx2.c
+    fi
+    
     echo ""
     echo ""
 }

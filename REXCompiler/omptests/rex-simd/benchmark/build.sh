@@ -61,7 +61,9 @@ function build_intel() {
     
     # Rex builds
     clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_avx512.c -o ../build/$CURRENT/$CURRENT"_rex"
+    clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_avx2.c -o ../build/$CURRENT/$CURRENT"_rex2"
     clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_unroll_avx512.c -o ../build/$CURRENT/$CURRENT"_unroll_rex"
+    clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_unroll_avx2.c -o ../build/$CURRENT/$CURRENT"_unroll_rex2"
     clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_p_avx512.c rose/rex_lib_p_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_p"
     clang-12 -fopenmp -O2 -lm -march=native rose/rose_"$CURRENT"_float_pf_avx512.c rose/rex_lib_pf_avx512.c -o ../build/$CURRENT/$CURRENT"_rex_pf"
 }
