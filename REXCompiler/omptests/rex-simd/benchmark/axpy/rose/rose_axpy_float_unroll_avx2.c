@@ -38,7 +38,15 @@ void axpy(float *X,float *Y,float a)
   __m256 __vec26 = _mm256_set1_ps(a);
   __m256 __vec31 = _mm256_set1_ps(a);
   __m256 __vec36 = _mm256_set1_ps(a);
-  for (i = 0; i <= 102399999; i += 8 * 8) {
+  __m256 __vec41 = _mm256_set1_ps(a);
+  __m256 __vec46 = _mm256_set1_ps(a);
+  __m256 __vec51 = _mm256_set1_ps(a);
+  __m256 __vec56 = _mm256_set1_ps(a);
+  __m256 __vec61 = _mm256_set1_ps(a);
+  __m256 __vec66 = _mm256_set1_ps(a);
+  __m256 __vec71 = _mm256_set1_ps(a);
+  __m256 __vec76 = _mm256_set1_ps(a);
+  for (i = 0; i <= 102399999; i += 16 * 8) {
     __m256 __vec0 = _mm256_loadu_ps(&Y[i]);
     __m256 __vec2 = _mm256_loadu_ps(&X[i]);
     __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
@@ -79,6 +87,46 @@ void axpy(float *X,float *Y,float a)
     __m256 __vec38 = _mm256_mul_ps(__vec37,__vec36);
     __m256 __vec39 = _mm256_add_ps(__vec38,__vec35);
     _mm256_storeu_ps(&Y[i + 8 * 7],__vec39);
+    __m256 __vec40 = _mm256_loadu_ps(&Y[i + 8 * 8]);
+    __m256 __vec42 = _mm256_loadu_ps(&X[i + 8 * 8]);
+    __m256 __vec43 = _mm256_mul_ps(__vec42,__vec41);
+    __m256 __vec44 = _mm256_add_ps(__vec43,__vec40);
+    _mm256_storeu_ps(&Y[i + 8 * 8],__vec44);
+    __m256 __vec45 = _mm256_loadu_ps(&Y[i + 8 * 9]);
+    __m256 __vec47 = _mm256_loadu_ps(&X[i + 8 * 9]);
+    __m256 __vec48 = _mm256_mul_ps(__vec47,__vec46);
+    __m256 __vec49 = _mm256_add_ps(__vec48,__vec45);
+    _mm256_storeu_ps(&Y[i + 8 * 9],__vec49);
+    __m256 __vec50 = _mm256_loadu_ps(&Y[i + 8 * 10]);
+    __m256 __vec52 = _mm256_loadu_ps(&X[i + 8 * 10]);
+    __m256 __vec53 = _mm256_mul_ps(__vec52,__vec51);
+    __m256 __vec54 = _mm256_add_ps(__vec53,__vec50);
+    _mm256_storeu_ps(&Y[i + 8 * 10],__vec54);
+    __m256 __vec55 = _mm256_loadu_ps(&Y[i + 8 * 11]);
+    __m256 __vec57 = _mm256_loadu_ps(&X[i + 8 * 11]);
+    __m256 __vec58 = _mm256_mul_ps(__vec57,__vec56);
+    __m256 __vec59 = _mm256_add_ps(__vec58,__vec55);
+    _mm256_storeu_ps(&Y[i + 8 * 11],__vec59);
+    __m256 __vec60 = _mm256_loadu_ps(&Y[i + 8 * 12]);
+    __m256 __vec62 = _mm256_loadu_ps(&X[i + 8 * 12]);
+    __m256 __vec63 = _mm256_mul_ps(__vec62,__vec61);
+    __m256 __vec64 = _mm256_add_ps(__vec63,__vec60);
+    _mm256_storeu_ps(&Y[i + 8 * 12],__vec64);
+    __m256 __vec65 = _mm256_loadu_ps(&Y[i + 8 * 13]);
+    __m256 __vec67 = _mm256_loadu_ps(&X[i + 8 * 13]);
+    __m256 __vec68 = _mm256_mul_ps(__vec67,__vec66);
+    __m256 __vec69 = _mm256_add_ps(__vec68,__vec65);
+    _mm256_storeu_ps(&Y[i + 8 * 13],__vec69);
+    __m256 __vec70 = _mm256_loadu_ps(&Y[i + 8 * 14]);
+    __m256 __vec72 = _mm256_loadu_ps(&X[i + 8 * 14]);
+    __m256 __vec73 = _mm256_mul_ps(__vec72,__vec71);
+    __m256 __vec74 = _mm256_add_ps(__vec73,__vec70);
+    _mm256_storeu_ps(&Y[i + 8 * 14],__vec74);
+    __m256 __vec75 = _mm256_loadu_ps(&Y[i + 8 * 15]);
+    __m256 __vec77 = _mm256_loadu_ps(&X[i + 8 * 15]);
+    __m256 __vec78 = _mm256_mul_ps(__vec77,__vec76);
+    __m256 __vec79 = _mm256_add_ps(__vec78,__vec75);
+    _mm256_storeu_ps(&Y[i + 8 * 15],__vec79);
   }
 }
 // Debug functions

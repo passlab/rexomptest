@@ -30,7 +30,7 @@ void matvec_simd(float *matrix, float *vector, float *dest) {
     for (size_t i = 0; i<N; i++) {
         float tmp = 0;
         size_t j = 0;
-        #pragma omp unroll partial(8)
+        #pragma omp unroll partial(16)
         #pragma omp simd reduction(+: tmp) private(j) simdlen(8)
         for (j = 0; j<N; j++) {
             tmp += matrix[i*N+j] * vector[j];
