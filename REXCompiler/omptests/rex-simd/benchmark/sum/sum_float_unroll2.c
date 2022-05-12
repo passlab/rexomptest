@@ -26,7 +26,7 @@ void init(float *X) {
 float sum(float *X) {
     float result = 0;
     
-    #pragma omp unroll partial(16)
+    #pragma omp unroll partial(8)
     #pragma omp simd reduction(+:result) simdlen(8)
     for (size_t i = 0; i<N; i++) {
         result += X[i];

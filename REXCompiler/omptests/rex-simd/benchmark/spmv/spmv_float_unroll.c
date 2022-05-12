@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     
     for (row=0; row<nrows; row++) {
 		REAL sum = 0.0;
-		#pragma omp unroll partial(4)
+		#pragma omp unroll partial(8)
 		#pragma omp simd reduction(+:sum)
 		for (idx=ia[row]; idx<ia[row+1]; idx++) {
 			sum += a[idx] * x[ja[idx]];

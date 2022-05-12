@@ -52,21 +52,21 @@ function run_rose() {
     compile ../"$CURRENT"_float.c $ARCH
     mv rose_"$CURRENT"_float.c rose_"$CURRENT"_float_$ARCH.c
     
-    compile ../"$CURRENT"_float_p.c $ARCH
-    if [[ -f rex_lib.c ]] ; then
-        mv rose_"$CURRENT"_float_p.c rose_"$CURRENT"_float_p_$ARCH.c
-        mv rex_lib.c rex_lib_p_$ARCH.c
-    else
-        gen_dummy rose_"$CURRENT"_float_p_$ARCH.c rex_lib_p_$ARCH.c
-    fi
-    
-    compile ../"$CURRENT"_float_pf.c $ARCH
-    if [[ -f rex_lib.c ]] ; then
-        mv rose_"$CURRENT"_float_pf.c rose_"$CURRENT"_float_pf_$ARCH.c
-        mv rex_lib.c rex_lib_pf_$ARCH.c
-    else
-        gen_dummy rose_"$CURRENT"_float_pf_$ARCH.c rex_lib_pf_$ARCH.c
-    fi
+    #compile ../"$CURRENT"_float_p.c $ARCH
+    #if [[ -f rex_lib.c ]] ; then
+    #    mv rose_"$CURRENT"_float_p.c rose_"$CURRENT"_float_p_$ARCH.c
+    #    mv rex_lib.c rex_lib_p_$ARCH.c
+    #else
+    #    gen_dummy rose_"$CURRENT"_float_p_$ARCH.c rex_lib_p_$ARCH.c
+    #fi
+    #
+    #compile ../"$CURRENT"_float_pf.c $ARCH
+    #if [[ -f rex_lib.c ]] ; then
+    #    mv rose_"$CURRENT"_float_pf.c rose_"$CURRENT"_float_pf_$ARCH.c
+    #    mv rex_lib.c rex_lib_pf_$ARCH.c
+    #else
+    #    gen_dummy rose_"$CURRENT"_float_pf_$ARCH.c rex_lib_pf_$ARCH.c
+    #fi
     
     compile ../"$CURRENT"_float_unroll.c $ARCH
     mv rose_"$CURRENT"_float_unroll.c rose_"$CURRENT"_float_unroll_$ARCH.c
