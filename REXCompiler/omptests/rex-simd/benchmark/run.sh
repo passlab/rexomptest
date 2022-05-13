@@ -70,10 +70,6 @@ function run_intel() {
         run_program $1 "_autovec2" $CSV
         run_program $1 "1" $CSV
         run_program $1 "2" $CSV
-        run_program $1 "_unroll1" $CSV
-        run_program $1 "_unroll2" $CSV
-        run_program $1 "_tile1" $CSV
-        run_program $1 "_tile2" $CSV
         #run_program $1 "1_p" $CSV
         #run_program $1 "2_p" $CSV
         #run_program $1 "1_pf" $CSV

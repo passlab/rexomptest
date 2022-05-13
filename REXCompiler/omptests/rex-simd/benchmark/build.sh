@@ -52,14 +52,6 @@ function build_intel() {
     clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"1"
     clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float.c -o ../build/$CURRENT/$CURRENT"2"
     
-    # OpenMP SIMD with Unroll
-    clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float_unroll.c -o ../build/$CURRENT/$CURRENT"_unroll1"
-    clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_unroll.c -o ../build/$CURRENT/$CURRENT"_unroll2"
-    
-    # OpenMP SIMD with Tile
-    clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float_tile.c -o ../build/$CURRENT/$CURRENT"_tile1"
-    clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_tile.c -o ../build/$CURRENT/$CURRENT"_tile2"
-    
     # OpenMP SIMD Parallel for
     #clang-12 -fopenmp -O2 -lm -march=native "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"1_p"
     #clang-12 -fopenmp -O2 -lm -march=knl "$CURRENT"_float_p.c -o ../build/$CURRENT/$CURRENT"2_p"
