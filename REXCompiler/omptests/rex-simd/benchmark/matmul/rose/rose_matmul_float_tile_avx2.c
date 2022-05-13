@@ -38,7 +38,20 @@ void matmul_simd(float **A,float **B,float **C)
       __m256 __part0 = _mm256_setzero_ps();
       temp = 0;
       size_t k = 0;
-      for (k = 0; k <= ((unsigned long )1024) - 1; k += 1 * 8) {
+      int _lt_var_inc = 8;
+      int _lt_var_k;
+      for (_lt_var_k = ((size_t )0); _lt_var_k <= ((unsigned long )1024) - 1; _lt_var_k += _lt_var_inc * 2) {
+        for (k = _lt_var_k; k <= (((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1))); k += 1 * 8) {
+          float *__ptr1 = A[i];
+          __m256 __vec2 = _mm256_loadu_ps(&__ptr1[k]);
+          float *__ptr3 = B[j];
+          __m256 __vec4 = _mm256_loadu_ps(&__ptr3[k]);
+          __m256 __vec5 = _mm256_mul_ps(__vec4,__vec2);
+          __m256 __vec6 = _mm256_add_ps(__vec5,__part0);
+          __part0 = (__vec6);
+        }
+      }
+      for (k = _lt_var_k; k <= (((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1))); k += 1 * 8) {
         float *__ptr1 = A[i];
         __m256 __vec2 = _mm256_loadu_ps(&__ptr1[k]);
         float *__ptr3 = B[j];

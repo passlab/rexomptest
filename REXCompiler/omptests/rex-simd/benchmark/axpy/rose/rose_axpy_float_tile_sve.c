@@ -5,7 +5,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <arm_sve.h> 
 #define N_RUNS 20
 #define N 102400000
 // read timer in second
@@ -20,7 +20,7 @@ double read_timer()
 
 void init(float *X,float *Y)
 {
-  for (size_t i = 0; i < 102400000; i++) {
+  for (int i = 0; i < 102400000; i++) {
     X[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
     Y[i] = ((float )(rand())) / ((float )(2147483647 / 10.0));
   }
@@ -29,21 +29,35 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  __m256 __vec1 = _mm256_set1_ps(a);
-  size_t i = 0;
-  for (i = 0; i <= ((unsigned long )102400000) - 1; i += 1 * 8) {
-    __m256 __vec0 = _mm256_loadu_ps(&Y[i]);
-    __m256 __vec2 = _mm256_loadu_ps(&X[i]);
-    __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
-    __m256 __vec4 = _mm256_add_ps(__vec3,__vec0);
-    _mm256_storeu_ps(&Y[i],__vec4);
+  int i;
+  int _lt_var_inc = 1;
+  int _lt_var_i;
+  for (_lt_var_i = 0; _lt_var_i <= 102399999; _lt_var_i += _lt_var_inc * 2) {
+    for (i = _lt_var_i; i <= (((102399999 < (_lt_var_i + _lt_var_inc * 2 - 1))?102399999 : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * svcntw()) {
+      svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
+      svfloat32_t __vec2 = svld1(__pg0,&X[i]);
+      svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
+      svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
+      svst1(__pg0,&Y[i],__vec4);
+      __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((102399999 < (_lt_var_i + _lt_var_inc * 2 - 1))?102399999 : (_lt_var_i + _lt_var_inc * 2 - 1))));
+    }
+  }
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((102399999 < (_lt_var_i + _lt_var_inc * 2 - 1))?102399999 : (_lt_var_i + _lt_var_inc * 2 - 1)));
+  svfloat32_t __vec1 = svdup_f32(a);
+  for (i = _lt_var_i; i <= (((102399999 < (_lt_var_i + _lt_var_inc * 2 - 1))?102399999 : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * svcntw()) {
+    svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
+    svfloat32_t __vec2 = svld1(__pg0,&X[i]);
+    svfloat32_t __vec3 = svmul_f32_m(__pg0,__vec2,__vec1);
+    svfloat32_t __vec4 = svadd_f32_m(__pg0,__vec3,__vec0);
+    svst1(__pg0,&Y[i],__vec4);
+    __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((102399999 < (_lt_var_i + _lt_var_inc * 2 - 1))?102399999 : (_lt_var_i + _lt_var_inc * 2 - 1))));
   }
 }
 // Debug functions
 
 void axpy_serial(float *X,float *Y,float a)
 {
-  for (size_t i = 0; i < 102400000; i++) {
+  for (int i = 0; i < 102400000; i++) {
     Y[i] += a * X[i];
   }
 }
@@ -51,7 +65,7 @@ void axpy_serial(float *X,float *Y,float a)
 float check(float *A,float *B)
 {
   float difference = 0;
-  for (size_t i = 0; i < 102400000; i++) {
+  for (int i = 0; i < 102400000; i++) {
     difference += A[i] - B[i];
   }
   return difference;
@@ -80,7 +94,6 @@ int main(int argc,char **argv)
   for (int i = 0; i < 20; i++) {
     fprintf(stderr,"%d ",i);
     axpy(X,Y,a);
-    fprintf(stderr,"(%f,%f,%f)",Y[0],Y[102400000 - 10],Y[102400000 / 10]);
   }
   fprintf(stderr,"\n");
   t += read_timer() - start;
@@ -96,7 +109,8 @@ int main(int argc,char **argv)
     printf("------------------------------------------------------------------\n");
     printf("AXPY (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("AXPY (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
-    printf("Correctness check: %f\n", check(Y,Y_serial));*/
+    printf("Correctness check: %f\n", check(Y,Y_serial));
+    printf("(%f, %f) | (%f, %f) | (%f, %f) | (%f, %f)\n", Y[0], Y_serial[0], Y[50], Y_serial[50], Y[100], Y_serial[100], Y[1000], Y_serial[1000]);*/
   printf("%4f\n",t / 20);
   free(X);
   free(Y);

@@ -5,3 +5,4 @@ OMP SIMD
 OMP SIMD (faddv)
 Rex (SIMD)
 Rex (SIMD with unroll)
+Rex (SIMD with tile)

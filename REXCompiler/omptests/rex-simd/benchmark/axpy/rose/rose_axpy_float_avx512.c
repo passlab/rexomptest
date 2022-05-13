@@ -29,8 +29,8 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  size_t i = 0;
   __m512 __vec1 = _mm512_set1_ps(a);
+  size_t i = 0;
   for (i = 0; i <= ((unsigned long )102400000) - 1; i += 1 * 16) {
     __m512 __vec0 = _mm512_loadu_ps(&Y[i]);
     __m512 __vec2 = _mm512_loadu_ps(&X[i]);

@@ -104,12 +104,12 @@ int main(int argc,char *argv[])
     x[i] = 1.0;
   double elapsed = read_timer();
   for (row = 0; row < nrows; row++) {
+    __m256 __part0 = _mm256_setzero_ps();
     float sum = 0.0;
     __mmask8 __mask0;
     __mmask8 __mask1;
     __mmask8 __mask2 = _kxnor_mask8(__mask0,__mask1);
     __m256 __buf0 = _mm256_setzero_ps();
-    __m256 __part0 = _mm256_setzero_ps();
     __mmask8 __mask3;
     __mmask8 __mask4;
     __mmask8 __mask5 = _kxnor_mask8(__mask3,__mask4);

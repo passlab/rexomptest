@@ -29,15 +29,15 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
-  __m512 __vec1 = _mm512_set1_ps(a);
-  __m512 __vec6 = _mm512_set1_ps(a);
-  __m512 __vec11 = _mm512_set1_ps(a);
-  __m512 __vec16 = _mm512_set1_ps(a);
-  __m512 __vec21 = _mm512_set1_ps(a);
-  __m512 __vec26 = _mm512_set1_ps(a);
-  __m512 __vec31 = _mm512_set1_ps(a);
   __m512 __vec36 = _mm512_set1_ps(a);
+  __m512 __vec31 = _mm512_set1_ps(a);
+  __m512 __vec26 = _mm512_set1_ps(a);
+  __m512 __vec21 = _mm512_set1_ps(a);
+  __m512 __vec16 = _mm512_set1_ps(a);
+  __m512 __vec11 = _mm512_set1_ps(a);
+  __m512 __vec6 = _mm512_set1_ps(a);
+  __m512 __vec1 = _mm512_set1_ps(a);
+  int i;
   for (i = 0; i <= 102399999; i += 8 * 16) {
     __m512 __vec0 = _mm512_loadu_ps(&Y[i]);
     __m512 __vec2 = _mm512_loadu_ps(&X[i]);

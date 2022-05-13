@@ -35,9 +35,9 @@ void matmul_simd(float **A,float **B,float **C)
   float temp;
   for (size_t i = 0; i < 1024; i++) {
     for (size_t j = 0; j < 1024; j++) {
+      __m512 __part0 = _mm512_setzero_ps();
       temp = 0;
       size_t k = 0;
-      __m512 __part0 = _mm512_setzero_ps();
       for (k = 0; k <= ((unsigned long )1024) - 1; k += 1 * 16) {
         float *__ptr1 = A[i];
         __m512 __vec2 = _mm512_loadu_ps(&__ptr1[k]);

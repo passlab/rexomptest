@@ -34,7 +34,18 @@ void matvec_simd(float *matrix,float *vector,float *dest)
     __m256 __part0 = _mm256_setzero_ps();
     float tmp = 0;
     size_t j = 0;
-    for (j = 0; j <= ((unsigned long )10240) - 1; j += 1 * 8) {
+    int _lt_var_inc = 8;
+    int _lt_var_j;
+    for (_lt_var_j = ((size_t )0); _lt_var_j <= ((unsigned long )10240) - 1; _lt_var_j += _lt_var_inc * 2) {
+      for (j = _lt_var_j; j <= (((((unsigned long )10240) - 1 < (_lt_var_j + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_j + _lt_var_inc * 2 - 1))); j += 1 * 8) {
+        __m256 __vec1 = _mm256_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
+        __m256 __vec2 = _mm256_loadu_ps(&vector[j]);
+        __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
+        __m256 __vec4 = _mm256_add_ps(__vec3,__part0);
+        __part0 = (__vec4);
+      }
+    }
+    for (j = _lt_var_j; j <= (((((unsigned long )10240) - 1 < (_lt_var_j + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_j + _lt_var_inc * 2 - 1))); j += 1 * 8) {
       __m256 __vec1 = _mm256_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
       __m256 __vec2 = _mm256_loadu_ps(&vector[j]);
       __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);

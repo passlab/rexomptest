@@ -28,9 +28,9 @@ void init(float *X)
 
 float sum(float *X)
 {
+  __m256 __part0 = _mm256_setzero_ps();
   size_t i;
   float result = 0;
-  __m256 __part0 = _mm256_setzero_ps();
   for (i = ((size_t )0); i <= ((unsigned long )10240) - 1; i += 8 * 8) {
     __m256 __vec1 = _mm256_loadu_ps(&X[i]);
     __m256 __vec2 = _mm256_add_ps(__vec1,__part0);

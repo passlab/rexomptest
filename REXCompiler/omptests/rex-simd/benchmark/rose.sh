@@ -5,8 +5,7 @@ if [[ $1 == "clean" ]] ; then
     do
         CURRENT=`basename $d`
         if [[ $CURRENT != "output" && $CURRENT != "build" ]] ; then
-            (cd $d && rm rose/rose_*)
-            (cd $d && rm rose/rex_*)
+            (cd $d && rm rose/*)
         fi
     done
     
@@ -71,12 +70,18 @@ function run_rose() {
     compile ../"$CURRENT"_float_unroll.c $ARCH
     mv rose_"$CURRENT"_float_unroll.c rose_"$CURRENT"_float_unroll_$ARCH.c
     
+    compile ../"$CURRENT"_float_tile.c $ARCH
+    mv rose_"$CURRENT"_float_tile.c rose_"$CURRENT"_float_tile_$ARCH.c
+    
     if [[ $ARCH == "avx512" ]] ; then
         compile ../"$CURRENT"_float_avx2.c $ARCH
         mv rose_"$CURRENT"_float_avx2.c rose_"$CURRENT"_float_avx2.c
         
         compile ../"$CURRENT"_float_unroll2.c $ARCH
         mv rose_"$CURRENT"_float_unroll2.c rose_"$CURRENT"_float_unroll_avx2.c
+        
+        compile ../"$CURRENT"_float_tile2.c $ARCH
+        mv rose_"$CURRENT"_float_tile2.c rose_"$CURRENT"_float_tile_avx2.c
     fi
     
     echo ""

@@ -31,17 +31,30 @@ void init(float *matrix,float *vector)
 void matvec_simd(float *matrix,float *vector,float *dest)
 {
   for (size_t i = 0; i < 10240; i++) {
-    __m256 __part0 = _mm256_setzero_ps();
+    __m512 __part0 = _mm512_setzero_ps();
     float tmp = 0;
     size_t j = 0;
-    for (j = 0; j <= ((unsigned long )10240) - 1; j += 1 * 8) {
-      __m256 __vec1 = _mm256_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
-      __m256 __vec2 = _mm256_loadu_ps(&vector[j]);
-      __m256 __vec3 = _mm256_mul_ps(__vec2,__vec1);
-      __m256 __vec4 = _mm256_add_ps(__vec3,__part0);
+    int _lt_var_inc = 16;
+    int _lt_var_j;
+    for (_lt_var_j = ((size_t )0); _lt_var_j <= ((unsigned long )10240) - 1; _lt_var_j += _lt_var_inc * 2) {
+      for (j = _lt_var_j; j <= (((((unsigned long )10240) - 1 < (_lt_var_j + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_j + _lt_var_inc * 2 - 1))); j += 1 * 16) {
+        __m512 __vec1 = _mm512_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
+        __m512 __vec2 = _mm512_loadu_ps(&vector[j]);
+        __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
+        __m512 __vec4 = _mm512_add_ps(__vec3,__part0);
+        __part0 = (__vec4);
+      }
+    }
+    for (j = _lt_var_j; j <= (((((unsigned long )10240) - 1 < (_lt_var_j + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_j + _lt_var_inc * 2 - 1))); j += 1 * 16) {
+      __m512 __vec1 = _mm512_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
+      __m512 __vec2 = _mm512_loadu_ps(&vector[j]);
+      __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
+      __m512 __vec4 = _mm512_add_ps(__vec3,__part0);
       __part0 = (__vec4);
     }
-    __m256 __buf1 = __part0;
+    __m256 __buf0 = _mm512_extractf32x8_ps(__part0,0);
+    __m256 __buf1 = _mm512_extractf32x8_ps(__part0,1);
+    __buf1 = _mm256_add_ps(__buf0,__buf1);
     __buf1 = _mm256_hadd_ps(__buf1,__buf1);
     __buf1 = _mm256_hadd_ps(__buf1,__buf1);
     float __buf2[8];

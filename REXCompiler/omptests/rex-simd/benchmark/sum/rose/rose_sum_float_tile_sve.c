@@ -5,7 +5,7 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <malloc.h>
-#include <immintrin.h> 
+#include <arm_sve.h> 
 #define N_RUNS 500
 #define N 10240
 // read timer in second
@@ -28,20 +28,28 @@ void init(float *X)
 
 float sum(float *X)
 {
-  __m256 __part0 = _mm256_setzero_ps();
   size_t i;
   float result = 0;
-  for (i = ((size_t )0); i <= ((unsigned long )10240) - 1; i += 1 * 8) {
-    __m256 __vec1 = _mm256_loadu_ps(&X[i]);
-    __m256 __vec2 = _mm256_add_ps(__vec1,__part0);
-    __part0 = (__vec2);
+  int _lt_var_inc = 1;
+  int _lt_var_i;
+  for (_lt_var_i = ((size_t )0); _lt_var_i <= ((unsigned long )10240) - 1; _lt_var_i += _lt_var_inc * 2) {
+    for (i = _lt_var_i; i <= (((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * svcntw()) {
+      svfloat32_t __vec1 = svld1(__pg0,&X[i]);
+      svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__part0);
+      __part0 = (__vec2);
+      __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))));
+    }
   }
-  __m256 __buf1 = __part0;
-  __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-  __buf1 = _mm256_hadd_ps(__buf1,__buf1);
-  float __buf2[8];
-  _mm256_storeu_ps(&__buf2,__buf1);
-  result += __buf2[0] + __buf2[6];
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1)));
+  svfloat32_t __part0 = svdup_f32(0.00000L);
+  for (i = _lt_var_i; i <= (((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * svcntw()) {
+    svfloat32_t __vec1 = svld1(__pg0,&X[i]);
+    svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__part0);
+    __part0 = (__vec2);
+    __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))));
+  }
+  __pg0 = svptrue_b32();
+  result += svaddv(__pg0,__part0);
   return result;
 }
 // Debug functions
@@ -88,7 +96,7 @@ int main(int argc,char **argv)
     printf("------------------------------------------------------------------\n");
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
-    printf("Correctness check: %f\n", result_serial - result);*/
+    printf("Correctness check: %f (Serial: %f | SIMD: %f)\n", result_serial - result, result_serial, result);*/
   printf("%4f\n",t / 500);
   free(X);
   return 0;

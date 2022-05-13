@@ -28,9 +28,9 @@ void init(float *X)
 
 float sum(float *X)
 {
+  __m512 __part0 = _mm512_setzero_ps();
   size_t i;
   float result = 0;
-  __m512 __part0 = _mm512_setzero_ps();
   for (i = ((size_t )0); i <= ((unsigned long )10240) - 1; i += 1 * 16) {
     __m512 __vec1 = _mm512_loadu_ps(&X[i]);
     __m512 __vec2 = _mm512_add_ps(__vec1,__part0);

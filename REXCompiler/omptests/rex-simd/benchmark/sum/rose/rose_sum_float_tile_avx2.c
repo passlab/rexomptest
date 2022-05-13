@@ -31,7 +31,16 @@ float sum(float *X)
   __m256 __part0 = _mm256_setzero_ps();
   size_t i;
   float result = 0;
-  for (i = ((size_t )0); i <= ((unsigned long )10240) - 1; i += 1 * 8) {
+  int _lt_var_inc = 8;
+  int _lt_var_i;
+  for (_lt_var_i = ((size_t )0); _lt_var_i <= ((unsigned long )10240) - 1; _lt_var_i += _lt_var_inc * 2) {
+    for (i = _lt_var_i; i <= (((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * 8) {
+      __m256 __vec1 = _mm256_loadu_ps(&X[i]);
+      __m256 __vec2 = _mm256_add_ps(__vec1,__part0);
+      __part0 = (__vec2);
+    }
+  }
+  for (i = _lt_var_i; i <= (((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * 8) {
     __m256 __vec1 = _mm256_loadu_ps(&X[i]);
     __m256 __vec2 = _mm256_add_ps(__vec1,__part0);
     __part0 = (__vec2);
@@ -88,7 +97,7 @@ int main(int argc,char **argv)
     printf("------------------------------------------------------------------\n");
     printf("Sum (SIMD):\t\t%4f\t%4f\n", t/N_RUNS, gflops);
     printf("Sum (Serial):\t\t%4f\t%4f\n", t_serial/N_RUNS, gflops_serial);
-    printf("Correctness check: %f\n", result_serial - result);*/
+    printf("Correctness check: %f (Serial: %f | SIMD: %f)\n", result_serial - result, result_serial, result);*/
   printf("%4f\n",t / 500);
   free(X);
   return 0;

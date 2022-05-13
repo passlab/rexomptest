@@ -31,9 +31,9 @@ void init(float *matrix,float *vector)
 void matvec_simd(float *matrix,float *vector,float *dest)
 {
   for (size_t i = 0; i < 10240; i++) {
+    __m512 __part0 = _mm512_setzero_ps();
     float tmp = 0;
     size_t j = 0;
-    __m512 __part0 = _mm512_setzero_ps();
     for (j = 0; j <= ((unsigned long )10240) - 1; j += 1 * 16) {
       __m512 __vec1 = _mm512_loadu_ps(&matrix[i * ((unsigned long )10240) + j]);
       __m512 __vec2 = _mm512_loadu_ps(&vector[j]);

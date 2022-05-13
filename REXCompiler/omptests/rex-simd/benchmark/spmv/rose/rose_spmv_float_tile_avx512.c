@@ -106,11 +106,23 @@ int main(int argc,char *argv[])
   for (row = 0; row < nrows; row++) {
     __m512 __part0 = _mm512_setzero_ps();
     float sum = 0.0;
+    int _lt_var_inc = 16;
+    int _lt_var_idx;
+    for (_lt_var_idx = ia[row]; _lt_var_idx <= ia[row + 1] - 1; _lt_var_idx += _lt_var_inc * 2) {
+      for (idx = _lt_var_idx; idx <= (((ia[row + 1] - 1 < (_lt_var_idx + _lt_var_inc * 2 - 1))?(ia[row + 1] - 1) : (_lt_var_idx + _lt_var_inc * 2 - 1))); idx += 1 * 16) {
+        __m512 __vec1 = _mm512_loadu_ps(&a[idx]);
+        __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
+        __m512 __vec2 = _mm512_mask_i32gather_ps(__buf0,__mask2,__vindex0,x,4);
+        __m512 __vec3 = _mm512_mul_ps(__vec2,__vec1);
+        __m512 __vec4 = _mm512_add_ps(__vec3,__part0);
+        __part0 = (__vec4);
+      }
+    }
     __mmask16 __mask0;
     __mmask16 __mask1;
     __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
     __m512 __buf0 = _mm512_setzero_ps();
-    for (idx = ia[row]; idx <= ia[row + 1] - 1; idx += 1 * 16) {
+    for (idx = _lt_var_idx; idx <= (((ia[row + 1] - 1 < (_lt_var_idx + _lt_var_inc * 2 - 1))?(ia[row + 1] - 1) : (_lt_var_idx + _lt_var_inc * 2 - 1))); idx += 1 * 16) {
       __m512 __vec1 = _mm512_loadu_ps(&a[idx]);
       __m512i __vindex0 = _mm512_loadu_si512((__m512i *)(&ja[idx]));
       __m512 __vec2 = _mm512_mask_i32gather_ps(__buf0,__mask2,__vindex0,x,4);

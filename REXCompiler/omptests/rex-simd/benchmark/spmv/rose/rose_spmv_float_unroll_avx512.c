@@ -104,12 +104,12 @@ int main(int argc,char *argv[])
     x[i] = 1.0;
   double elapsed = read_timer();
   for (row = 0; row < nrows; row++) {
+    __m512 __part0 = _mm512_setzero_ps();
     float sum = 0.0;
     __mmask16 __mask0;
     __mmask16 __mask1;
     __mmask16 __mask2 = _kxnor_mask16(__mask0,__mask1);
     __m512 __buf0 = _mm512_setzero_ps();
-    __m512 __part0 = _mm512_setzero_ps();
     __mmask16 __mask3;
     __mmask16 __mask4;
     __mmask16 __mask5 = _kxnor_mask16(__mask3,__mask4);

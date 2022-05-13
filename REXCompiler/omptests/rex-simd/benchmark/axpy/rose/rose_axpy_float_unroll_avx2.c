@@ -29,23 +29,23 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
-  __m256 __vec1 = _mm256_set1_ps(a);
-  __m256 __vec6 = _mm256_set1_ps(a);
-  __m256 __vec11 = _mm256_set1_ps(a);
-  __m256 __vec16 = _mm256_set1_ps(a);
-  __m256 __vec21 = _mm256_set1_ps(a);
-  __m256 __vec26 = _mm256_set1_ps(a);
-  __m256 __vec31 = _mm256_set1_ps(a);
-  __m256 __vec36 = _mm256_set1_ps(a);
-  __m256 __vec41 = _mm256_set1_ps(a);
-  __m256 __vec46 = _mm256_set1_ps(a);
-  __m256 __vec51 = _mm256_set1_ps(a);
-  __m256 __vec56 = _mm256_set1_ps(a);
-  __m256 __vec61 = _mm256_set1_ps(a);
-  __m256 __vec66 = _mm256_set1_ps(a);
-  __m256 __vec71 = _mm256_set1_ps(a);
   __m256 __vec76 = _mm256_set1_ps(a);
+  __m256 __vec71 = _mm256_set1_ps(a);
+  __m256 __vec66 = _mm256_set1_ps(a);
+  __m256 __vec61 = _mm256_set1_ps(a);
+  __m256 __vec56 = _mm256_set1_ps(a);
+  __m256 __vec51 = _mm256_set1_ps(a);
+  __m256 __vec46 = _mm256_set1_ps(a);
+  __m256 __vec41 = _mm256_set1_ps(a);
+  __m256 __vec36 = _mm256_set1_ps(a);
+  __m256 __vec31 = _mm256_set1_ps(a);
+  __m256 __vec26 = _mm256_set1_ps(a);
+  __m256 __vec21 = _mm256_set1_ps(a);
+  __m256 __vec16 = _mm256_set1_ps(a);
+  __m256 __vec11 = _mm256_set1_ps(a);
+  __m256 __vec6 = _mm256_set1_ps(a);
+  __m256 __vec1 = _mm256_set1_ps(a);
+  int i;
   for (i = 0; i <= 102399999; i += 16 * 8) {
     __m256 __vec0 = _mm256_loadu_ps(&Y[i]);
     __m256 __vec2 = _mm256_loadu_ps(&X[i]);
