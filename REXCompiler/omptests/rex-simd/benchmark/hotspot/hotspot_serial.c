@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <omp.h>
 #include <sys/time.h>
 //using namespace std;
 #define STR_SIZE	256
@@ -23,8 +22,6 @@ float chip_width = 0.016;
 /* ambient temperature, assuming no package at all	*/
 float amb_temp = 80.0;
 
-int num_omp_threads;
-
 /* Single iteration of the transient solver in the grid model.
  * advances the solution of the discretized difference equations 
  * by one time step
@@ -37,7 +34,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	int r, c;
 	//printf("num_omp_threads: %d\n", num_omp_threads);
 
-	omp_set_num_threads(num_omp_threads);
  	for (r = 0; r < row; r++) {
 		for (c = 0; c < col; c++) {
 				delta = (step / Cap) * (power[r*col+c] + 
@@ -104,7 +100,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 }
 
 
-	omp_set_num_threads(num_omp_threads);
 	for (r = 0; r < row; r++) {
      int i = 1;
 		for (c = 0; c < col; c++) {
@@ -205,8 +200,7 @@ int main(int argc, char **argv)
 		usage(argc, argv);
 	if ((grid_rows = atoi(argv[1])) <= 0 ||
 		(grid_cols = atoi(argv[2])) <= 0 ||
-		(sim_time = atoi(argv[3])) <= 0 || 
-		(num_omp_threads = atoi(argv[4])) <= 0
+		(sim_time = atoi(argv[3])) <= 0 
 		)
 		usage(argc, argv);
 
