@@ -35,10 +35,10 @@ void matmul_simd(float **A,float **B,float **C)
   float temp;
   for (size_t i = 0; i < 1024; i++) {
     for (size_t j = 0; j < 1024; j++) {
+      svfloat32_t __part0 = svdup_f32(0.00000L);
+      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )1024) - 1));
       temp = 0;
       size_t k = 0;
-      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )1024) - 1));
-      svfloat32_t __part0 = svdup_f32(0.00000L);
       for (k = 0; k <= (((unsigned long )1024) - 1); k += 1 * svcntw()) {
         float *__ptr1 = A[i];
         svfloat32_t __vec2 = svld1(__pg0,&__ptr1[k]);

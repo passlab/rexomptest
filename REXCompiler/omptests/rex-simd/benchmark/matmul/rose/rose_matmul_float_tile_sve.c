@@ -35,6 +35,8 @@ void matmul_simd(float **A,float **B,float **C)
   float temp;
   for (size_t i = 0; i < 1024; i++) {
     for (size_t j = 0; j < 1024; j++) {
+      svfloat32_t __part0 = svdup_f32(0.00000L);
+      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1)));
       temp = 0;
       size_t k = 0;
       int _lt_var_inc = 1;
@@ -51,8 +53,6 @@ void matmul_simd(float **A,float **B,float **C)
           __pg0 = svwhilelt_b32((unsigned long )k,(unsigned long )(((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1))));
         }
       }
-      svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1)));
-      svfloat32_t __part0 = svdup_f32(0.00000L);
       for (k = _lt_var_k; k <= (((((unsigned long )1024) - 1 < (_lt_var_k + _lt_var_inc * 2 - 1))?(((unsigned long )1024) - 1) : (_lt_var_k + _lt_var_inc * 2 - 1))); k += 1 * svcntw()) {
         float *__ptr1 = A[i];
         svfloat32_t __vec2 = svld1(__pg0,&__ptr1[k]);

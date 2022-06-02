@@ -28,6 +28,8 @@ void init(float *X)
 
 float sum(float *X)
 {
+  svfloat32_t __part0 = svdup_f32(0.00000L);
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1)));
   size_t i;
   float result = 0;
   int _lt_var_inc = 1;
@@ -40,8 +42,6 @@ float sum(float *X)
       __pg0 = svwhilelt_b32((unsigned long )i,(unsigned long )(((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))));
     }
   }
-  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1)));
-  svfloat32_t __part0 = svdup_f32(0.00000L);
   for (i = _lt_var_i; i <= (((((unsigned long )10240) - 1 < (_lt_var_i + _lt_var_inc * 2 - 1))?(((unsigned long )10240) - 1) : (_lt_var_i + _lt_var_inc * 2 - 1))); i += 1 * svcntw()) {
     svfloat32_t __vec1 = svld1(__pg0,&X[i]);
     svfloat32_t __vec2 = svadd_f32_m(__pg0,__vec1,__part0);

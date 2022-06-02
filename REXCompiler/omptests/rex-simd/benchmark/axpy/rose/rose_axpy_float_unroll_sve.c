@@ -29,16 +29,16 @@ void init(float *X,float *Y)
 
 void axpy(float *X,float *Y,float a)
 {
-  int i;
-  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )102399999);
-  svfloat32_t __vec1 = svdup_f32(a);
-  svfloat32_t __vec6 = svdup_f32(a);
-  svfloat32_t __vec11 = svdup_f32(a);
-  svfloat32_t __vec16 = svdup_f32(a);
-  svfloat32_t __vec21 = svdup_f32(a);
-  svfloat32_t __vec26 = svdup_f32(a);
-  svfloat32_t __vec31 = svdup_f32(a);
   svfloat32_t __vec36 = svdup_f32(a);
+  svfloat32_t __vec31 = svdup_f32(a);
+  svfloat32_t __vec26 = svdup_f32(a);
+  svfloat32_t __vec21 = svdup_f32(a);
+  svfloat32_t __vec16 = svdup_f32(a);
+  svfloat32_t __vec11 = svdup_f32(a);
+  svfloat32_t __vec6 = svdup_f32(a);
+  svfloat32_t __vec1 = svdup_f32(a);
+  svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )102399999);
+  int i;
   for (i = 0; i <= 102399999; i += 8 * svcntw()) {
     svfloat32_t __vec0 = svld1(__pg0,&Y[i]);
     svfloat32_t __vec2 = svld1(__pg0,&X[i]);
