@@ -112,8 +112,8 @@ int main(int argc,char *argv[])
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part0 = svdup_f32(0.00000L);
-    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(ia[row + 1] - 1));
     float sum = 0.0;
+    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(ia[row + 1] - 1));
     for (idx = ia[row]; idx <= (ia[row + 1] - 1); idx += 8 * svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&a[idx]);
       svint32_t __vindex0 = svld1(__pg0,&ja[idx]);

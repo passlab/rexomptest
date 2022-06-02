@@ -105,10 +105,10 @@ int main(int argc,char *argv[])
   double elapsed = read_timer();
   for (row = 0; row < nrows; row++) {
     svfloat32_t __part0 = svdup_f32(0.00000L);
-    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((ia[row + 1] - 1 < (_lt_var_idx + _lt_var_inc * 2 - 1))?(ia[row + 1] - 1) : (_lt_var_idx + _lt_var_inc * 2 - 1)));
     float sum = 0.0;
     int _lt_var_inc = 1;
     int _lt_var_idx;
+    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )((ia[row + 1] - 1 < (_lt_var_idx + _lt_var_inc * 2 - 1))?(ia[row + 1] - 1) : (_lt_var_idx + _lt_var_inc * 2 - 1)));
     for (_lt_var_idx = ia[row]; _lt_var_idx <= ia[row + 1] - 1; _lt_var_idx += _lt_var_inc * 2) {
       for (idx = _lt_var_idx; idx <= (((ia[row + 1] - 1 < (_lt_var_idx + _lt_var_inc * 2 - 1))?(ia[row + 1] - 1) : (_lt_var_idx + _lt_var_inc * 2 - 1))); idx += 1 * svcntw()) {
         svfloat32_t __vec1 = svld1(__pg0,&a[idx]);

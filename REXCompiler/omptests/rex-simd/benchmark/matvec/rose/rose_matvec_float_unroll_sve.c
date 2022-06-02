@@ -39,9 +39,9 @@ void matvec_simd(float *matrix,float *vector,float *dest)
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part0 = svdup_f32(0.00000L);
     svfloat32_t __part0 = svdup_f32(0.00000L);
-    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));
     float tmp = 0;
     size_t j = 0;
+    svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));
     for (j = 0; j <= (((unsigned long )10240) - 1); j += 8 * svcntw()) {
       svfloat32_t __vec1 = svld1(__pg0,&matrix[i * ((unsigned long )10240) + j]);
       svfloat32_t __vec2 = svld1(__pg0,&vector[j]);
