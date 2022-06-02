@@ -112,6 +112,7 @@ function run_arm() {
         #run_program $1 "2_pf" $CSV
         run_program $1 "_rex" $CSV
         run_program $1 "_unroll_rex" $CSV
+        run_program $1 "_tile_rex" $CSV
         #run_program $1 "_rex_p" $CSV
         #run_program $1 "_rex_pf" $CSV
         
