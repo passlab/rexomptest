@@ -29,13 +29,6 @@ void init(float *X)
 float sum(float *X)
 {
   svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
-  svfloat32_t __part0 = svdup_f32(0.00000L);
   size_t i;
   float result = 0;
   svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));

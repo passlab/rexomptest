@@ -32,13 +32,6 @@ void matvec_simd(float *matrix,float *vector,float *dest)
 {
   for (size_t i = 0; i < 10240; i++) {
     svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
-    svfloat32_t __part0 = svdup_f32(0.00000L);
     float tmp = 0;
     size_t j = 0;
     svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )10240) - 1));

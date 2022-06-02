@@ -36,13 +36,6 @@ void matmul_simd(float **A,float **B,float **C)
   for (size_t i = 0; i < 1024; i++) {
     for (size_t j = 0; j < 1024; j++) {
       svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
-      svfloat32_t __part0 = svdup_f32(0.00000L);
       temp = 0;
       size_t k = 0;
       svbool_t __pg0 = svwhilelt_b32((unsigned long )0,(unsigned long )(((unsigned long )1024) - 1));
