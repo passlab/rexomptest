@@ -1,0 +1,1 @@
+./omp/lud_omp -n 4 -v -i tools/1024.dat
