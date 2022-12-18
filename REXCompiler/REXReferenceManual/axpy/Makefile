@@ -1,9 +1,6 @@
 ifeq (${LLVM_OPENMP_INSTALL},)
 	LLVM_OPENMP_INSTALL := ${LLVM_PATH}
 endif
-ifeq (${LLVM_OPENMP_SOURCE},)
-	LLVM_OPENMP_SOURCE := ${LLVM_SRC}/openmp
-endif
 ifeq (${CUDA_ARCH},)
 	CUDA_ARCH := sm_70
 endif
@@ -32,16 +29,17 @@ llvm_omp: axpy_omp.c
 	clang -O3 -fopenmp -fopenmp-targets=nvptx64 axpy_omp.c -L${LLVM_OPENMP_INSTALL}/lib -o llvm_omp.out
 
 rex_omp: rex_lib_nvidia.cubin rose_axpy_omp.c register_cubin.cpp
-	clang -O3 -g rose_axpy_omp.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_omp.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	clang -O3 -g rose_axpy_omp.c register_cubin.cpp -o rex_omp.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
 
 .PHONY:
+# nvcc from CUDA 11.5 only officially supports GCC 11 or older. To use GCC 12, `-allow-unsupported-compiler` has to be specified.
 rex_lib_nvidia.cubin: rex_lib_axpy_omp.cu rex_nvidia.cu
-	nvcc -O3 -rdc=true -cubin -arch ${CUDA_ARCH} -dlink rex_lib_axpy_omp.cu rex_nvidia.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_lib_nvidia.cubin
+	nvcc -allow-unsupported-compiler -O3 -rdc=true -cubin -arch ${CUDA_ARCH} -dlink rex_lib_axpy_omp.cu rex_nvidia.cu -o rex_lib_nvidia.cubin
 
 rex_acc: rex_lib_nvidia_acc.cubin rose_axpy_acc.c register_cubin.cpp
-	clang -O3 -g rose_axpy_acc.c register_cubin.cpp -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_acc.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
+	clang -O3 -g rose_axpy_acc.c register_cubin.cpp -o rex_acc.out -L${LLVM_OPENMP_INSTALL}/lib -lomptarget -lomp
 
 .PHONY:
 rex_lib_nvidia_acc.cubin: rex_lib_axpy_acc.cu rex_nvidia.cu
-	nvcc -O3 -rdc=true -cubin -arch ${CUDA_ARCH} -dlink rex_lib_axpy_acc.cu rex_nvidia.cu -I${LLVM_OPENMP_SOURCE}/libomptarget/include -o rex_lib_nvidia.cubin
+	nvcc -allow-unsupported-compiler -O3 -rdc=true -cubin -arch ${CUDA_ARCH} -dlink rex_lib_axpy_acc.cu rex_nvidia.cu -o rex_lib_nvidia.cubin
 
