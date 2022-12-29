@@ -45,12 +45,11 @@ void axpy(REAL *x, REAL *y, long n, REAL a) {
 
 /* omp version */
 void axpy_omp(REAL *x, REAL *y, long n, REAL a) {
-  int i;
 #pragma omp target parallel for map(to                                         \
                                     : a, n, x [0:n]) map(tofrom                \
                                                          : y [0:n])            \
     num_threads(TEAM_SIZE)
-  for (i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     y[i] += a * x[i];
   }
 }

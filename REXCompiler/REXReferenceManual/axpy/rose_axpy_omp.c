@@ -1,6 +1,6 @@
 #include "rex_kmp.h" 
-char OUT__1__7822__axpy_omp__49__id__ = 0;
-struct __tgt_offload_entry OUT__1__7822__axpy_omp__49__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__7822__axpy_omp__49__id__)), "OUT__1__7822__axpy_omp__49__kernel__", 0, 0, 0};
+char OUT__1__7822__axpy_omp__48__id__ = 0;
+struct __tgt_offload_entry OUT__1__7822__axpy_omp__48__omp_offload_entry__ __attribute__((section("omp_offloading_entries")))  = {((void *)(&OUT__1__7822__axpy_omp__48__id__)), "OUT__1__7822__axpy_omp__48__kernel__", 0, 0, 0};
 // Experimental test input for Accelerator directives
 //  simplest scalar*vector operations
 // Liao 1/15/2013
@@ -52,13 +52,12 @@ void axpy(double *x,double *y,long n,double a)
 
 void axpy_omp(double *x,double *y,long n,double a)
 {
-  int i;
 {
 /* Launch CUDA kernel ... */
     int _threads_per_block_ = 1024;
     int _num_blocks_ = 1;
     int64_t __device_id = 0;
-    void *__host_ptr = (void *)(&OUT__1__7822__axpy_omp__49__id__);
+    void *__host_ptr = (void *)(&OUT__1__7822__axpy_omp__48__id__);
     void *__args_base[] = {&n, &a, x, y};
     void *__args[] = {&n, &a, x + 0, y + 0};
     int64_t __arg_sizes[] = {((int64_t )(sizeof(long ))), ((int64_t )(sizeof(double ))), ((int64_t )(sizeof(double ) * n)), ((int64_t )(sizeof(double ) * n))};
@@ -118,7 +117,7 @@ int main(int argc,char *argv[])
     if (check_result < 1.0e-10) 
       ;
      else 
-      __assert_fail("check_result < 1.0e-10","axpy_omp.c",100,__PRETTY_FUNCTION__);
+      __assert_fail("check_result < 1.0e-10","axpy_omp.c",99,__PRETTY_FUNCTION__);
   })));
   free(y_check);
   free(y);
